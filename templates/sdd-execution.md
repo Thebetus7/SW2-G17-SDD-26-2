@@ -1,9 +1,11 @@
-# SDD-Execution: Ejecución Paso a Paso, Autonomía Técnica y Validación Dual (SDD)
+# SDD-Execution: Ejecución de Flujos Funcionales, Cero Cuelgues y Verificación (SDD)
 
-Este workflow guía al asistente de IA en la **implementación física del código**, resolviendo las tareas de `docs/specs/XX-nombre/tasks.md` bajo el ciclo TDD y validación dual (Caja Blanca + Caja Negra).
+Este workflow guía al asistente de IA en la **implementación física del código**, resolviendo las tareas de `docs/specs/XX-nombre/tasks.md` bajo el principio de **flujos funcionales completos primero y verificación consolidada fail-fast después**.
 
-> **Mandato de Copiloto Técnico Senior**:
-> Al implementar código (`[GREEN: Impl]` o `[GREEN: Blackbox Pass]`), la IA no actúa como un transcriptor ciego. **Tiene la autonomía y la responsabilidad de incorporar todas las configuraciones, ciclos de vida y protecciones estándar del framework** (ej. migraciones de datos, manejo de errores de I/O, estados de carga/vacío y liberación de recursos) necesarias para que el software sea robusto en el mundo real, aunque la tarea no lo describa palabra por palabra.
+> **Regla de Oro Anti-Cuelgues y Autonomía de Copiloto**:
+> 1. **Flujo Funcional Antes de Testear**: Al implementar `[IMPL]`, la IA construye el flujo de punta a punta (persistencia, lógica y UI conectada) para que el software sea tangible, operable y estable.
+> 2. **Timeouts Obligatorios (Fail-Fast)**: Todo test automatizado `[TEST]` debe incluir un timeout explícito estricto (3 a 5 segundos). Si un test no responde, debe fallar de inmediato y mostrar el error, **quedando terminantemente prohibido dejar que el runner se congele en bucles infinitos**.
+> 3. **Cero Esperas Ciegas en UI**: En tests de widgets o UI, se prohíbe el uso de `pumpAndSettle()` ciegos ante animaciones infinitas o timers activos; se deben usar `pump()` con duraciones controladas o bombear únicamente los frames necesarios.
 
 ---
 
@@ -25,32 +27,30 @@ Antes de escribir cualquier línea de código, el asistente debe inspeccionar:
 
 ---
 
-## 3. Protocolo de Ejecución TDD con Criterio de Copiloto
+## 3. Protocolo de Ejecución por Fases
 
 El asistente toma la primera tarea pendiente (`[ ]`) del archivo `tasks.md` y aplica el ciclo correspondiente:
 
-1. **Si la tarea es `[RED: Whitebox]`**:
-   - Crea el test unitario o de repositorio.
-   - Ejecuta el comando de test y confirma que falla por la causa esperada.
-2. **Si la tarea es `[GREEN: Impl]`**:
-   - Implementa el código de producción necesario en `src/` (o `lib/`).
-   - Aplica buenas prácticas de ingeniería (manejo seguro de errores, inmutabilidad, persistencia robusta).
-   - Ejecuta el comando de test y confirma que pasa al 100% en verde.
-3. **Si la tarea es `[REFACTOR]`**:
-   - Limpia y optimiza el código respetando los estándares de codificación.
-   - Ejecuta linters y tests existentes, garantizando cero regresiones y cero errores estáticos.
-4. **Si la tarea es `[RED: Blackbox SC-XX.Y.Z]`**:
-   - Crea el test de aceptación mapeado al escenario Gherkin correspondiente.
-   - Ejecuta el comando y confirma que falla porque el flujo aún no está conectado.
-5. **Si la tarea es `[GREEN: Blackbox Pass]`**:
-   - Conecta el componente UI o endpoint con los controladores hasta que el escenario de Caja Negra pase en verde.
-   - Asegura una experiencia de usuario limpia, ergonómica y con flujo cerrado.
-6. **Si la tarea es `[VERIFY]`**:
-   - Ejecuta la suite de pruebas completa, análisis de linters y verificaciones en runtime real.
+1. **Si la tarea es `[SETUP]`**:
+   - Instala paquetes y dependencias necesarias.
+   - Crea la estructura base de directorios y esquemas iniciales de persistencia.
+2. **Si la tarea es `[IMPL]`**:
+   - Implementa el código de producción (repositorios, controladores y vistas UI conectadas).
+   - Asegura que los streams y recursos tengan cierres limpios y que las pantallas manejen los estados de carga, éxito y error.
+3. **Si la tarea es `[TEST]`**:
+   - Escribe el test consolidado (BDD o unitario crítico) configurando un **timeout explícito de 3 a 5 segundos**:
+     ```dart // o jest.setTimeout(5000) en JS/TS
+     testWidgets('Flujo observable E2E', (tester) async {
+       // ...
+     }, timeout: const Timeout(Duration(seconds: 5)));
+     ```
+   - Ejecuta el test y confirma que pasa al 100% en verde sin congelarse ni demorarse.
+4. **Si la tarea es `[VERIFY]`**:
+   - Ejecuta la suite de pruebas del módulo y análisis de linters, garantizando cero advertencias, cero regresiones y cero bloqueos.
 
 ---
 
 ## 4. Cierre Físico Inmediato en `tasks.md`
 
 - Inmediatamente después de verificar que el comando de test o verificación fue exitoso, el asistente actualiza `docs/specs/XX-nombre/tasks.md` marcando la tarea con una `[x]`.
-- Prohibido marcar tareas como completadas sin haber ejecutado y verificado físicamente los comandos de prueba.
+- Prohibido marcar tareas como completadas sin haber ejecutado y verificado físicamente los comandos correspondientes.
