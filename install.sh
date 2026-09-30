@@ -89,26 +89,91 @@ instalar_vscode() {
     done
 }
 
+# Lista de opciones del menú
+OPCIONES=(
+    "Antigravity          (.agents/workflows/)"
+    "Cursor               (.cursor/rules/*.mdc)"
+    "OpenCode / Continue  (.continue/prompts/*.prompt)"
+    "VS Code / Copilot    (.github/prompts/*.md)"
+    "Todos los anteriores"
+)
+
+seleccionar_con_flechas() {
+    local seleccionado=0
+    local total=${#OPCIONES[@]}
+    local key=""
+
+    # Asegurar que leemos de /dev/tty si venimos por pipe (curl | bash)
+    local tty_in="/dev/tty"
+    if [ ! -e /dev/tty ]; then
+        tty_in="/dev/stdin"
+    fi
+
+    # Ocultar cursor en terminal
+    tput civis 2>/dev/null || true
+
+    # Restaurar cursor al salir
+    trap 'tput cnorm 2>/dev/null || true' EXIT SIGINT
+
+    while true; do
+        # Dibujar opciones
+        for i in "${!OPCIONES[@]}"; do
+            if [ "$i" -eq "$seleccionado" ]; then
+                echo -e "  ${CYAN}${BOLD}❯ ${OPCIONES[$i]}${NC}"
+            else
+                echo -e "    ${OPCIONES[$i]}"
+            fi
+        done
+
+        # Leer tecla (soporta secuencias de escape ANSI para flechas)
+        IFS= read -rsn1 key < "$tty_in"
+        if [[ "$key" == $'\x1b' ]]; then
+            read -rsn2 -t 0.1 key_tail < "$tty_in" || true
+            key+="$key_tail"
+        fi
+
+        case "$key" in
+            $'\x1b[A'|"k"|"K") # Flecha Arriba
+                ((seleccionado--))
+                if [ "$seleccionado" -lt 0 ]; then
+                    seleccionado=$((total - 1))
+                fi
+                ;;
+            $'\x1b[B'|"j"|"J") # Flecha Abajo
+                ((seleccionado++))
+                if [ "$seleccionado" -ge "$total" ]; then
+                    seleccionado=0
+                fi
+                ;;
+            "") # Enter
+                break
+                ;;
+            $'\x03') # Ctrl+C
+                tput cnorm 2>/dev/null || true
+                exit 1
+                ;;
+        esac
+
+        # Mover cursor hacia arriba para redibujar limpiamente
+        for ((i=0; i<total; i++)); do
+            tput cuu1 2>/dev/null || echo -en "\033[1A"
+            tput el 2>/dev/null || echo -en "\033[2K"
+        done
+    done
+
+    # Restaurar cursor
+    tput cnorm 2>/dev/null || true
+    echo "$((seleccionado + 1))"
+}
+
 # Si se pasó argumento directo (modo no interactivo), ej: ./install.sh cursor
 TARGET_PARAM="${1:-}"
 
 if [ -n "$TARGET_PARAM" ]; then
     OPCION="$TARGET_PARAM"
 else
-    echo -e "${YELLOW}Selecciona el entorno/IDE donde deseas instalar los comandos SDD:${NC}"
-    echo "1) Antigravity          (.agents/workflows/)"
-    echo "2) Cursor               (.cursor/rules/*.mdc)"
-    echo "3) OpenCode / Continue  (.continue/prompts/*.prompt)"
-    echo "4) VS Code / Copilot    (.github/prompts/*.md)"
-    echo "5) Todos los anteriores"
-    echo ""
-    if [ -t 0 ]; then
-        read -r -p "Ingresa tu opción [1-5]: " OPCION
-    elif [ -e /dev/tty ]; then
-        read -r -p "Ingresa tu opción [1-5]: " OPCION < /dev/tty
-    else
-        read -r -p "Ingresa tu opción [1-5]: " OPCION
-    fi
+    echo -e "${YELLOW}Usa las flechas [↑/↓] para moverte y presiona [Enter] para elegir:${NC}\n"
+    OPCION=$(seleccionar_con_flechas)
 fi
 
 case "$OPCION" in

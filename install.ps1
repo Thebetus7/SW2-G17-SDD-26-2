@@ -100,16 +100,67 @@ function Instalar-VSCode {
     }
 }
 
+# Opciones del menú interactivo
+$OpcionesMenu = @(
+    "Antigravity          (.agents/workflows/)",
+    "Cursor               (.cursor/rules/*.mdc)",
+    "OpenCode / Continue  (.continue/prompts/*.prompt)",
+    "VS Code / Copilot    (.github/prompts/*.md)",
+    "Todos los anteriores"
+)
+
+function Seleccionar-ConFlechas {
+    $Seleccionado = 0
+    $Total = $OpcionesMenu.Count
+
+    try {
+        [Console]::CursorVisible = $false
+    } catch {}
+
+    while ($true) {
+        for ($i = 0; $i -lt $Total; $i++) {
+            if ($i -eq $Seleccionado) {
+                Write-Host "  ❯ $($OpcionesMenu[$i])" -ForegroundColor Cyan
+            } else {
+                Write-Host "    $($OpcionesMenu[$i])" -ForegroundColor Gray
+            }
+        }
+
+        $Key = [Console]::ReadKey($true)
+
+        if ($Key.Key -eq [ConsoleKey]::UpArrow -or $Key.Key -eq [ConsoleKey]::K) {
+            $Seleccionado--
+            if ($Seleccionado -lt 0) { $Seleccionado = $Total - 1 }
+        }
+        elseif ($Key.Key -eq [ConsoleKey]::DownArrow -or $Key.Key -eq [ConsoleKey]::J) {
+            $Seleccionado++
+            if ($Seleccionado -ge $Total) { $Seleccionado = 0 }
+        }
+        elseif ($Key.Key -eq [ConsoleKey]::Enter) {
+            break
+        }
+
+        # Subir el cursor para redibujar
+        try {
+            $CurrentTop = [Console]::CursorTop
+            [Console]::SetCursorPosition(0, [Math]::Max(0, $CurrentTop - $Total))
+        } catch {
+            Write-Host "`e[${Total}A" -NoNewline
+        }
+    }
+
+    try {
+        [Console]::CursorVisible = $true
+    } catch {}
+
+    return ($Seleccionado + 1).ToString()
+}
+
 # Selección interactiva si no se especificó $Target
 if ([string]::IsNullOrWhiteSpace($Target)) {
-    Write-Host "Selecciona el entorno/IDE donde deseas instalar los comandos SDD:" -ForegroundColor Yellow
-    Write-Host "1. Antigravity          (.agents/workflows/)"
-    Write-Host "2. Cursor               (.cursor/rules/*.mdc)"
-    Write-Host "3. OpenCode / Continue  (.continue/prompts/*.prompt)"
-    Write-Host "4. VS Code / Copilot    (.github/prompts/*.md)"
-    Write-Host "5. Todos los anteriores"
+    Write-Host "Usa las flechas [↑/↓] para moverte y presiona [Enter] para elegir:" -ForegroundColor Yellow
     Write-Host ""
-    $Opcion = Read-Host "Ingresa tu opción (1-5)"
+    $Opcion = Seleccionar-ConFlechas
 } else {
     $Opcion = $Target
 }
