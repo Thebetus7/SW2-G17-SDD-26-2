@@ -25,11 +25,15 @@ Cuando el usuario invoque este workflow (`/sdd-constitution-trial`):
 - **Core Concepts (Conceptos Clave del Dominio)**: Términos del negocio innegociables (lenguaje ubicuo de Domain-Driven Design).
 - **Límites del Proyecto (Out of Scope)**: Qué cosas **NO** hará este sistema bajo ninguna circunstancia.
 
-### Pilar 2: Tech Stack & Arquitectura
+### Pilar 2: Tech Stack, Arquitectura & Suite de Testing
 - **Frontend / UI**: Framework, librería de componentes, motor de estilos, gestión de estado.
 - **Backend / API**: Lenguaje, framework de servidor, patrón de arquitectura (Clean Architecture, Modular Monolith, Hexagonal).
 - **Base de Datos & Persistencia**: Motor de base de datos (PostgreSQL, Supabase, SQLite, Mongo), ORM / Query Builder, estrategia de migraciones.
 - **Diseño Creativo & UX/UI**: Paleta de colores, tipografías, principios de diseño, diseño responsive y accesibilidad.
+- **Ecosistema de Testing (Elección Autónoma de la IA)**:
+  - La IA evaluará el stack elegido y seleccionará autónomamente la combinación más eficiente, moderna y rápida de herramientas para:
+    - **Caja Negra / Aceptación (BDD & E2E / API)**: Herramientas óptimas según el tipo de app (ej. Playwright, Cypress, Supertest, Vitest E2E o Cucumber).
+    - **Caja Blanca / Estructural (Unit & Integration TDD)**: Runner nativo y rápido (ej. Vitest, Jest, PyTest, Go test) con reporte de cobertura de ramas (Branch Coverage).
 
 ### Pilar 3: Roadmap & Decisiones de Infraestructura
 - **Entorno de Contenedores**: ¿Se utilizará Docker / Docker Compose para desarrollo local y producción?
@@ -37,16 +41,21 @@ Cuando el usuario invoque este workflow (`/sdd-constitution-trial`):
 - **Estrategia Git y Ramas**: Convención de commits (Conventional Commits: `feat:`, `fix:`, `chore:`), flujos de ramas (`main`, `develop`, feature branches) y política de Pull Requests.
 - **Milestones del Roadmap**: Fases iniciales de entrega (Fase 1: MVP Core, Fase 2: Integraciones, Fase 3: Hardening y Despliegue).
 
-### Pilar 4: Principios Innegociables (Core Principles)
+### Pilar 4: Principios Innegociables (Core Principles & Quality Gates)
 - **Principio 1 (Spec-First)**: Ninguna línea de código de producción se escribe sin su correspondiente especificación aprobada en `docs/specs/`.
-- **Principio 2 (Validación Dual)**: Cada feature debe demostrar el cumplimiento de los tests unitarios y la satisfacción de los escenarios Gherkin.
+- **Principio 2 (Validación Dual Obligatoria)**:
+  - **Pruebas de Caja Blanca (White-Box)**: Todo servicio, cálculo o algoritmo de dominio debe tener tests unitarios que verifiquen branches, condiciones de borde (`edge cases`) y excepciones internas con cobertura demostrable.
+  - **Pruebas de Caja Negra (Black-Box)**: Todo feature debe validar los escenarios de aceptación BDD (Gherkin) simulando el comportamiento observable por el cliente/usuario desde afuera, sin acoplarse a la implementación interna.
+  - *Regla Inviolable*: Ninguna tarea o feature se considera terminado (`DONE`) si no supera simultáneamente ambas caras de la validación dual.
 - **Principio 3 (Seguridad y Privacidad)**: Validación estricta de entradas en los bordes del sistema (Zero Trust).
 - **Principio 4 (Idempotencia y Transaccionalidad)**: Mutaciones de datos seguras y recuperables ante fallos.
 
 ### Pilar 5: Procedimientos Operativos (Comandos Oficiales)
 Definición de los scripts estándar que el asistente debe usar para interactuar con el proyecto:
 - Levantar entorno local / dev: `npm run dev` / `docker compose up`
-- Ejecutar tests: `npm test` / `pytest`
+- Ejecutar tests de Caja Blanca (Unit): `npm run test:unit`
+- Ejecutar tests de Caja Negra (E2E / Aceptación): `npm run test:e2e` / `npm run test:spec`
+- Suite completa con cobertura: `npm test`
 - Linters y formato: `npm run lint` / `npm run format`
 - Migraciones de base de datos: `npm run db:migrate`
 
@@ -70,11 +79,14 @@ El asistente estructurará el archivo final con este esquema Markdown:
 
 ---
 
-## 2. Tech Stack y Arquitectura
+## 2. Tech Stack, Arquitectura y Suite de Testing
 - **Frontend**: [Detalles de UI]
 - **Backend / Servicios**: [Detalles de servidor]
 - **Persistencia**: [Base de datos y ORM]
 - **Diseño y Estética**: [Reglas de UX/UI]
+- **Suite de Testing (Selección Autónoma de la IA)**:
+  - **Caja Negra / Aceptación (BDD & E2E)**: [Herramienta seleccionada, ej. Playwright / Supertest]
+  - **Caja Blanca / Estructural (Unit TDD)**: [Runner seleccionado, ej. Vitest / Jest / PyTest]
 
 ---
 
@@ -87,16 +99,20 @@ El asistente estructurará el archivo final con este esquema Markdown:
 ---
 
 ## 4. Principios Innegociables
-1. [Principio 1]
-2. [Principio 2]
-3. [Principio 3]
+1. **Spec-First**: Todo código responde a una especificación formal en `docs/specs/`.
+2. **Validación Dual Obligatoria**: Superar simultáneamente los tests de Caja Blanca (unitarios) y los de Caja Negra (Gherkin BDD).
+3. **Seguridad y Privacidad**: Validación estricta de inputs (Zero Trust).
+4. **Idempotencia y Transaccionalidad**: Mutaciones seguras sin estados inconsistentes.
 
 ---
 
 ## 5. Comandos Oficiales del Proyecto
 | Acción | Comando |
 | :--- | :--- |
-| Levantar Dev | `...` |
-| Ejecutar Tests | `...` |
+| Levantar Entorno Dev | `...` |
+| Tests Caja Blanca (Unit) | `npm run test:unit` |
+| Tests Caja Negra (E2E / BDD) | `npm run test:e2e` |
+| Suite Completa & Cobertura | `npm test` |
 | Formatear / Lint | `...` |
+| Migraciones DB | `...` |
 ```
