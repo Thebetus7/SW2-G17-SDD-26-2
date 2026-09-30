@@ -1,52 +1,31 @@
-# SDD Universal Workflows & Multi-IDE Installer
+# SDD Universal del GRUPO 17 SW2-26-2
 
-Herramienta de distribución, instalación instantánea y orquestación de flujos de trabajo **Spec-Driven Development (SDD)** para los principales entornos y agentes de IA (**Antigravity**, **Cursor**, **VS Code / Copilot** y **OpenCode / Continue**).
+Herramienta de distribución, instalación instantánea y orquestación de flujos de trabajo **Spec-Driven Development (SDD)**.
 
-Permite mantener una **única fuente de verdad** (Single Source of Truth) en plantillas Markdown canónicas y desplegarlas automáticamente con las rutas, extensiones y metadatos requeridos por cada IDE mediante un simple comando `curl | bash` o PowerShell.
+> _"Creé este framework para aplicar Spec-Driven Development (SDD) en cada uno de nuestros proyectos de ahora en adelante. Adoptar esta metodología no solo consolida las mejores prácticas de la industria, sino que representa el auténtico futuro de la programación."_
 
+## IDEs Disponibles
+
+- **Antigravity**
+- **Cursor**
+- **VS Code / Copilot**
+- **OpenCode / Continue**
 ---
-
-## ⚡ Instalación Rápida (One-Liner)
+## ⚡ Instalación Rápida
 
 Abre la terminal en la raíz del proyecto donde quieras habilitar la metodología SDD y ejecuta:
 
 ### Linux / macOS / Windows Git Bash:
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Thebetus7/SW2-G17-SDD-26-2/main/install.sh | bash
 ```
 
-### Windows (PowerShell nativo):
+### Windows (PowerShell):
+
 ```powershell
 irm https://raw.githubusercontent.com/Thebetus7/SW2-G17-SDD-26-2/main/install.ps1 | iex
 ```
-
-El script desplegará un menú interactivo en consola con **navegación por flechas (`↑` / `↓`) y confirmación con `Enter`**:
-
-```text
-==========================================================
-    🚀 SDD Workflows Installer (Spec-Driven Dev)
-==========================================================
-
-Usa las flechas [↑/↓] para moverte y presiona [Enter] para elegir:
-
-  ❯ Antigravity          (.agents/workflows/ y .agents/skills/)
-    Cursor               (.cursor/commands/, rules/ y .cursorrules)
-    OpenCode / Continue  (.continue/prompts/ y rules/)
-    VS Code / Copilot    (.github/skills/, prompts/ y copilot-instructions.md)
-    Todos los anteriores
-```
-
----
-
-## 📂 Adaptación y Compatibilidad por Entorno
-
-| Entorno / IDE | Ubicaciones Generadas | Mecanismo de Invocación |
-| :--- | :--- | :--- |
-| **Antigravity** | • `.agents/skills/<nombre>/SKILL.md`<br>• `.agents/workflows/<nombre>.md` | Comandos slash directos en el chat (`/sdd-init`, etc.) o activación por nombre de Skill. |
-| **Cursor** | • `.cursor/commands/<nombre>.md`<br>• `.cursor/rules/<nombre>.mdc`<br>• `.cursorrules` (archivo maestro en raíz) | Al escribir `/` en el chat de Cursor aparecen los comandos nativos de autocompletado y reglas contextuales. |
-| **VS Code (GitHub Copilot)** | • `.github/skills/<nombre>/SKILL.md`<br>• `.github/prompts/<nombre>.prompt.md`<br>• `.github/copilot-instructions.md` | Soporte nativo de *Agent Skills* (`/skills`), *Prompt Files* reutilizables en Copilot Chat e instrucciones maestras de repositorio. |
-| **OpenCode / Continue** | • `.continue/prompts/<nombre>.prompt`<br>• `.continue/rules/<nombre>.md` | Comandos slash directos en el panel de Continue con interpolación de variables `{{{ input }}}`. |
-
 ---
 
 ## 🏛️ Estructura Documental en tu Proyecto (`docs/`)
@@ -72,38 +51,10 @@ Una vez instalado, el desarrollo bajo SDD organiza la documentación en carpetas
 
 ---
 
-## 🔄 El Ciclo de Vida Formal SDD (8 Fases)
-
-```mermaid
-flowchart TD
-    subgraph Inicializacion ["Fase Inicial"]
-        F0["0. /sdd-init\n(Reglas del juego y AGENTS.md)"] --> F1["1. /sdd-constitution-trial\n(Entrevista: misión, stack, roadmap en docs/constitution.md)"]
-    end
-
-    subgraph Especificacion ["Fase de Especificación"]
-        F1 --> F2["2. /sdd-spec-high o /sdd-spec-low\n(Crea docs/specs/XX/spec.md)"]
-        F2 --> F3["3. /sdd-spec-clarify\n(QA: resuelve huecos y ambigüedades en spec.md)"]
-    end
-
-    subgraph Planificacion ["Fase de Planificación y Tareas"]
-        F3 --> F4["4. /sdd-planning\n(Diseño técnico y Slices en docs/specs/XX/plan.md)"]
-        F4 --> F5["5. /sdd-task\n(Checklist atómico TDD en docs/specs/XX/tasks.md)"]
-    end
-
-    subgraph Ejecucion ["Fase de Ejecución y Entrega"]
-        F5 --> F6["6. /sdd-execution\n(Ejecuta tests y código en src/ con validación dual)"]
-    end
-
-    subgraph Iteracion ["Ciclo de Iteración Anclada"]
-        F6 -.->|Cambio de requerimiento| F7["7. /sdd-spec-anchored\n(-spec, -plan, -task:\nActualiza spec, adapta plan y suma tareas)"]
-        F7 --> F8["8. /sdd-execution\n(Re-ejecuta las nuevas tareas validadas)"]
-    end
-```
-
 ### Detalle de los Comandos Incluidos:
 
 1. **`/sdd-init`**: Orquestador metodológico. Configura la precedencia de carpetas, jerarquía de verdad y genera el archivo maestro `AGENTS.md`.
-2. **`/sdd-constitution-trial`**: Entrevista guiada interactiva (*Grill-Me*). Pregunta todo lo necesario y redacta `docs/constitution.md` con la misión, tech stack, roadmap (Docker, `.env`, Git), estándares de código y suite de testing.
+2. **`/sdd-constitution-trial`**: Entrevista guiada interactiva (_Grill-Me_). Pregunta todo lo necesario y redacta `docs/constitution.md` con la misión, tech stack, roadmap (Docker, `.env`, Git), estándares de código y suite de testing.
 3. **`/sdd-constitution`**: Plantilla canónica directa para redactar o consultar la constitución del proyecto.
 4. **`/sdd-spec-high`**: Especificación formal exhaustiva con sintaxis EARS, escenarios Gherkin BDD y contratos de interfaces tipados en `docs/specs/XX/spec.md`.
 5. **`/sdd-spec-low`**: Especificación ágil y concisa para tareas puntuales o de menor complejidad.
@@ -111,15 +62,134 @@ flowchart TD
 7. **`/sdd-planning`**: Plan técnico de arquitectura, diagramas de secuencia, invariantes y partición en Vertical Slices en `docs/specs/XX/plan.md`.
 8. **`/sdd-task`**: Desglose en checklist atómico secuenciado con ciclo TDD (Red-Green-Refactor) en `docs/specs/XX/tasks.md`.
 9. **`/sdd-execution`**: Motor de ejecución paso a paso del checklist bajo **Validación Dual** obligatoria (Tests de Caja Blanca + Tests de Caja Negra).
-10. **`/sdd-spec-anchored`** *(y variantes `-spec`, `-plan`, `-task`)*: Evolución e iteración anclada sobre specs existentes: actualiza el `spec.md`, adapta el `plan.md` y suma las nuevas tareas a `tasks.md` manteniendo el historial intacto.
+10. **`/sdd-spec-anchored`** _(y variantes `-spec`, `-plan`, `-task`)_: Evolución e iteración anclada sobre specs existentes: actualiza el `spec.md`, adapta el `plan.md` y suma las nuevas tareas a `tasks.md` manteniendo el historial intacto.
 
 ---
 
-## ⚖️ Principio Innegociable de Validación Dual
+## 🛠️ Guía Paso a Paso de Comandos SDD
 
-La metodología prohíbe dar una tarea por completada sin superar ambas caras de la validación:
-- **Caja Blanca (White-Box)**: Tests unitarios y de integración estructurales que validan branches, cálculos y manejo de errores internos con cobertura demostrable.
-- **Caja Negra (Black-Box)**: Tests de aceptación BDD (Gherkin) que validan el comportamiento observable por el cliente/usuario desde el exterior.
+### 1. `/sdd-init`: Inicialización
+
+> **Punto de partida obligatorio:** Este es el **primer comando indispensable** que se debe ejecutar en cualquier proyecto para activar y calibrar la metodología SDD.
+
+#### Modo de uso:
+
+```text
+/sdd-init [sin incluir ningun contexto]
+```
+
+#### ¿Por qué es fundamental?
+Sin `/sdd-init`, No tiene contexto, ni forma de como deberia entender el Enfoque de desarrollo SDD. Este comando genera y mantiene el archivo maestro **`AGENTS.md`** en la raíz del proyecto, el cual es el documento esencial que rige todo el ciclo de desarrollo:
+
+- **Reglas del juego y contexto maestro:** Define explícitamente el rol del agente de IA, las restricciones de arquitectura y las directivas de comportamiento.
+- **Jerarquía de verdad innegociable:** Establece la precedencia estricta donde la especificación manda sobre el código (`Constitución` ➔ `Spec` ➔ `Plan` ➔ `Tasks` ➔ `Código y Tests`).
+- **Estandarización de rutas:** Fija la estructura física canónica de directorios (`docs/specs/XX/`, `docs/constitution.md`, `src/`).
+
+### 2. `/sdd-constitution-trial`: Constitución del Proyecto
+
+> **Fundación del proyecto:** Entrevista interactiva guiada (_Grill-Me_) para definir la misión, stack técnico, roadmap y principios innegociables antes de programar.
+
+#### Modo de uso:
+
+```text
+/sdd-constitution-trial [opcional: breve descripción o idea general de tu proyecto]
+```
+
+#### ¿Por qué es fundamental?
+Sin `/sdd-constitution-trial`, el proyecto carece de una base técnica sólida, provocando que la IA asuma stacks, patrones o alcances no deseados. Este comando redacta el documento supremo **`docs/constitution.md`**, el cual establece:
+
+- **Misión y límites claros:** Define el propósito del software, términos clave del negocio y qué queda estrictamente fuera de alcance (_Out of Scope_).
+- **Stack técnico y suite de testing:** Fija las tecnologías oficiales (frontend, backend, base de datos, linters) y la estrategia de Validación Dual (Caja Blanca + Caja Negra).
+- **Roadmap e infraestructura:** Acuerda la configuración de Docker, gestión de variables de entorno (`.env`), flujos de Git y los hitos de entrega.
+
+### 3. `/sdd-spec-high`: Especificación Funcional Formal (Alta Rigurosidad)
+
+> **Diseño de requerimientos:** Entrevista técnica estructurada (_Grill-Me_) para definir el comportamiento observable de un módulo o feature sin escribir código prematuro.
+
+#### Modo de uso:
+
+```text
+/sdd-spec-high [descripción, idea o requerimiento del módulo a construir]
+```
+
+#### ¿Por qué es fundamental?
+Sin `/sdd-spec-high`, el desarrollo cae en la trampa de programar sin un contrato funcional claro, derivando en retrabajo, supuestos erróneos y falta de criterios de aceptación medibles. Este comando genera el documento **`docs/specs/XX-nombre/spec.md`**, el cual establece:
+
+- **Historias de Usuario (HU):** Modela el valor de negocio y los roles de usuario involucrados (`HU-01`, etc.).
+- **Requerimientos EARS (RF):** Redacta requisitos funcionales inequívocos bajo la sintaxis formal EARS (Event-Driven, State-Driven, Ubiquitous, etc.).
+- **Criterios de Aceptación Gherkin (SC):** Escenarios BDD formales (`Dado / Cuando / Entonces`) para *Happy Path* y casos de borde (*Edge Cases*).
+- **Principio de Caja Negra:** Modela estrictamente el **QUÉ** y los contratos de datos funcionales (entradas y salidas), aislando por completo la lógica interna de implementación.
+
+### 4. `/sdd-spec-clarify`: Auditoría y Refinamiento Funcional (QA Gate)
+
+> **Filtro de calidad funcional:** Audita exhaustivamente el `spec.md` en busca de ambigüedades, vacíos de lógica o casos de borde antes de avanzar a la arquitectura.
+
+#### Modo de uso:
+
+```text
+/sdd-spec-clarify [opcional: prefijo del módulo, ej. 01. o vacío para auditar el último spec]
+```
+
+#### ¿Por qué es fundamental?
+Sin `/sdd-spec-clarify`, los huecos conceptuales, suposiciones no validadas y casos de borde olvidados pasan directamente al código, multiplicando el costo de corregirlos después. Este comando audita y actualiza **`docs/specs/XX-nombre/spec.md`**, garantizando:
+
+- **Detección de ambigüedades:** Identifica términos imprecisos o no testeables y entrevista al usuario (_Grill-Me_) para resolverlos de inmediato.
+- **Trazabilidad estricta:** Comprueba la coherencia jerárquica de identificadores (`HU-XX` ➔ `RF-XX.Y` ➔ `SC-XX.Y.Z`).
+- **Cobertura de casos de borde:** Asegura que cada requisito cuente con escenarios BDD en Gherkin tanto para el flujo exitoso (_Happy Path_) como para fallos y límites (_Edge Cases_).
+- **Cero código prematuro:** Verifica que la especificación se mantenga como caja negra pura sin contaminarse con detalles de implementación o persistencia.
+
+### 5. `/sdd-planning`: Plan Técnico y Diseño de Arquitectura
+
+> **Diseño del CÓMO técnico:** Transforma los requerimientos funcionales en una solución de ingeniería robusta, modelando capas, diagramas, contratos tipados y partición en _Vertical Slices_.
+
+#### Modo de uso:
+
+```text
+/sdd-planning [opcional: pedir /grill-me para refinar el plan]
+```
+
+#### ¿Por qué es fundamental?
+Sin `/sdd-planning`, el equipo pasa directo de la idea al código sin definir arquitectura ni contratos de datos, provocando deuda técnica, tipos inseguros (`any`) y acoplamiento descontrolado. Este comando genera el documento **`docs/specs/XX-nombre/plan.md`**, el cual establece:
+
+- **Arquitectura y flujo técnico:** Modela las capas del sistema (presentación, casos de uso, dominio, repositorios) y diseña diagramas de secuencia en Mermaid.
+- **Contratos de datos tipados:** Traduce los datos funcionales a interfaces, DTOs y validadores en tiempo de ejecución (Zod, Pydantic, etc.) sin tipos ambiguos.
+- **Modelo de persistencia:** Especifica esquemas de base de datos, relaciones, índices y estrategias de migración.
+- **División en Vertical Slices:** Descompone la funcionalidad en rebanadas verticales independientes y entregables que atraviesan el sistema de extremo a extremo.
+
+### 6. `/sdd-task`: Desglose Atómico de Tareas TDD
+
+> **Secuenciación de tareas:** Descompone el plan técnico en un checklist atómico, trazable y verificable bajo ciclo TDD (Red-Green-Refactor) y rebanadas verticales (_Vertical Slices_).
+
+#### Modo de uso:
+
+```text
+/sdd-task [no necesita contexto, la IA lo genera automáticamente]
+```
+
+#### ¿Por qué es fundamental?
+Sin `/sdd-task`, los desarrolladores y la IA abordan el desarrollo de forma monolítica o desordenada, dejando cabos sueltos e implementaciones a medias. Este comando genera el documento **`docs/specs/XX-nombre/tasks.md`**, el cual establece:
+
+- **Ciclo TDD explícito:** Cada ítem declara su fase precisa (`[RED: Whitebox]`, `[GREEN: Impl]`, `[REFACTOR]`, `[RED: Blackbox]`, `[GREEN: Blackbox Pass]`).
+- **Trazabilidad directa:** Cada tarea enlaza formalmente al requisito (`RF-XX.Y`) y escenario Gherkin (`SC-XX.Y.Z`) que resuelve.
+- **Vertical Slices cerrados:** Agrupa el trabajo en entregables completos e independientes que garantizan que ningún flujo quede a medio implementar.
+- **Auditoría física de avance:** Establece un checklist tangible (`[ ]` / `[x]`) para monitorear el progreso exacto.
+
+### 7. `/sdd-execution`: Ejecución Paso a Paso y Validación Dual
+
+> **Implementación física guiada:** Motor de desarrollo que procesa las tareas de `tasks.md`, escribe el código en `src/`, ejecuta los tests en consola y asegura la Validación Dual.
+
+#### Modo de uso:
+
+```text
+/sdd-execution [establecer el número de tareas a ejecutar o presionar enter para ejecutar todas]
+```
+
+#### ¿Por qué es fundamental?
+Sin `/sdd-execution`, la IA suele escribir código sin ejecutar pruebas, asumir que todo compila o dar por cerrado el trabajo sin evidencia. Este comando actúa como el motor de ejecución riguroso que:
+
+- **Aplica TDD real:** Crea primero el test que falla (`RED`), genera el código mínimo para ponerlo en verde (`GREEN`), y aplica mejoras y linters (`REFACTOR`).
+- **Validación Dual obligatoria:** Ninguna tarea o slice se da por concluido si no supera simultáneamente las pruebas de Caja Blanca (unitarias/estructurales) y Caja Negra (aceptación BDD Gherkin).
+- **Cierre físico verificable:** Ejecuta los comandos en la terminal y solo tras validar el resultado en verde marca físicamente la tarea (`[x]`) en `tasks.md`.
 
 ---
 
