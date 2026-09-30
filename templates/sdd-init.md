@@ -24,7 +24,25 @@ flowchart TD
 
 ---
 
-## 2. Principios de Agilidad y Criterio del Copiloto
+## 2. Regla Innegociable de Portabilidad y Rutas Relativas
+
+Para garantizar que el repositorio sea 100% portable y funcione idénticamente en cualquier máquina, entorno o sistema operativo donde se clone:
+
+> [!CAUTION]
+> **PROHIBICIÓN ESTRICTA DE RUTAS ABSOLUTAS Y ESQUEMAS `file:///`**:
+> 1. **Cero Rutas Absolutas**: Queda estrictamente prohibido incrustar rutas absolutas del host del desarrollador (`C:\...`, `/home/...`, `/Users/...`, etc.) en la documentación (`AGENTS.md`, `spec.md`, `plan.md`, `tasks.md`, `constitution.md`) o en el código fuente.
+> 2. **Cero Esquemas `file:///`**: Ningún enlace Markdown debe generarse con el esquema `file:///` apuntando al disco local.
+> 3. **Rutas Estrictamente Relativas al Proyecto**: Todas las referencias deben expresarse de manera relativa a la raíz del repositorio:
+>    - ❌ **Incorrecto**: `[docs/constitution.md](file:///c:/EDBERTO/ULTIMO/SW2/PARCIAL1/x/docs/constitution.md)`
+>    - ❌ **Incorrecto**: `c:/EDBERTO/ULTIMO/SW2/PARCIAL1/proyecto/docs/specs/`
+>    - ✅ **Correcto**: `[docs/constitution.md](docs/constitution.md)` o simplemente `docs/constitution.md`
+>    - ✅ **Correcto**: `[docs/specs/](docs/specs/)` o `docs/specs/XX-nombre/spec.md`
+>    - ✅ **Correcto**: `src/`, `lib/`, `tests/`
+> 4. **Aislamiento de Contexto Local**: Ninguna variable, ruta o identificador que pertenezca exclusivamente a la máquina local actual debe ser vertida en los artefactos del proyecto.
+
+---
+
+## 3. Principios de Agilidad y Criterio del Copiloto
 
 Para evitar la parálisis por sobre-documentación y garantizar soluciones robustas en tiempo de ejecución:
 
@@ -39,11 +57,11 @@ Para evitar la parálisis por sobre-documentación y garantizar soluciones robus
 
 ---
 
-## 3. Estructura Canónica de Directorios del Proyecto
+## 4. Estructura Canónica de Directorios del Proyecto
 
 ```text
 📁 <RAIZ-DEL-PROYECTO>/
-├── 📄 AGENTS.md                        <-- Guía de contexto, comandos y reglas maestras
+├── 📄 AGENTS.md                        <-- Guía de contexto, comandos y reglas maestras (rutas relativas)
 ├── 📁 docs/
 │   ├── 📄 constitution.md              <-- Constitución del proyecto (misión, stack, roadmap)
 │   └── 📁 specs/
@@ -61,11 +79,11 @@ Para evitar la parálisis por sobre-documentación y garantizar soluciones robus
 
 ---
 
-## 4. Protocolo de Ciclo de Vida Formal SDD
+## 5. Protocolo de Ciclo de Vida Formal SDD
 
 | Fase / Paso | Comando / Workflow | Entrada Requerida | Salida / Artefacto | Dinámica de Trabajo |
 | :--- | :--- | :--- | :--- | :--- |
-| **0. Inicializar** | `/sdd-init` | Reglas metodológicas | `AGENTS.md` (raíz) | Establece las reglas maestras, jerarquía y comandos operativos. |
+| **0. Inicializar** | `/sdd-init` | Reglas metodológicas | `AGENTS.md` (raíz) | Establece las reglas maestras, jerarquía con rutas relativas y comandos operativos. |
 | **1. Constitución** | `/sdd-constitution-trial` | Visión del usuario | `docs/constitution.md` | Propuesta proactiva de la IA con stack, arquitectura y principios senior. |
 | **2. Especificar** | `/sdd-spec-high`<br>o `/sdd-spec-low` | Requerimiento de negocio | `docs/specs/XX/spec.md` | Especificación ágil de negocio (EARS + Gherkin) sin sobre-especificación UI. |
 | **3. Clarificar** | `/sdd-spec-clarify` | Último `spec.md` | `docs/specs/XX/spec.md` refinado | QA gate: resuelve dudas lógicas o vacíos de negocio reales (sin pedantería cosmética). |
@@ -81,7 +99,7 @@ Para evitar la parálisis por sobre-documentación y garantizar soluciones robus
 
 ---
 
-## 5. Instrucción Operativa para el Asistente: Generación de `AGENTS.md`
+## 6. Instrucción Operativa para el Asistente: Generación de `AGENTS.md`
 
 Cuando el usuario invoque este workflow (`/sdd-init`):
 
@@ -90,7 +108,9 @@ Cuando el usuario invoque este workflow (`/sdd-init`):
    - Si existen, audita qué secciones faltan y preserva los acuerdos previos.
 2. **Generación o Actualización de `AGENTS.md`**:
    - Crea o actualiza `AGENTS.md` en la raíz asegurando incluir:
-     - **Jerarquía de verdad y precedencia**: Enlace a `docs/constitution.md` y `docs/specs/`.
+     - **Jerarquía de verdad con enlaces estrictamente relativos**:
+       - `[docs/constitution.md](docs/constitution.md)` (nunca con `file:///` ni rutas absolutas).
+       - `[docs/specs/](docs/specs/)`.
      - **Mandato de Copiloto Técnico Senior**: Autonomía para orquestar persistencia, migraciones y ciclo de vida por defecto.
      - **Regla Antiatrapamiento de UI**: Enfoque funcional sin sobre-especificación cosmética.
      - **Estándares de Codificación**: Tipado estricto, manejo explícito de errores y linters.
