@@ -27,8 +27,22 @@ echo "    🚀 SDD Workflows Installer (Spec-Driven Dev)          "
 echo "=========================================================="
 echo -e "${NC}"
 
-# Lista de plantillas a instalar
-WORKFLOWS=("sdd-init.md" "sdd-constitution-trial.md" "spec-init.md" "plan.md" "task-verify.md")
+# Lista completa de plantillas SDD del ciclo de vida formal
+WORKFLOWS=(
+    "sdd-init.md"
+    "sdd-constitution-trial.md"
+    "sdd-constitution.md"
+    "sdd-spec-high.md"
+    "sdd-spec-low.md"
+    "sdd-spec-clarify.md"
+    "sdd-planning.md"
+    "sdd-task.md"
+    "sdd-execution.md"
+    "sdd-spec-anchored.md"
+    "sdd-spec-anchored-spec.md"
+    "sdd-spec-anchored-plan.md"
+    "sdd-spec-anchored-task.md"
+)
 
 # Función para obtener contenido de la plantilla (vía web o local si existe)
 obtener_plantilla() {

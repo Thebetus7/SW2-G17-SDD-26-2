@@ -47,11 +47,18 @@ Selecciona el entorno/IDE donde deseas instalar los comandos SDD:
 
 ---
 
-## 📦 Flujos SDD Incluidos
+## 📦 Flujos SDD Incluidos (Ciclo de Vida Formal de 8 Fases)
 
-1. **`/spec-init`** (`templates/spec-init.md`): Redacción de requerimientos funcionales formales con sintaxis EARS, escenarios Gherkin BDD y contratos de interfaces.
-2. **`/plan`** (`templates/plan.md`): Planificación técnica, diagramas de secuencia Mermaid y partición en Vertical Slices.
-3. **`/task-verify`** (`templates/task-verify.md`): Ciclo TDD Red-Green-Refactor y matriz de validación dual (código + especificación).
+1. **`/sdd-init`**: Orquestador metodológico. Configura la precedencia de carpetas, jerarquía de verdad y genera `AGENTS.md`.
+2. **`/sdd-constitution-trial`**: Entrevista interactiva (Grill-Me) para acordar misión, stack, suite de testing (Caja Negra y Blanca) y roadmap en `docs/constitution.md`.
+3. **`/sdd-constitution`**: Plantilla canónica directa para redactar o consultar la constitución.
+4. **`/sdd-spec-high`**: Especificación formal exhaustiva con EARS, Gherkin y contratos de datos tipados en `docs/specs/XX/spec.md`.
+5. **`/sdd-spec-low`**: Especificación ágil y concisa para tareas puntuales o de menor complejidad.
+6. **`/sdd-spec-clarify`**: Filtro de QA. Audita el último `spec.md`, detecta ambigüedades y las resuelve con el usuario antes de planificar.
+7. **`/sdd-planning`**: Plan técnico de arquitectura, diagramas de secuencia e invariantes en `docs/specs/XX/plan.md`.
+8. **`/sdd-task`**: Desglose en checklist atómico secuenciado con ciclo TDD en `docs/specs/XX/tasks.md`.
+9. **`/sdd-execution`**: Motor de ejecución paso a paso del checklist bajo validación dual (Caja Blanca + Caja Negra).
+10. **`/sdd-spec-anchored`** *(y variantes `-spec`, `-plan`, `-task`)*: Evolución e iteración anclada sobre specs existentes manteniendo trazabilidad.
 
 ---
 
