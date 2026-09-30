@@ -1,0 +1,5 @@
+# Git ignore para herramientas generadas localmente
+.agents/
+.cursor/
+.continue/
+*.log
