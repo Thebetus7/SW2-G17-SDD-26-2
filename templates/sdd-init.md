@@ -80,6 +80,7 @@ Cuando el usuario invoque este workflow (`/sdd-init`):
 2. **Generación o Actualización de `AGENTS.md`**:
    - Si no existe `AGENTS.md`, créalo en la raíz del proyecto asegurando incluir:
      - **Regla de oro de precedencia**: Referencia directa a `docs/constitution.md` y `docs/specs/`.
-     - **Comandos del proyecto**: Scripts para levantar dev server, tests, linters, base de datos y migraciones.
+     - **Estándares de Codificación y Calidad**: Reglas de tipado estricto (sin `any`), linters/formateadores, manejo de errores tipado y nomenclatura obligatoria.
+     - **Comandos del proyecto**: Scripts para levantar dev server, tests unitarios, tests e2e, linters, typecheck y migraciones.
      - **Rutas de documentación**: Mapeo explícito a `docs/specs/`.
-     - **Invariantes operativas**: Prohibición de mocks en producción, validación dual y commit conventions.
+     - **Invariantes operativas**: Prohibición de mocks en producción, validación dual obligatoria y commit conventions.

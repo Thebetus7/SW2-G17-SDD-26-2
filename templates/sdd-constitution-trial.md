@@ -34,6 +34,12 @@ Cuando el usuario invoque este workflow (`/sdd-constitution-trial`):
   - La IA evaluará el stack elegido y seleccionará autónomamente la combinación más eficiente, moderna y rápida de herramientas para:
     - **Caja Negra / Aceptación (BDD & E2E / API)**: Herramientas óptimas según el tipo de app (ej. Playwright, Cypress, Supertest, Vitest E2E o Cucumber).
     - **Caja Blanca / Estructural (Unit & Integration TDD)**: Runner nativo y rápido (ej. Vitest, Jest, PyTest, Go test) con reporte de cobertura de ramas (Branch Coverage).
+- **Estándares de Codificación & Linters (Code Standards)**:
+  - **Tipado Estricto**: Prohibición explícita de tipos inseguros (`any` en TypeScript), validación de esquema en tiempo de ejecución (Zod, Pydantic, etc.).
+  - **Convenciones de Nomenclatura**: Nombres descriptivos y semánticos (`camelCase` para funciones/variables, `PascalCase` para clases/tipos/componentes, `kebab-case` para archivos y endpoints).
+  - **Formateo y Análisis Estático**: Herramientas seleccionadas por la IA (ESLint, Prettier, Biome, Ruff, Clippy).
+  - **Pureza y Determinismo**: Preferencia por funciones puras, inmutabilidad de datos y aislamiento estricto de efectos secundarios (*side effects*).
+  - **Manejo de Errores Tipado**: Prohibición de silenciar errores en bloques `catch` vacíos; uso de errores de dominio explícitos o patrones de resultado (`Result<T, E>`).
 
 ### Pilar 3: Roadmap & Decisiones de Infraestructura
 - **Entorno de Contenedores**: ¿Se utilizará Docker / Docker Compose para desarrollo local y producción?
@@ -47,8 +53,9 @@ Cuando el usuario invoque este workflow (`/sdd-constitution-trial`):
   - **Pruebas de Caja Blanca (White-Box)**: Todo servicio, cálculo o algoritmo de dominio debe tener tests unitarios que verifiquen branches, condiciones de borde (`edge cases`) y excepciones internas con cobertura demostrable.
   - **Pruebas de Caja Negra (Black-Box)**: Todo feature debe validar los escenarios de aceptación BDD (Gherkin) simulando el comportamiento observable por el cliente/usuario desde afuera, sin acoplarse a la implementación interna.
   - *Regla Inviolable*: Ninguna tarea o feature se considera terminado (`DONE`) si no supera simultáneamente ambas caras de la validación dual.
-- **Principio 3 (Seguridad y Privacidad)**: Validación estricta de entradas en los bordes del sistema (Zero Trust).
-- **Principio 4 (Idempotencia y Transaccionalidad)**: Mutaciones de datos seguras y recuperables ante fallos.
+- **Principio 3 (Estándar de Calidad de Código)**: Código 100% libre de advertencias de linter, cero código comentado o muerto, tipado completo sin evasiones.
+- **Principio 4 (Seguridad y Privacidad)**: Validación estricta de entradas en los bordes del sistema (Zero Trust).
+- **Principio 5 (Idempotencia y Transaccionalidad)**: Mutaciones de datos seguras y recuperables ante fallos.
 
 ### Pilar 5: Procedimientos Operativos (Comandos Oficiales)
 Definición de los scripts estándar que el asistente debe usar para interactuar con el proyecto:
@@ -57,6 +64,7 @@ Definición de los scripts estándar que el asistente debe usar para interactuar
 - Ejecutar tests de Caja Negra (E2E / Aceptación): `npm run test:e2e` / `npm run test:spec`
 - Suite completa con cobertura: `npm test`
 - Linters y formato: `npm run lint` / `npm run format`
+- Type checking: `npm run typecheck`
 - Migraciones de base de datos: `npm run db:migrate`
 
 ---
@@ -87,6 +95,10 @@ El asistente estructurará el archivo final con este esquema Markdown:
 - **Suite de Testing (Selección Autónoma de la IA)**:
   - **Caja Negra / Aceptación (BDD & E2E)**: [Herramienta seleccionada, ej. Playwright / Supertest]
   - **Caja Blanca / Estructural (Unit TDD)**: [Runner seleccionado, ej. Vitest / Jest / PyTest]
+- **Estándares de Codificación y Linters**:
+  - **Tipado**: [Reglas de tipado estricto sin any]
+  - **Linters / Formateador**: [Herramientas acordadas con la IA]
+  - **Convenciones**: [Nomenclatura y manejo explícito de errores]
 
 ---
 
@@ -101,8 +113,9 @@ El asistente estructurará el archivo final con este esquema Markdown:
 ## 4. Principios Innegociables
 1. **Spec-First**: Todo código responde a una especificación formal en `docs/specs/`.
 2. **Validación Dual Obligatoria**: Superar simultáneamente los tests de Caja Blanca (unitarios) y los de Caja Negra (Gherkin BDD).
-3. **Seguridad y Privacidad**: Validación estricta de inputs (Zero Trust).
-4. **Idempotencia y Transaccionalidad**: Mutaciones seguras sin estados inconsistentes.
+3. **Calidad de Código**: Cero advertencias de linter, tipado seguro y código limpio sin código muerto.
+4. **Seguridad y Privacidad**: Validación estricta de inputs (Zero Trust).
+5. **Idempotencia y Transaccionalidad**: Mutaciones seguras sin estados inconsistentes.
 
 ---
 
