@@ -1,36 +1,39 @@
-# SDD-Spec-High: Especificación Funcional Ágil y Formal (SDD)
+# SDD-Spec-High: Especificación Funcional Ágil y Formal (Protocolo de 2 Tiempos)
 
-Este workflow guía al asistente de IA en la captura estructurada de requerimientos de negocio para redactar el archivo `docs/specs/XX-nombre/spec.md`, anclado a la visión y flujos macro definidos en la constitución.
+Este workflow guía al asistente de IA en la captura estructurada de requerimientos de negocio para redactar el archivo `docs/specs/XX-nombre/spec.md`, priorizando **primero el cuestionamiento de cabos sueltos mediante preguntas clave con opciones recomendadas**, y luego asistiendo como copiloto técnico.
 
-> **Principio de Caja Negra y Regla Antiatrapamiento de UI**:
-> Esta especificación modela estrictamente el **comportamiento observable y las reglas de negocio**. 
-> - **Sin código interno**: No incluye clases, DTOs, frameworks ni consultas SQL (pertenecen a `sdd-planning`).
-> - **Sin sobre-especificación de UI**: Queda prohibido detallar estilos visuales, colores, paddings exactos o secuencias innecesarias de micro-diálogos. La IA asume el diseño ergonómico y las conexiones funcionales de la UI.
-> - **Invariante de Entradas Co-Dependientes**: Toda entrada que haga referencia a otra entidad debe prever su comportamiento ante catálogo vacío (opción por defecto o "Sin asignar") y su posibilidad de selección o creación al vuelo.
+> **Regla de Oro: Primero Cuestionar, Luego Redactar**:
+> La IA no debe asumir reglas de negocio, validaciones límite o excepciones no especificadas. Si el requerimiento tiene cabos sueltos o alternativas de comportamiento, la IA debe formular primero un mínimo de preguntas con opciones sugeridas antes de redactar la especificación.
 
 ---
 
-## 1. Protocolo de Ejecución del Asistente
+## 1. Protocolo Operativo en 2 Tiempos
 
 Cuando el usuario invoque este workflow (`/sdd-spec-high`):
 
+### TIEMPO 1: Análisis Crítico y Cuestionamiento de Cabos Sueltos (Grill-Me de Requerimientos)
 1. **Lectura Contextual de la Constitución**:
-   - Lee `docs/constitution.md`, prestando especial atención a:
-     - El **Flujo de Valor Global y Recorridos E2E** (Sección 2 de la constitución).
-     - La **Topología de Persistencia e Integraciones** (Sección 4 de la constitución).
-     - El **Principio de Entidades Co-Dependientes** (Sección 6 de la constitución).
-   - Identifica en qué tramo del flujo macro encaja el módulo a especificar para garantizar continuidad técnica.
-2. **Determinación del Siguiente Módulo (`docs/specs/XX-nombre/`)**:
-   - Escanea `docs/specs/` y propone automáticamente el siguiente número consecutivo con un slug representativo (ej. `docs/specs/02-catalogo-productos/`).
-3. **Entrevista Ágil de Requerimientos**:
-   - La IA identifica los objetivos de negocio y plantea preguntas breves solo para clarificar:
-     - Actores y permisos clave del módulo.
-     - Reglas de negocio e invariantes (validaciones, cálculos, restricciones).
-     - Relaciones con otras entidades y comportamiento ante catálogo vacío (*Zero-State Invariant*).
-     - Entradas requeridas y salidas observables.
-     - Casos de error o límites que el negocio debe controlar.
-4. **Redacción del Artefacto**:
-   - Genera el archivo `docs/specs/XX-nombre/spec.md` siguiendo la plantilla oficial.
+   - Lee `docs/constitution.md` (Sección 2: Flujo Global, Sección 4: Topología y Sección 6: Principios).
+   - Identifica el número del siguiente módulo (ej. `docs/specs/02-catalogo/`).
+2. **Detección de Cabos Sueltos Funcionales**:
+   - La IA analiza el requerimiento del usuario y detecta qué reglas críticas no están definidas:
+     - *Reglas de validación y límites*: ¿Cuáles son los rangos numéricos, longitudes de texto o formatos requeridos?
+     - *Entidades co-dependientes y estado vacío*: ¿Qué ocurre si la entidad de referencia está vacía? ¿Se permite opción neutra ("Sin asignar") o creación al vuelo?
+     - *Manejo de errores observables*: ¿Qué mensaje o retroalimentación recibe el usuario ante un fallo?
+     - *Permisos y roles*: ¿Quién tiene autorización para ejecutar esta acción?
+3. **Formulación de Preguntas Mínimas con Opciones Recomendadas**:
+   - La IA formula un bloque conciso de preguntas directas (máximo 2 a 4) enfocadas exclusivamente en los cabos sueltos de negocio detectados.
+   - Cada pregunta debe incluir opciones de respuesta breves con una opción `(Recomendada)` fundamentada en buenas prácticas.
+   - La IA **se detiene y espera la respuesta del usuario** antes de escribir la spec.
+
+---
+
+### TIEMPO 2: Asistencia Proactiva del Copiloto Técnico
+Una vez que el usuario responde y los cabos sueltos quedan aclarados:
+1. **Modelado Formal y Trazable**:
+   - La IA traduce los acuerdos a Historias de Usuario (`HU-XX`), Requisitos Funcionales con sintaxis EARS (`RF-XX.Y`) y Criterios de Aceptación observables en Gherkin BDD (`SC-XX.Y.Z`).
+2. **Redacción del Artefacto**:
+   - Genera el archivo `docs/specs/XX-nombre/spec.md` siguiendo la plantilla oficial por secciones.
 
 ---
 
@@ -44,20 +47,16 @@ SECCIÓN 3: RF-XX.Y (Requisitos Funcionales: Sintaxis EARS)
 SECCIÓN 4: SC-XX.Y.Z (Criterios de Aceptación: Sintaxis Gherkin BDD)
 ```
 
-- **`HU-XX`**: Historia de Usuario.
-- **`RF-XX.Y`**: Requisito Funcional derivado con sintaxis EARS.
-- **`SC-XX.Y.Z`**: Escenario BDD en Gherkin (`SC-XX.Y.1` = Happy Path, `SC-XX.Y.2` = Edge Case / Catálogo Vacío / Error).
-
 ---
 
 ## 3. Patrones de Sintaxis EARS para Requisitos Funcionales
 
 Cada `RF-XX.Y` debe redactarse bajo uno de los patrones canónicos de EARS:
-- **Ubiquitous (Siempre Activo)**: *"El sistema deberá [comportamiento constante]"*.
-- **Event-Driven (Disparado por Evento)**: *"CUANDO [evento disparador], el sistema deberá [respuesta]"*.
-- **State-Driven (Condicionado por Estado)**: *"MIENTRAS [estado del sistema], el sistema deberá [comportamiento]"*.
-- **Optional Feature (Característica Opcional)**: *"DONDE [opción o feature habilitado], el sistema deberá [comportamiento]"*.
-- **Unwanted Behavior (Manejo de Errores / Límites / Estado Vacío)**: *"SI [condición anómala o catálogo vacío], ENTONCES el sistema deberá [acción de contención y valor por defecto]"*.
+- **Ubiquitous**: *"El sistema deberá [comportamiento constante]"*.
+- **Event-Driven**: *"CUANDO [evento disparador], el sistema deberá [respuesta]"*.
+- **State-Driven**: *"MIENTRAS [estado del sistema], el sistema deberá [comportamiento]"*.
+- **Optional Feature**: *"DONDE [opción o feature habilitado], el sistema deberá [comportamiento]"*.
+- **Unwanted Behavior**: *"SI [condición anómala o catálogo vacío], ENTONCES el sistema deberá [acción de contención y valor por defecto]"*.
 
 ---
 
@@ -90,7 +89,7 @@ Cada `RF-XX.Y` debe redactarse bajo uno de los patrones canónicos de EARS:
 ## 3. Requisitos Funcionales (RF con Sintaxis EARS)
 
 ### Requisitos de HU-01
-- **`RF-01.1` [Event-Driven]**: CUANDO el usuario solicita [acción], el sistema deberá [resultado].
+- **`RF-01.1` [Event-Driven]**: CUANDO el usuario solicita [acción], el sistema deberá [resultado observable].
 - **`RF-01.2` [Unwanted Behavior / Fallback]**: SI el catálogo de referencia no posee elementos registrados, ENTONCES el sistema deberá proveer una opción neutra o permitir la creación al vuelo sin bloquear la operación.
 
 ---

@@ -1,43 +1,44 @@
-# SDD-Planning: Plan Técnico de Arquitectura, Runtime e Implementación (SDD)
+# SDD-Planning: Plan Técnico de Arquitectura, Runtime e Implementación (Protocolo de 2 Tiempos)
 
-Este workflow analiza la especificación funcional aprobada (`docs/specs/XX-nombre/spec.md`) y la constitución del proyecto (`docs/constitution.md`) para estructurar la solución técnica formal en `docs/specs/XX-nombre/plan.md`.
+Este workflow analiza la especificación funcional aprobada (`docs/specs/XX-nombre/spec.md`) y la constitución del proyecto (`docs/constitution.md`) para estructurar la solución técnica en `docs/specs/XX-nombre/plan.md`, priorizando **primero el análisis técnico y el cuestionamiento de decisiones críticas con opciones recomendadas**, y luego asistiendo como copiloto técnico.
 
-> **Propósito Técnico**: 
-> Aterriza el **CÓMO**: arquitectura limpia, contratos de código estrictos, modelos de persistencia física, garantías de integridad relacional en runtime y división en *Vertical Slices*. No requiere entrevista obligatoria con el usuario; se genera directamente aplicando el criterio técnico Senior de la IA.
+> **Regla de Oro: Primero Cuestionar Decisiones Críticas, Luego Diseñar**:
+> La IA no debe asumir arbitrariamente políticas de borrado de datos, estrategias de migración o límites de timeouts de hardware/APIs sin consultar al usuario si existen alternativas viables. Formula un mínimo de preguntas con opciones claras y luego diseña el plan técnico.
 
 ---
 
-## 1. Resolución del Módulo a Planificar (`[XX.]`)
+## 1. Protocolo Operativo en 2 Tiempos
 
 Cuando el usuario invoque este workflow (`/sdd-planning`):
-1. **Con Argumento `[XX.]` o `[XX]`**: Localiza en `docs/specs/` la carpeta que coincida con ese identificador (ej. `docs/specs/01-auth/spec.md`).
-2. **Sin Argumento**: Selecciona automáticamente el último módulo disponible con `spec.md`.
+
+### TIEMPO 1: Análisis Técnico y Validación de Decisiones de Arquitectura (Grill-Me Técnico)
+1. **Lectura de Entrada**:
+   - Lee `docs/constitution.md` y `docs/specs/XX-nombre/spec.md`.
+2. **Detección de Cabos Sueltos Técnicos y Opciones Arquitectónicas**:
+   - La IA audita la especificación y detecta decisiones de arquitectura que requieren confirmación:
+     - *Políticas de persistencia y claves foráneas*: ¿Ante borrado del padre, se aplica `SET NULL`, `CASCADE` o `RESTRICT`?
+     - *Timeouts y fallbacks de servicios externos*: ¿Cuántos segundos de espera antes de degradar o fallar?
+     - *Evolución de esquema*: ¿Se incrementa `schemaVersion` y cómo se migran los datos existentes en dev?
+3. **Formulación de Preguntas Mínimas con Opciones Recomendadas**:
+   - La IA plantea un bloque mínimo de preguntas técnicas directas (máximo 2 a 3) enfocadas en esas decisiones críticas.
+   - Cada pregunta incluye opciones concretas destacando una opción `(Recomendada)` fundamentada en robustez.
+   - Si no existen ambigüedades técnicas y la arquitectura es directa y evidente, la IA notifica las decisiones que asumirá por estándar y avanza al Tiempo 2.
+   - Si hay dudas o alternativas, la IA **espera la confirmación del usuario**.
 
 ---
 
-## 2. Protocolo de Ejecución del Asistente
-
-El asistente ejecuta los siguientes pasos técnicos:
-
-1. **Lectura de Entrada**:
-   - Lee `docs/constitution.md` (stack tecnológico, flujos E2E, topología de datos y principios innegociables).
-   - Lee `docs/specs/XX-nombre/spec.md` (requerimientos de negocio, contratos de datos y criterios Gherkin).
-2. **Diseño de la Solución Técnica**:
-   - Modela la arquitectura en capas (UI/Presentación, Controladores/Estado, Casos de Uso/Servicios, Entidades de Dominio, Repositorios/Persistencia).
-   - Diseña el diagrama de secuencia técnico en Mermaid.
-   - Define contratos de código fuertemente tipados (DTOs, Entidades inmutables, Interfaces y Tipos de error).
-   - **Garantías de Runtime, Persistencia e Integridad del Grafo de Entidades**:
-     - Políticas de claves foráneas y prevención de huérfanos (`ON DELETE SET NULL / CASCADE / RESTRICT`).
-     - Arquitectura del selector tridimensional (existente, en caliente y estado neutro/vacío).
-     - Control de versiones de esquema (`schemaVersion`) y migraciones limpias en desarrollo.
-   - **Invariante de Flujo Cerrado**: asegura que todos los flujos CRUD queden completamente conectados sin estados ciegos.
-   - Divide la implementación en *Vertical Slices* ejecutables bajo TDD respetando el orden de dependencia topológica.
-3. **Generación del Artefacto**:
+### TIEMPO 2: Asistencia Proactiva del Copiloto Técnico Senior
+Una vez confirmadas las decisiones técnicas:
+1. **Diseño de la Solución**:
+   - Modela contratos tipados (DTOs, Entidades inmutables, Interfaces).
+   - Diseña el diagrama de secuencia Mermaid.
+   - Establece las garantías de runtime, integridad del grafo de entidades y el patrón del selector tridimensional.
+2. **Redacción del Artefacto**:
    - Escribe el archivo oficial `docs/specs/XX-nombre/plan.md`.
 
 ---
 
-## 3. Plantilla Oficial de Salida: `docs/specs/XX-nombre/plan.md`
+## 2. Plantilla Oficial de Salida: `docs/specs/XX-nombre/plan.md`
 
 ```markdown
 # Plan Técnico: [Nombre del Módulo o Feature]
@@ -102,7 +103,7 @@ sequenceDiagram
 ## 4. Garantías de Runtime, Persistencia e Integridad Relacional
 
 1. **Integridad del Grafo de Entidades y Claves Foráneas**:
-   - Mapeo de claves foráneas con políticas explícitas (`ON DELETE SET NULL`, `CASCADE` o `RESTRICT`).
+   - Mapeo de claves foráneas con políticas acordadas (`ON DELETE SET NULL`, `CASCADE` o `RESTRICT`).
    - Prevención de huérfanos e inconsistencias transaccionales.
 2. **Patrón de Selección Tridimensional (The 3-Way Selector Pattern)**:
    - *Selección existente*: Consulta reactiva de elementos activos del catálogo maestro.
@@ -116,15 +117,11 @@ sequenceDiagram
 
 ---
 
-## 5. Estrategia de Testing y Vertical Slices (TDD)
+## 5. Estrategia de Testing y Flujo Funcional
 
-### Estrategia de Validación Dual
-- **Caja Blanca (White-Box)**: Tests unitarios y de integración para dominio, DTOs y repositorios.
-- **Caja Negra (Black-Box)**: Tests de aceptación que validan los escenarios Gherkin de `spec.md`.
-
-### Desglose en Vertical Slices (Orden de Dependencia Topológica)
-- **Slice 1**: Catálogo maestro / entidad padre (tablas, entidades y repositorios independientes).
-- **Slice 2**: Entidad dependiente / hija con claves foráneas, pruebas de integridad y desvinculación.
-- **Slice 3**: Casos de uso / controladores reactivos combinados.
-- **Slice 4**: Integración de UI ergonómica con selector tridimensional y verificación de extremo a extremo.
+- **Validación Dual**:
+  - Test de Caja Negra (BDD) que recorre el flujo de punta a punta con timeout fail-fast (3-5s).
+  - Tests de Caja Blanca (Unit) únicamente para lógica crítica o cálculos complejos.
+- **Implementación por Flujo**:
+  - Setup de tablas y dependencias $\rightarrow$ Implementación del flujo completo de punta a punta $\rightarrow$ Batería de pruebas de cierre.
 ```
