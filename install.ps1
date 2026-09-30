@@ -64,61 +64,93 @@ function Instalar-Antigravity {
 }
 
 function Instalar-Cursor {
-    Write-Host "==> Instalando para Cursor (.cursor/rules/)..." -ForegroundColor Green
+    Write-Host "==> Instalando para Cursor (.cursor/rules/ y .cursorrules)..." -ForegroundColor Green
     $DestinoDir = Join-Path (Get-Location) ".cursor\rules"
     if (-not (Test-Path $DestinoDir)) {
         New-Item -ItemType Directory -Path $DestinoDir -Force | Out-Null
     }
+
+    $CursorRulesContent = "# SDD Workflows y Reglas de Desarrollo`n`n"
     
     foreach ($wf in $Workflows) {
         $NombreBase = [System.IO.Path]::GetFileNameWithoutExtension($wf)
         $Contenido = Obtener-Plantilla -Archivo $wf
         $Destino = Join-Path $DestinoDir "$NombreBase.mdc"
         
-        $CursorHeader = "---`ndescription: Workflow SDD para $NombreBase`nglobs: *`nalwaysApply: false`n---`n`n"
+        $CursorHeader = "---`ndescription: Workflow SDD para $NombreBase. Usar cuando el usuario pida $NombreBase o comandos slash /$NombreBase.`nglobs: *`nalwaysApply: true`n---`n`n"
         $ArchivoFinal = $CursorHeader + $Contenido
         [System.IO.File]::WriteAllText($Destino, $ArchivoFinal, [System.Text.Encoding]::UTF8)
-        Write-Host "  [OK] .cursor/rules/$NombreBase.mdc (con metadata de Cursor)" -ForegroundColor Gray
+        Write-Host "  [OK] .cursor/rules/$NombreBase.mdc" -ForegroundColor Gray
+
+        $CursorRulesContent += "## Workflow: $NombreBase`n$Contenido`n`n---`n`n"
     }
+
+    $RutaCursorrules = Join-Path (Get-Location) ".cursorrules"
+    [System.IO.File]::WriteAllText($RutaCursorrules, $CursorRulesContent, [System.Text.Encoding]::UTF8)
+    Write-Host "  [OK] .cursorrules (raíz)" -ForegroundColor Gray
 }
 
 function Instalar-OpenCode {
-    Write-Host "==> Instalando para OpenCode / Continue (.continue/prompts/)..." -ForegroundColor Green
-    $DestinoDir = Join-Path (Get-Location) ".continue\prompts"
-    if (-not (Test-Path $DestinoDir)) {
-        New-Item -ItemType Directory -Path $DestinoDir -Force | Out-Null
-    }
+    Write-Host "==> Instalando para OpenCode / Continue (.continue/prompts/ y rules/)..." -ForegroundColor Green
+    $DestinoPrompts = Join-Path (Get-Location) ".continue\prompts"
+    $DestinoRules = Join-Path (Get-Location) ".continue\rules"
+    if (-not (Test-Path $DestinoPrompts)) { New-Item -ItemType Directory -Path $DestinoPrompts -Force | Out-Null }
+    if (-not (Test-Path $DestinoRules)) { New-Item -ItemType Directory -Path $DestinoRules -Force | Out-Null }
     
     foreach ($wf in $Workflows) {
         $NombreBase = [System.IO.Path]::GetFileNameWithoutExtension($wf)
         $Contenido = Obtener-Plantilla -Archivo $wf
-        $Destino = Join-Path $DestinoDir "$NombreBase.prompt"
-        [System.IO.File]::WriteAllText($Destino, $Contenido, [System.Text.Encoding]::UTF8)
+
+        # 1. Custom slash command en Continue
+        $DestinoPrompt = Join-Path $DestinoPrompts "$NombreBase.prompt"
+        $PromptHeader = "temperature: 0.2`ndescription: Workflow SDD $NombreBase`n---`n{{{ input }}}`n`n"
+        [System.IO.File]::WriteAllText($DestinoPrompt, ($PromptHeader + $Contenido), [System.Text.Encoding]::UTF8)
         Write-Host "  [OK] .continue/prompts/$NombreBase.prompt" -ForegroundColor Gray
+
+        # 2. Regla contextual
+        $DestinoRule = Join-Path $DestinoRules "$NombreBase.md"
+        [System.IO.File]::WriteAllText($DestinoRule, $Contenido, [System.Text.Encoding]::UTF8)
+        Write-Host "  [OK] .continue/rules/$NombreBase.md" -ForegroundColor Gray
     }
 }
 
 function Instalar-VSCode {
-    Write-Host "==> Instalando para VS Code / Copilot (.github/prompts/)..." -ForegroundColor Green
+    Write-Host "==> Instalando para VS Code / Copilot (.github/prompts/ y copilot-instructions.md)..." -ForegroundColor Green
     $DestinoDir = Join-Path (Get-Location) ".github\prompts"
     if (-not (Test-Path $DestinoDir)) {
         New-Item -ItemType Directory -Path $DestinoDir -Force | Out-Null
     }
+
+    $InstructionsContent = "# Instrucciones y Flujos de Desarrollo SDD`n`n"
     
     foreach ($wf in $Workflows) {
+        $NombreBase = [System.IO.Path]::GetFileNameWithoutExtension($wf)
         $Contenido = Obtener-Plantilla -Archivo $wf
+
+        # 1. Prompt File nativo de VS Code Copilot
+        $DestinoPrompt = Join-Path $DestinoDir "$NombreBase.prompt.md"
+        $PromptHeader = "---`nname: $NombreBase`ndescription: Workflow SDD para $NombreBase`n---`n`n"
+        [System.IO.File]::WriteAllText($DestinoPrompt, ($PromptHeader + $Contenido), [System.Text.Encoding]::UTF8)
+        Write-Host "  [OK] .github/prompts/$NombreBase.prompt.md" -ForegroundColor Gray
+
+        # 2. .md estándar
         $Destino = Join-Path $DestinoDir $wf
         [System.IO.File]::WriteAllText($Destino, $Contenido, [System.Text.Encoding]::UTF8)
-        Write-Host "  [OK] .github/prompts/$wf" -ForegroundColor Gray
+
+        $InstructionsContent += "## Flujo SDD: $NombreBase`n$Contenido`n`n---`n`n"
     }
+
+    $RutaInstructions = Join-Path (Get-Location) ".github\copilot-instructions.md"
+    [System.IO.File]::WriteAllText($RutaInstructions, $InstructionsContent, [System.Text.Encoding]::UTF8)
+    Write-Host "  [OK] .github/copilot-instructions.md" -ForegroundColor Gray
 }
 
 # Opciones del menú interactivo
 $OpcionesMenu = @(
-    "Antigravity          (.agents/workflows/)",
-    "Cursor               (.cursor/rules/*.mdc)",
-    "OpenCode / Continue  (.continue/prompts/*.prompt)",
-    "VS Code / Copilot    (.github/prompts/*.md)",
+    "Antigravity          (.agents/workflows/ y .agents/skills/)",
+    "Cursor               (.cursor/rules/*.mdc y .cursorrules)",
+    "OpenCode / Continue  (.continue/prompts/ y rules/)",
+    "VS Code / Copilot    (.github/prompts/ y copilot-instructions.md)",
     "Todos los anteriores"
 )
 

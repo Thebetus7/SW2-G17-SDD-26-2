@@ -66,51 +66,100 @@ EOF
 }
 
 instalar_cursor() {
-    echo -e "${GREEN}==> Instalando para Cursor (.cursor/rules/)...${NC}"
+    echo -e "${GREEN}==> Instalando para Cursor (.cursor/rules/ y .cursorrules)...${NC}"
     mkdir -p .cursor/rules
+    local cursorrules_content="# SDD Workflows y Reglas de Desarrollo\n\n"
+
     for wf in "${WORKFLOWS[@]}"; do
         nombre_base="${wf%.md}"
         destino=".cursor/rules/${nombre_base}.mdc"
         contenido=$(obtener_plantilla "$wf")
 
+        # 1. Regla modular .mdc con frontmatter YAML
         cat <<EOF > "$destino"
 ---
-description: Workflow SDD para $nombre_base
+description: Workflow SDD para $nombre_base. Usar cuando el usuario pida $nombre_base o comandos slash /$nombre_base.
 globs: *
-alwaysApply: false
+alwaysApply: true
 ---
 
 $contenido
 EOF
-        echo -e "  ✔ $destino (con metadata de Cursor)"
+        echo -e "  ✔ $destino"
+
+        # 2. Acumular en .cursorrules (compatibilidad universal en versiones de Cursor)
+        cursorrules_content+="## Workflow: $nombre_base\n$contenido\n\n---\n\n"
     done
+
+    # Escribir .cursorrules en la raíz
+    echo -e "$cursorrules_content" > .cursorrules
+    echo -e "  ✔ .cursorrules (raíz)"
 }
 
 instalar_opencode() {
-    echo -e "${GREEN}==> Instalando para OpenCode / Continue (.continue/prompts/)...${NC}"
+    echo -e "${GREEN}==> Instalando para OpenCode / Continue (.continue/prompts/ y .continue/rules/)...${NC}"
     mkdir -p .continue/prompts
+    mkdir -p .continue/rules
+
     for wf in "${WORKFLOWS[@]}"; do
         nombre_base="${wf%.md}"
-        obtener_plantilla "$wf" > ".continue/prompts/${nombre_base}.prompt"
+        contenido=$(obtener_plantilla "$wf")
+
+        # 1. Custom slash command en Continue (.prompt con frontmatter de invocación)
+        cat <<EOF > ".continue/prompts/${nombre_base}.prompt"
+temperature: 0.2
+description: Workflow SDD $nombre_base
+---
+{{{ input }}}
+
+$contenido
+EOF
         echo -e "  ✔ .continue/prompts/${nombre_base}.prompt"
+
+        # 2. En .continue/rules/ para reconocimiento contextual
+        echo "$contenido" > ".continue/rules/${nombre_base}.md"
+        echo -e "  ✔ .continue/rules/${nombre_base}.md"
     done
 }
 
 instalar_vscode() {
-    echo -e "${GREEN}==> Instalando para VS Code / Copilot (.github/prompts/)...${NC}"
+    echo -e "${GREEN}==> Instalando para VS Code / Copilot (.github/prompts/ y .github/copilot-instructions.md)...${NC}"
     mkdir -p .github/prompts
+    local instructions_content="# Instrucciones y Flujos de Desarrollo SDD\n\n"
+
     for wf in "${WORKFLOWS[@]}"; do
-        obtener_plantilla "$wf" > ".github/prompts/$wf"
-        echo -e "  ✔ .github/prompts/$wf"
+        nombre_base="${wf%.md}"
+        contenido=$(obtener_plantilla "$wf")
+
+        # 1. Reusable Prompt Files (.prompt.md) reconocidos por VS Code Copilot Chat
+        cat <<EOF > ".github/prompts/${nombre_base}.prompt.md"
+---
+name: $nombre_base
+description: Workflow SDD para $nombre_base
+---
+
+$contenido
+EOF
+        echo -e "  ✔ .github/prompts/${nombre_base}.prompt.md"
+
+        # 2. También versión .md estándar
+        echo "$contenido" > ".github/prompts/${wf}"
+
+        # 3. Acumular en las instrucciones maestras de Copilot
+        instructions_content+="## Flujo SDD: $nombre_base\n$contenido\n\n---\n\n"
     done
+
+    # Generar .github/copilot-instructions.md (reconocido nativamente por GitHub Copilot en VS Code)
+    echo -e "$instructions_content" > .github/copilot-instructions.md
+    echo -e "  ✔ .github/copilot-instructions.md"
 }
 
 # Lista de opciones del menú
 OPCIONES=(
-    "Antigravity          (.agents/workflows/)"
-    "Cursor               (.cursor/rules/*.mdc)"
-    "OpenCode / Continue  (.continue/prompts/*.prompt)"
-    "VS Code / Copilot    (.github/prompts/*.md)"
+    "Antigravity          (.agents/workflows/ y .agents/skills/)"
+    "Cursor               (.cursor/rules/*.mdc y .cursorrules)"
+    "OpenCode / Continue  (.continue/prompts/ y rules/)"
+    "VS Code / Copilot    (.github/prompts/ y copilot-instructions.md)"
     "Todos los anteriores"
 )
 
