@@ -47,20 +47,26 @@ El desarrollo bajo SDD organiza la documentación en carpetas versionadas dentro
 
 ---
 
-## 3. Protocolo de Ejecución del Asistente (Fase por Fase)
+## 3. Protocolo de Ejecución del Asistente (Ciclo de Vida Formal SDD)
 
-El asistente de IA debe seguir este orden estricto de comandos o fases:
+El asistente de IA y el equipo de ingeniería deben seguir estrictamente este flujo de comandos y transiciones de estado:
 
-| Fase | Comando / Workflow | Entrada Requerida | Salida / Artefacto Generado |
-| :--- | :--- | :--- | :--- |
-| **0. Constitución** | `/sdd-constitution-trial` | Entrevista interactiva | `docs/constitution.md` |
-| **1. Inicializar Agente** | `/sdd-init` | Reglas metodológicas y stack | `AGENTS.md` (raíz) |
-| **2. Especificar** | `/spec-init` | Idea de requerimiento | `docs/specs/XX-feature/spec.md` |
-| **3. Planificar** | `/plan` | `spec.md` validado | `docs/specs/XX-feature/plan.md` |
-| **4. Ejecutar & Validar** | `/task-verify` | `plan.md` y `tasks.md` | Código en `src/` + Tests en verde |
+| Fase / Paso | Comando / Workflow | Entrada Requerida | Salida / Artefacto Generado | Propósito / Dinámica |
+| :--- | :--- | :--- | :--- | :--- |
+| **0. Inicializar SDD** | `/sdd-init` | Reglas metodológicas | `AGENTS.md` (raíz) | Establece las reglas del juego, la precedencia de carpetas y comandos maestros del proyecto. |
+| **1. Constitución** | `/sdd-constitution-trial` | Entrevista interactiva (Grill-Me) | `docs/constitution.md` | Define la misión, tech stack, roadmap, principios innegociables y convenciones operativas. |
+| **2. Especificar** | `/sdd-spec-high`<br>o `/sdd-spec-low` | Idea o requerimiento | `docs/specs/XX/spec.md` | **High**: Riguroso con EARS y contratos tipados.<br>**Low**: Ágil para features simples o rápidos. |
+| **3. Clarificar** | `/sdd-spec-clarify` | Último `spec.md` generado | `docs/specs/XX/spec.md` (refinado) | Auditoría de QA. Pregunta al usuario sobre huecos, ambigüedades o casos de borde para dejar el spec impecable. |
+| **4. Planificar** | `/sdd-planning` | `spec.md` clarificado y aprobado | `docs/specs/XX/plan.md` | Diseño arquitectónico, diagramas de secuencia, invariantes y partición en Vertical Slices. |
+| **5. Desglosar Tareas** | `/sdd-task` | `spec.md` y `plan.md` | `docs/specs/XX/tasks.md` | Lista de tareas atómicas, trazables y secuenciadas con ciclo TDD. |
+| **6. Ejecución & Test** | `/sdd-execution` | `tasks.md` activo | Código en `src/` + Tests en verde | Ejecución paso a paso del checklist, tests automatizados y validación dual. |
+| **7. Iteración Anclada** | `/sdd-spec-anchored`<br>*(o -spec / -plan / -task)* | Modificación a un spec existente | `docs/specs/XX/` actualizado | Permite evolucionar el feature: detalla los cambios en `spec.md`, adapta `plan.md` y añade las nuevas tareas en `tasks.md`. |
+| **8. Re-Ejecución** | `/sdd-execution` | Nuevas tareas en `tasks.md` | Código actualizado + Tests | Cierra la iteración validando que las nuevas capacidades no rompan los invariantes previos. |
 
 > [!CAUTION]
-> **Prohibición de Salto de Fase**: El asistente **NUNCA** debe comenzar a escribir código de producción sin antes tener una especificación aprobada (`spec.md`), su plan técnico (`plan.md`) y sus tareas trazadas (`tasks.md`).
+> **Prohibición Estricta de Salto de Fase**:
+> 1. El asistente **NUNCA** debe comenzar a escribir código de producción sin tener aprobados previamente: `spec.md`, `plan.md` y `tasks.md`.
+> 2. Toda nueva iteración o cambio de requerimiento debe ingresar por la **Fase 7 (Anclada)** para mantener la trazabilidad documental antes de volver a ejecutar código en la **Fase 8**.
 
 ---
 
