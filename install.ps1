@@ -121,11 +121,11 @@ function Instalar-OpenCode {
 }
 
 function Instalar-VSCode {
-    Write-Host "==> Instalando para VS Code / Copilot (.github/prompts/ y copilot-instructions.md)..." -ForegroundColor Green
+    Write-Host "==> Instalando para VS Code / Copilot (.github/skills/, .github/prompts/ y copilot-instructions.md)..." -ForegroundColor Green
+    $DestinoSkills = Join-Path (Get-Location) ".github\skills"
     $DestinoDir = Join-Path (Get-Location) ".github\prompts"
-    if (-not (Test-Path $DestinoDir)) {
-        New-Item -ItemType Directory -Path $DestinoDir -Force | Out-Null
-    }
+    if (-not (Test-Path $DestinoSkills)) { New-Item -ItemType Directory -Path $DestinoSkills -Force | Out-Null }
+    if (-not (Test-Path $DestinoDir))    { New-Item -ItemType Directory -Path $DestinoDir -Force | Out-Null }
 
     $InstructionsContent = "# Instrucciones y Flujos de Desarrollo SDD`n`n"
     
@@ -133,13 +133,21 @@ function Instalar-VSCode {
         $NombreBase = [System.IO.Path]::GetFileNameWithoutExtension($wf)
         $Contenido = Obtener-Plantilla -Archivo $wf
 
-        # 1. Prompt File nativo de VS Code Copilot
+        # 1. Estructura Oficial de VS Code Agent Skills (.github\skills\<nombre>\SKILL.md)
+        $SkillFolder = Join-Path $DestinoSkills $NombreBase
+        if (-not (Test-Path $SkillFolder)) { New-Item -ItemType Directory -Path $SkillFolder -Force | Out-Null }
+        $SkillPath = Join-Path $SkillFolder "SKILL.md"
+        $SkillHeader = "---`nname: $NombreBase`ndescription: Workflow SDD para $NombreBase. Invocar cuando el usuario pida $NombreBase o flujos SDD.`n---`n`n"
+        [System.IO.File]::WriteAllText($SkillPath, ($SkillHeader + $Contenido), [System.Text.Encoding]::UTF8)
+        Write-Host "  [OK] .github/skills/$NombreBase/SKILL.md (VS Code Agent Skill)" -ForegroundColor Gray
+
+        # 2. Prompt File nativo de VS Code Copilot
         $DestinoPrompt = Join-Path $DestinoDir "$NombreBase.prompt.md"
         $PromptHeader = "---`nname: $NombreBase`ndescription: Workflow SDD para $NombreBase`n---`n`n"
         [System.IO.File]::WriteAllText($DestinoPrompt, ($PromptHeader + $Contenido), [System.Text.Encoding]::UTF8)
         Write-Host "  [OK] .github/prompts/$NombreBase.prompt.md" -ForegroundColor Gray
 
-        # 2. .md estándar
+        # 3. .md estándar
         $Destino = Join-Path $DestinoDir $wf
         [System.IO.File]::WriteAllText($Destino, $Contenido, [System.Text.Encoding]::UTF8)
 
@@ -154,9 +162,9 @@ function Instalar-VSCode {
 # Opciones del menú interactivo
 $OpcionesMenu = @(
     "Antigravity          (.agents/workflows/ y .agents/skills/)",
-    "Cursor               (.cursor/rules/*.mdc y .cursorrules)",
+    "Cursor               (.cursor/commands/, rules/ y .cursorrules)",
     "OpenCode / Continue  (.continue/prompts/ y rules/)",
-    "VS Code / Copilot    (.github/prompts/ y copilot-instructions.md)",
+    "VS Code / Copilot    (.github/skills/, prompts/ y copilot-instructions.md)",
     "Todos los anteriores"
 )
 

@@ -129,7 +129,8 @@ EOF
 }
 
 instalar_vscode() {
-    echo -e "${GREEN}==> Instalando para VS Code / Copilot (.github/prompts/ y .github/copilot-instructions.md)...${NC}"
+    echo -e "${GREEN}==> Instalando para VS Code / Copilot (.github/skills/, .github/prompts/ y copilot-instructions.md)...${NC}"
+    mkdir -p .github/skills
     mkdir -p .github/prompts
     local instructions_content="# Instrucciones y Flujos de Desarrollo SDD\n\n"
 
@@ -137,7 +138,19 @@ instalar_vscode() {
         nombre_base="${wf%.md}"
         contenido=$(obtener_plantilla "$wf")
 
-        # 1. Reusable Prompt Files (.prompt.md) reconocidos por VS Code Copilot Chat
+        # 1. Estructura Oficial de VS Code Agent Skills (.github/skills/<nombre>/SKILL.md)
+        mkdir -p ".github/skills/$nombre_base"
+        cat <<EOF > ".github/skills/$nombre_base/SKILL.md"
+---
+name: $nombre_base
+description: Workflow SDD para $nombre_base. Invocar cuando el usuario pida $nombre_base o flujos SDD.
+---
+
+$contenido
+EOF
+        echo -e "  ✔ .github/skills/$nombre_base/SKILL.md (VS Code Agent Skill)"
+
+        # 2. Reusable Prompt Files (.prompt.md) reconocidos por Copilot Chat
         cat <<EOF > ".github/prompts/${nombre_base}.prompt.md"
 ---
 name: $nombre_base
@@ -148,10 +161,10 @@ $contenido
 EOF
         echo -e "  ✔ .github/prompts/${nombre_base}.prompt.md"
 
-        # 2. También versión .md estándar
+        # 3. También versión .md estándar
         echo "$contenido" > ".github/prompts/${wf}"
 
-        # 3. Acumular en las instrucciones maestras de Copilot
+        # 4. Acumular en las instrucciones maestras de Copilot
         instructions_content+="## Flujo SDD: $nombre_base\n$contenido\n\n---\n\n"
     done
 
