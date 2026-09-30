@@ -187,27 +187,30 @@ else
     OPCION=$(seleccionar_con_flechas)
 fi
 
+# Sanitizar cualquier retorno de carro \r o salto de línea \n residual
+OPCION=$(echo "$OPCION" | tr -d '\r\n[:space:]')
+
 case "$OPCION" in
-    1|antigravity)
+    1*|*antigravity*)
         instalar_antigravity
         ;;
-    2|cursor)
+    2*|*cursor*)
         instalar_cursor
         ;;
-    3|opencode|continue)
+    3*|*opencode*|*continue*)
         instalar_opencode
         ;;
-    4|vscode|copilot)
+    4*|*vscode*|*copilot*)
         instalar_vscode
         ;;
-    5|all|todos)
+    5*|*all*|*todos*)
         instalar_antigravity
         instalar_cursor
         instalar_opencode
         instalar_vscode
         ;;
     *)
-        echo -e "${YELLOW}Opción no reconocida ($OPCION). Cancelando.${NC}"
+        echo -e "${YELLOW}Opción no reconocida ('$OPCION'). Cancelando.${NC}"
         exit 1
         ;;
 esac
