@@ -41,11 +41,27 @@ obtener_plantilla() {
 }
 
 instalar_antigravity() {
-    echo -e "${GREEN}==> Instalando para Antigravity (.agents/workflows/)...${NC}"
+    echo -e "${GREEN}==> Instalando para Antigravity (.agents/workflows/ y .agents/skills/)...${NC}"
     mkdir -p .agents/workflows
     for wf in "${WORKFLOWS[@]}"; do
-        obtener_plantilla "$wf" > ".agents/workflows/$wf"
+        nombre_base="${wf%.md}"
+        contenido=$(obtener_plantilla "$wf")
+
+        # 1. En workflows/
+        echo "$contenido" > ".agents/workflows/$wf"
         echo -e "  ✔ .agents/workflows/$wf"
+
+        # 2. En skills/ como estándar oficial de Antigravity
+        mkdir -p ".agents/skills/$nombre_base"
+        cat <<EOF > ".agents/skills/$nombre_base/SKILL.md"
+---
+name: $nombre_base
+description: Workflow SDD para $nombre_base
+---
+
+$contenido
+EOF
+        echo -e "  ✔ .agents/skills/$nombre_base/SKILL.md"
     done
 }
 

@@ -36,17 +36,30 @@ function Obtener-Plantilla {
 }
 
 function Instalar-Antigravity {
-    Write-Host "==> Instalando para Antigravity (.agents/workflows/)..." -ForegroundColor Green
-    $DestinoDir = Join-Path (Get-Location) ".agents\workflows"
-    if (-not (Test-Path $DestinoDir)) {
-        New-Item -ItemType Directory -Path $DestinoDir -Force | Out-Null
+    Write-Host "==> Instalando para Antigravity (.agents/workflows/ y .agents/skills/)..." -ForegroundColor Green
+    $DestinoWorkflows = Join-Path (Get-Location) ".agents\workflows"
+    if (-not (Test-Path $DestinoWorkflows)) {
+        New-Item -ItemType Directory -Path $DestinoWorkflows -Force | Out-Null
     }
     
     foreach ($wf in $Workflows) {
+        $NombreBase = [System.IO.Path]::GetFileNameWithoutExtension($wf)
         $Contenido = Obtener-Plantilla -Archivo $wf
-        $RutaSalida = Join-Path $DestinoDir $wf
+
+        # 1. En workflows/
+        $RutaSalida = Join-Path $DestinoWorkflows $wf
         [System.IO.File]::WriteAllText($RutaSalida, $Contenido, [System.Text.Encoding]::UTF8)
         Write-Host "  [OK] .agents/workflows/$wf" -ForegroundColor Gray
+
+        # 2. En skills/ como estándar oficial de Antigravity
+        $DestinoSkillDir = Join-Path (Get-Location) ".agents\skills\$NombreBase"
+        if (-not (Test-Path $DestinoSkillDir)) {
+            New-Item -ItemType Directory -Path $DestinoSkillDir -Force | Out-Null
+        }
+        $SkillHeader = "---`nname: $NombreBase`ndescription: Workflow SDD para $NombreBase`n---`n`n"
+        $RutaSkill = Join-Path $DestinoSkillDir "SKILL.md"
+        [System.IO.File]::WriteAllText($RutaSkill, ($SkillHeader + $Contenido), [System.Text.Encoding]::UTF8)
+        Write-Host "  [OK] .agents/skills/$NombreBase/SKILL.md" -ForegroundColor Gray
     }
 }
 
