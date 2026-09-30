@@ -102,7 +102,13 @@ else
     echo "4) VS Code / Copilot    (.github/prompts/*.md)"
     echo "5) Todos los anteriores"
     echo ""
-    read -p "Ingresa tu opción [1-5]: " OPCION
+    if [ -t 0 ]; then
+        read -r -p "Ingresa tu opción [1-5]: " OPCION
+    elif [ -e /dev/tty ]; then
+        read -r -p "Ingresa tu opción [1-5]: " OPCION < /dev/tty
+    else
+        read -r -p "Ingresa tu opción [1-5]: " OPCION
+    fi
 fi
 
 case "$OPCION" in
