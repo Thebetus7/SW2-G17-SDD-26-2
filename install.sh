@@ -28,7 +28,7 @@ echo "=========================================================="
 echo -e "${NC}"
 
 # Lista de plantillas a instalar
-WORKFLOWS=("spec-init.md" "plan.md" "task-verify.md")
+WORKFLOWS=("sdd-init.md" "sdd-constitution-trial.md" "spec-init.md" "plan.md" "task-verify.md")
 
 # Función para obtener contenido de la plantilla (vía web o local si existe)
 obtener_plantilla() {

@@ -22,7 +22,7 @@ Write-Host "    🚀 SDD Workflows Installer (PowerShell)               " -Foreg
 Write-Host "==========================================================" -ForegroundColor Cyan
 Write-Host ""
 
-$Workflows = @("spec-init.md", "plan.md", "task-verify.md")
+$Workflows = @("sdd-init.md", "sdd-constitution-trial.md", "spec-init.md", "plan.md", "task-verify.md")
 
 function Obtener-Plantilla {
     param ([string]$Archivo)
