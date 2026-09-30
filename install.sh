@@ -66,28 +66,34 @@ EOF
 }
 
 instalar_cursor() {
-    echo -e "${GREEN}==> Instalando para Cursor (.cursor/rules/ y .cursorrules)...${NC}"
+    echo -e "${GREEN}==> Instalando para Cursor (.cursor/commands/, .cursor/rules/ y .cursorrules)...${NC}"
+    mkdir -p .cursor/commands
     mkdir -p .cursor/rules
     local cursorrules_content="# SDD Workflows y Reglas de Desarrollo\n\n"
 
     for wf in "${WORKFLOWS[@]}"; do
         nombre_base="${wf%.md}"
-        destino=".cursor/rules/${nombre_base}.mdc"
         contenido=$(obtener_plantilla "$wf")
 
-        # 1. Regla modular .mdc con frontmatter YAML
-        cat <<EOF > "$destino"
+        # 1. Custom Slash Command oficial de Cursor (.cursor/commands/<nombre>.md)
+        # Esto hace que al escribir '/' en el chat de Cursor aparezca en el menú autocompletado
+        echo "$contenido" > ".cursor/commands/${nombre_base}.md"
+        echo -e "  ✔ .cursor/commands/${nombre_base}.md (Slash Command /${nombre_base})"
+
+        # 2. Regla modular .mdc con frontmatter YAML (.cursor/rules/)
+        local destino_rule=".cursor/rules/${nombre_base}.mdc"
+        cat <<EOF > "$destino_rule"
 ---
-description: Workflow SDD para $nombre_base. Usar cuando el usuario pida $nombre_base o comandos slash /$nombre_base.
+description: Workflow SDD para $nombre_base
 globs: *
-alwaysApply: true
+alwaysApply: false
 ---
 
 $contenido
 EOF
-        echo -e "  ✔ $destino"
+        echo -e "  ✔ $destino_rule (Regla de contexto)"
 
-        # 2. Acumular en .cursorrules (compatibilidad universal en versiones de Cursor)
+        # 3. Acumular en .cursorrules (compatibilidad universal)
         cursorrules_content+="## Workflow: $nombre_base\n$contenido\n\n---\n\n"
     done
 

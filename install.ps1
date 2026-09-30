@@ -64,23 +64,29 @@ function Instalar-Antigravity {
 }
 
 function Instalar-Cursor {
-    Write-Host "==> Instalando para Cursor (.cursor/rules/ y .cursorrules)..." -ForegroundColor Green
-    $DestinoDir = Join-Path (Get-Location) ".cursor\rules"
-    if (-not (Test-Path $DestinoDir)) {
-        New-Item -ItemType Directory -Path $DestinoDir -Force | Out-Null
-    }
+    Write-Host "==> Instalando para Cursor (.cursor/commands/, .cursor/rules/ y .cursorrules)..." -ForegroundColor Green
+    $DestinoCommands = Join-Path (Get-Location) ".cursor\commands"
+    $DestinoRules = Join-Path (Get-Location) ".cursor\rules"
+    if (-not (Test-Path $DestinoCommands)) { New-Item -ItemType Directory -Path $DestinoCommands -Force | Out-Null }
+    if (-not (Test-Path $DestinoRules)) { New-Item -ItemType Directory -Path $DestinoRules -Force | Out-Null }
 
     $CursorRulesContent = "# SDD Workflows y Reglas de Desarrollo`n`n"
     
     foreach ($wf in $Workflows) {
         $NombreBase = [System.IO.Path]::GetFileNameWithoutExtension($wf)
         $Contenido = Obtener-Plantilla -Archivo $wf
-        $Destino = Join-Path $DestinoDir "$NombreBase.mdc"
-        
-        $CursorHeader = "---`ndescription: Workflow SDD para $NombreBase. Usar cuando el usuario pida $NombreBase o comandos slash /$NombreBase.`nglobs: *`nalwaysApply: true`n---`n`n"
+
+        # 1. Slash Command nativo de Cursor (.cursor/commands/<nombre>.md)
+        $DestinoCommand = Join-Path $DestinoCommands "$NombreBase.md"
+        [System.IO.File]::WriteAllText($DestinoCommand, $Contenido, [System.Text.Encoding]::UTF8)
+        Write-Host "  [OK] .cursor/commands/$NombreBase.md (Slash Command /$NombreBase)" -ForegroundColor Gray
+
+        # 2. Regla contextual .mdc
+        $DestinoRule = Join-Path $DestinoRules "$NombreBase.mdc"
+        $CursorHeader = "---`ndescription: Workflow SDD para $NombreBase`nglobs: *`nalwaysApply: false`n---`n`n"
         $ArchivoFinal = $CursorHeader + $Contenido
-        [System.IO.File]::WriteAllText($Destino, $ArchivoFinal, [System.Text.Encoding]::UTF8)
-        Write-Host "  [OK] .cursor/rules/$NombreBase.mdc" -ForegroundColor Gray
+        [System.IO.File]::WriteAllText($DestinoRule, $ArchivoFinal, [System.Text.Encoding]::UTF8)
+        Write-Host "  [OK] .cursor/rules/$NombreBase.mdc (Regla de contexto)" -ForegroundColor Gray
 
         $CursorRulesContent += "## Workflow: $NombreBase`n$Contenido`n`n---`n`n"
     }
