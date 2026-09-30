@@ -103,20 +103,32 @@ seleccionar_con_flechas() {
     local total=${#OPCIONES[@]}
     local key=""
 
-    # Asegurar que leemos de /dev/tty si venimos por pipe (curl | bash)
-    local tty_in="/dev/tty"
-    if [ ! -e /dev/tty ]; then
-        tty_in="/dev/stdin"
-    fi
+    # Redirigir salidas y entradas a la consola real
+    exec 3>&1
+    exec 1>/dev/tty
+    exec 0</dev/tty
 
-    # Ocultar cursor en terminal
+    # Guardar configuración previa de terminal
+    local old_stty
+    old_stty=$(stty -g 2>/dev/null || true)
+
+    # Ocultar cursor
     tput civis 2>/dev/null || true
 
-    # Restaurar cursor al salir
-    trap 'tput cnorm 2>/dev/null || true' EXIT SIGINT
+    # Restaurar en caso de interrupción
+    cleanup() {
+        tput cnorm 2>/dev/null || true
+        if [ -n "$old_stty" ]; then
+            stty "$old_stty" 2>/dev/null || true
+        fi
+    }
+    trap cleanup EXIT SIGINT
+
+    # Configurar terminal en modo sin buffer
+    stty -icanon -echo min 1 time 0 2>/dev/null || true
 
     while true; do
-        # Dibujar opciones
+        # Dibujar opciones directamente en terminal
         for i in "${!OPCIONES[@]}"; do
             if [ "$i" -eq "$seleccionado" ]; then
                 echo -e "  ${CYAN}${BOLD}❯ ${OPCIONES[$i]}${NC}"
@@ -125,44 +137,43 @@ seleccionar_con_flechas() {
             fi
         done
 
-        # Leer tecla (soporta secuencias de escape ANSI para flechas)
-        IFS= read -rsn1 key < "$tty_in"
-        if [[ "$key" == $'\x1b' ]]; then
-            read -rsn2 -t 0.1 key_tail < "$tty_in" || true
-            key+="$key_tail"
-        fi
+        # Leer tecla
+        key=$(dd bs=3 count=1 2>/dev/null || read -rsn1)
 
         case "$key" in
-            $'\x1b[A'|"k"|"K") # Flecha Arriba
+            $'\x1b[A'|[kK]) # Flecha Arriba
                 ((seleccionado--))
                 if [ "$seleccionado" -lt 0 ]; then
                     seleccionado=$((total - 1))
                 fi
                 ;;
-            $'\x1b[B'|"j"|"J") # Flecha Abajo
+            $'\x1b[B'|[jJ]) # Flecha Abajo
                 ((seleccionado++))
                 if [ "$seleccionado" -ge "$total" ]; then
                     seleccionado=0
                 fi
                 ;;
-            "") # Enter
+            ""|$'\n'|$'\r') # Enter
                 break
                 ;;
             $'\x03') # Ctrl+C
-                tput cnorm 2>/dev/null || true
+                cleanup
                 exit 1
                 ;;
         esac
 
-        # Mover cursor hacia arriba para redibujar limpiamente
+        # Subir el cursor
         for ((i=0; i<total; i++)); do
-            tput cuu1 2>/dev/null || echo -en "\033[1A"
-            tput el 2>/dev/null || echo -en "\033[2K"
+            echo -en "\033[1A\033[2K"
         done
     done
 
-    # Restaurar cursor
-    tput cnorm 2>/dev/null || true
+    cleanup
+
+    # Restaurar stdout original hacia el llamador
+    exec 1>&3
+    exec 3>&-
+
     echo "$((seleccionado + 1))"
 }
 
@@ -172,7 +183,7 @@ TARGET_PARAM="${1:-}"
 if [ -n "$TARGET_PARAM" ]; then
     OPCION="$TARGET_PARAM"
 else
-    echo -e "${YELLOW}Usa las flechas [↑/↓] para moverte y presiona [Enter] para elegir:${NC}\n"
+    echo -e "${YELLOW}Usa las flechas [↑/↓] para moverte y presiona [Enter] para elegir:${NC}\n" >/dev/tty 2>&1 || true
     OPCION=$(seleccionar_con_flechas)
 fi
 
