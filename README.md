@@ -102,6 +102,20 @@ Sin `/sdd-constitution-trial`, el proyecto carece de una base técnica sólida, 
 - **Stack técnico y suite de testing:** Fija las tecnologías oficiales (frontend, backend, base de datos, linters) y la estrategia de Validación Dual (Caja Blanca + Caja Negra).
 - **Roadmap e infraestructura:** Acuerda la configuración de Docker, gestión de variables de entorno (`.env`), flujos de Git y los hitos de entrega.
 
+#### ¿Qué contexto conviene proporcionar al ejecutarlo?
+Para que la entrevista sea lo más precisa y rápida posible, es ideal suministrar (o tener claros) los siguientes puntos clave:
+
+1. **Propósito y Visión General**: Qué problema resuelve la aplicación, a qué tipo de usuarios está dirigida y cuál es su objetivo principal.
+2. **Stack Tecnológico de Preferencia**: Lenguajes, frameworks (ej. React, Next.js, Fastify, Spring Boot, etc.), base de datos (PostgreSQL, Supabase, SQLite, Mongo) y librerías clave. _(Si no lo tienes definido, indícalo para que la IA proponga la mejor combinación)_.
+3. **Límites de Alcance (_Scope & Out-of-Scope_)**: Qué funciones son el núcleo del producto y qué aspectos **NO** deben desarrollarse bajo ninguna circunstancia en esta etapa.
+4. **Infraestructura y Despliegue**: Si el desarrollo debe apoyarse en contenedores (Docker / Docker Compose), gestión de secretos (`.env`) o plataformas de despliegue cloud.
+5. **Estándares y Convenciones del Equipo**: Flujo de Git preferido, convenciones de commits (ej. _Conventional Commits_) y estándares de testing o linters.
+
+> 💡 **Ejemplo de invocación con contexto enriquecido:**
+> ```text
+> /sdd-constitution-trial Plataforma SaaS de reservas de citas médicas con panel web en Next.js y API REST en Node/Express con PostgreSQL. Debe incluir Docker Compose para entorno local y autenticación con roles. Fuera de alcance: pasarela de pagos para el MVP.
+> ```
+
 ### 3. `/sdd-spec-high`: Especificación Funcional Formal (Alta Rigurosidad)
 
 > **Diseño de requerimientos:** Entrevista técnica estructurada (_Grill-Me_) para definir el comportamiento observable de un módulo o feature sin escribir código prematuro.
