@@ -16,7 +16,7 @@ flowchart TD
     T --> K["5. Código Fuente & Tests Automatizados"]
 ```
 
-1. **Constitución (`docs/constitution.md`)**: Define los principios innegociables, tech stack, misión y reglas de arquitectura del proyecto. Nada en niveles inferiores puede contradecirla.
+1. **Constitución (desde la raíz del proyecto en `docs/constitution.md`)**: Define los principios innegociables, tech stack, misión y reglas de arquitectura del proyecto. Nada en niveles inferiores puede contradecirla.
 2. **Especificación (`docs/specs/XX-feature/spec.md`)**: Define el **QUÉ** mediante requerimientos formales EARS, criterios de aceptación Gherkin y contratos de interfaces.
 3. **Plan Técnico (`docs/specs/XX-feature/plan.md`)**: Define el **CÓMO** mediante arquitectura técnica, diagramas de secuencia, invariantes y división en Vertical Slices.
 4. **Tareas Atómicas (`docs/specs/XX-feature/tasks.md`)**: Tareas trazables, verificables y secuenciales ejecutadas bajo ciclo TDD (Red-Green-Refactor).
