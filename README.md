@@ -62,7 +62,7 @@ Una vez instalado, el desarrollo bajo SDD organiza la documentación en carpetas
 7. **`/sdd-planning`**: Plan técnico de arquitectura, diagramas de secuencia, invariantes y partición en Vertical Slices en `docs/specs/XX/plan.md`.
 8. **`/sdd-task`**: Desglose en checklist atómico secuenciado con ciclo TDD (Red-Green-Refactor) en `docs/specs/XX/tasks.md`.
 9. **`/sdd-execution`**: Motor de ejecución paso a paso del checklist bajo **Validación Dual** obligatoria (Tests de Caja Blanca + Tests de Caja Negra).
-10. **`/sdd-spec-anchored`** _(y variantes `-spec`, `-plan`, `-task`)_: Evolución e iteración anclada sobre specs existentes: actualiza el `spec.md`, adapta el `plan.md` y suma las nuevas tareas a `tasks.md` manteniendo el historial intacto.
+10. **`/sdd-spec-anchored`**: Iteración, corrección de bugs y refinamiento integral en cascada. Entrevista exhaustiva con preguntas clave para actualizar coordinadamente la tríada documental (`spec.md` + `plan.md` + `tasks.md`), encolando nuevas tareas sin borrar el historial previo.
 
 ---
 
@@ -98,15 +98,15 @@ Sin `/sdd-init`, No tiene contexto, ni forma de como deberia entender el Enfoque
 #### ¿Por qué es fundamental?
 Sin `/sdd-constitution-trial`, el proyecto carece de una base técnica sólida, provocando que la IA asuma stacks, patrones o alcances no deseados. Este comando redacta el documento supremo **`docs/constitution.md`**, el cual establece:
 
-- **Misión y límites claros:** Define el propósito del software, términos clave del negocio y qué queda estrictamente fuera de alcance (_Out of Scope_).
-- **Stack técnico y suite de testing:** Fija las tecnologías oficiales (frontend, backend, base de datos, linters) y la estrategia de Validación Dual (Caja Blanca + Caja Negra).
+- **Misión y límites claros:** Define el problema real a resolver y lo que queda formalmente fuera de alcance (*Out-of-Scope*).
+- **Flujo global y topología de datos:** Mapea el recorrido completo de usuario (E2E) y las reglas de persistencia antes de escribir cualquier especificación.
 - **Roadmap e infraestructura:** Acuerda la configuración de Docker, gestión de variables de entorno (`.env`), flujos de Git y los hitos de entrega.
 
 #### ¿Qué contexto conviene proporcionar al ejecutarlo?
 Para que la entrevista sea lo más precisa y rápida posible, es ideal suministrar (o tener claros) los siguientes puntos clave:
 
 1. **Propósito y Visión General**: Qué problema resuelve la aplicación, a qué tipo de usuarios está dirigida y cuál es su objetivo principal.
-2. **Stack Tecnológico de Preferencia**: Lenguajes, frameworks (ej. React, Next.js, Fastify, Spring Boot, etc.), base de datos (PostgreSQL, Supabase, SQLite, Mongo) y librerías clave. _(Si no lo tienes definido, indícalo para que la IA proponga la mejor combinación)_.
+2. **Stack Tecnológico de Preferencia**: Lenguajes, frameworks (ej. React, Next.js, Fastify, Spring Boot, Flutter, etc.), base de datos (PostgreSQL, Supabase, SQLite, Mongo) y librerías clave. _(Si no lo tienes definido, indícalo para que la IA proponga la mejor combinación)_.
 3. **Límites de Alcance (_Scope & Out-of-Scope_)**: Qué funciones son el núcleo del producto y qué aspectos **NO** deben desarrollarse bajo ninguna circunstancia en esta etapa.
 4. **Infraestructura y Despliegue**: Si el desarrollo debe apoyarse en contenedores (Docker / Docker Compose), gestión de secretos (`.env`) o plataformas de despliegue cloud.
 5. **Estándares y Convenciones del Equipo**: Flujo de Git preferido, convenciones de commits (ej. _Conventional Commits_) y estándares de testing o linters.
@@ -204,6 +204,39 @@ Sin `/sdd-execution`, la IA suele escribir código sin ejecutar pruebas, asumir 
 - **Aplica TDD real:** Crea primero el test que falla (`RED`), genera el código mínimo para ponerlo en verde (`GREEN`), y aplica mejoras y linters (`REFACTOR`).
 - **Validación Dual obligatoria:** Ninguna tarea o slice se da por concluido si no supera simultáneamente las pruebas de Caja Blanca (unitarias/estructurales) y Caja Negra (aceptación BDD Gherkin).
 - **Cierre físico verificable:** Ejecuta los comandos en la terminal y solo tras validar el resultado en verde marca físicamente la tarea (`[x]`) en `tasks.md`.
+
+### 8. `/sdd-spec-anchored`: Iteración, Refinamiento y Evolución en Cascada (Spec + Plan + Tasks)
+
+> **Evolución y resolución de bugs guiada:** Orquesta en una sola pasada la actualización coordinada de la tríada documental (`spec.md` + `plan.md` + `tasks.md`) ante flujos no previstos, desajustes de experiencia o bugs en runtime, encolando nuevas tareas sin perder el historial.
+
+#### Modo de uso:
+
+```text
+/sdd-spec-anchored [opcional: prefijo del módulo, ej. 01. o vacío para el último módulo] [descripción detallada del ajuste, bug o flujo a refinar]
+```
+
+> 💡 **Ejemplo real de invocación para refinamiento de experiencia:**
+> ```text
+> /sdd-spec-anchored 01. Quiero que la cámara funcione bien: cuando saca la foto muestra que procesa pero sigue la cámara en vivo y el usuario no sabe si se tomó la foto. Además, si la IA no detecta la API o no hay internet, no debe romper la app sino mostrar advertencias amigables (sin conexión, error de modelo) y permitir continuar manualmente.
+> ```
+
+#### ¿Por qué es fundamental?
+Sin `/sdd-spec-anchored`, cuando una funcionalidad presenta bugs en ejecución o requiere afinar la experiencia de usuario, el equipo suele caer en la tentación de **parchar el código directamente**. Esto destruye la jerarquía de verdad de SDD y deja la documentación desfasada y obsoleta.
+
+Este comando actúa como el **motor de evolución controlada**, ejecutando un protocolo riguroso en 3 pasos:
+
+1. **Diagnóstico Contextual:** Contrasta lo que la especificación prometía frente al síntoma real reportado en runtime.
+2. **Entrevista de Refinamiento (_Grill-Me_ en 4 Ejes):** Antes de tocar los documentos, la IA formula preguntas clave con opciones recomendadas sobre:
+   - *Feedback Visual:* Congelamiento de imagen capturada, overlays con indicadores de procesamiento y estados de carga.
+   - *Canal de Errores:* SnackBars, Banners o Diálogos modales con mensajes amigables al usuario frente a fallos técnicos.
+   - *Degradación Elegante:* Flujos de continuidad manual si las APIs externas o la IA no responden.
+   - *Persistencia Temporal:* Preservación segura de la captura y liberación de recursos de hardware.
+3. **Actualización en Cascada a Estado Puro:**
+   - **`spec.md`:** Se actualiza in-situ incrementando la versión (`v1.1.0`, etc.) con nuevos requisitos EARS y escenarios Gherkin BDD, manteniéndose como la **fuente de verdad pura y definitiva**.
+   - **`plan.md`:** Adapta los diagramas de secuencia, controladores de estado reactivos, DTOs y tipos de fallo de dominio.
+   - **`tasks.md`:** **Conserva intacto el historial de tareas previas ya marcadas (`[x]`)** y encola al final una nueva sección (`### Iteración N: [Refinamiento / Fix]`) con tareas `[SETUP]`, `[IMPL]`, `[TEST]` y `[VERIFY]`.
+
+Tras finalizar, la IA te invitará a ejecutar `/sdd-execution` para resolver inmediatamente las nuevas tareas encoladas bajo validación dual.
 
 ---
 
