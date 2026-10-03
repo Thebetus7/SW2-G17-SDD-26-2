@@ -31,7 +31,6 @@ echo -e "${NC}"
 WORKFLOWS=(
     "sdd-init.md"
     "sdd-constitution-trial.md"
-    "sdd-constitution.md"
     "sdd-spec-high.md"
     "sdd-spec-low.md"
     "sdd-spec-clarify.md"
@@ -314,4 +313,4 @@ case "$OPCION" in
 esac
 
 echo -e "\n${GREEN}${BOLD}🎉 ¡Workflows SDD instalados exitosamente!${NC}"
-echo "Ahora puedes abrir el chat de tu agente y usar los comandos /spec-init, /plan y /task-verify."
+echo "Ahora puedes abrir el chat de tu agente y comenzar con el comando /sdd-init."

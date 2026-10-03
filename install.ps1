@@ -25,7 +25,6 @@ Write-Host ""
 $Workflows = @(
     "sdd-init.md",
     "sdd-constitution-trial.md",
-    "sdd-constitution.md",
     "sdd-spec-high.md",
     "sdd-spec-low.md",
     "sdd-spec-clarify.md",
@@ -269,4 +268,4 @@ switch ($Opcion.ToLower()) {
 
 Write-Host ""
 Write-Host "¡Workflows SDD instalados exitosamente!" -ForegroundColor Green
-Write-Host "Ahora puedes abrir el chat de tu agente y usar los comandos /spec-init, /plan y /task-verify."
+Write-Host "Ahora puedes abrir el chat de tu agente y comenzar con el comando /sdd-init."
