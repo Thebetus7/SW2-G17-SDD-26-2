@@ -1,2311 +1,317 @@
-# DOC-DEPLOY: Generador de Documentación de Despliegue, Instalación y Flujo Visual
+# 🚀 DOC-DEPLOY: Generador de Documentación de Despliegue, Infraestructura y Flujo Visual Interactivo
 
-Este workflow crea una **suite completa de documentación técnica para desplegar, instalar, verificar, actualizar, mantener, apagar y reactivar un proyecto** en un entorno de producción.
+Este workflow crea una **suite completa de documentación técnica para desplegar, instalar, verificar, actualizar, mantener, apagar y reactivar un proyecto** en un entorno de producción real.
 
 El workflow analiza el proyecto real, determina las herramientas y servicios necesarios, solicita únicamente las decisiones de infraestructura que el usuario todavía no haya definido y genera:
 
 ```text
-[CARPETA_DESPLIEGUE]/
-
-├── 00_RESUMEN_GENERAL.md
-├── 01_CONFIGURAR_PROYECTO.md
-├── 02_CREAR_INFRAESTRUCTURA_[CLOUD].md
-├── 03_INSTALAR_HERRAMIENTAS.md
-├── 04_DESPLEGAR_Y_VERIFICAR.md
-├── 05_ACTUALIZAR_PRODUCCION.md
-├── 06_APAGAR_Y_REACTIVAR.md
-└── 07_FLUJO_VISUAL_DESPLIEGUE.html
+📁 [CARPETA_DESPLIEGUE]/
+├── 📄 00_RESUMEN_GENERAL.md
+├── 📄 01_CONFIGURAR_PROYECTO.md
+├── 📄 02_CREAR_INFRAESTRUCTURA_[CLOUD].md
+├── 📄 03_INSTALAR_HERRAMIENTAS.md
+├── 📄 04_DESPLEGAR_Y_VERIFICAR.md
+├── 📄 05_ACTUALIZAR_PRODUCCION.md
+├── 📄 06_APAGAR_Y_REACTIVAR.md
+└── 🌐 07_FLUJO_VISUAL_DESPLIEGUE.html
 ```
 
-Los archivos Markdown constituyen la **documentación textual modular y navegable**.
-
-El archivo HTML constituye la **representación visual interactiva de toda la documentación generada**.
+> [!NOTE]
+> Los archivos Markdown (`00` a `06`) constituyen la **documentación textual modular y navegable**, estructurada en tarjetas visuales de pasos con verificación y troubleshooting.
+> El archivo HTML (`07`) constituye la **representación visual interactiva en formato diagrama de flujo y componentes**, con soporte de Dark Mode y exploración paso a paso sin dependencias externas.
 
 ---
 
-# 0. REGLA SUPREMA — NO INVENTAR INFRAESTRUCTURA NI COMANDOS
+# 0. REGLA SUPREMA — CERO INVENTIVA DE INFRAESTRUCTURA Y COMANDOS
 
-La IA no debe inventar:
-
-```text
-proveedor;
-sistema operativo;
-servicios cloud;
-tipo de instancia;
-herramientas;
-puertos;
-comandos;
-dependencias;
-variables;
-rutas;
-arquitectura;
-políticas de seguridad;
-precios;
-configuración de red;
-```
-
-cuando esa información no pueda determinarse con seguridad.
-
-Debe seguir:
-
-```text
-INSPECCIONAR
-    ↓
-DETECTAR
-    ↓
-PREGUNTAR SI FALTA UNA DECISIÓN RELEVANTE
-    ↓
-RECIBIR RESPUESTA
-    ↓
-VERIFICAR
-    ↓
-GENERAR DOCUMENTACIÓN
-```
-
-Nunca debe generar una guía aparentemente completa utilizando valores ficticios.
-
----
-
-# 1. OBJETIVO PRINCIPAL
-
-`/doc-deploy` debe producir una guía que permita a una persona llevar el proyecto desde:
-
-```text
-PROYECTO LOCAL
-      ↓
-PREPARACIÓN
-      ↓
-INFRAESTRUCTURA
-      ↓
-INSTALACIÓN
-      ↓
-DESPLIEGUE
-      ↓
-VERIFICACIÓN
-      ↓
-ACTUALIZACIÓN
-      ↓
-APAGADO
-      ↓
-REACTIVACIÓN
-```
-
-sin tener que descubrir por su cuenta:
-
-```text
-qué instalar;
-dónde instalarlo;
-qué comando ejecutar;
-qué archivo modificar;
-qué variable configurar;
-qué puerto utilizar;
-cómo comprobar que funcionó;
-qué hacer si falla;
-cómo actualizar posteriormente.
-```
-
----
-
-# 2. PRINCIPIO DE MÍNIMAS PREGUNTAS
-
-Si el usuario no especificó cómo desea desplegar el proyecto, la IA debe realizar primero una auditoría del repositorio para determinar qué puede inferirse de forma objetiva.
-
-Solo después debe preguntar las decisiones que realmente falten.
-
-La prioridad es:
-
-> **Preguntar la menor cantidad posible de decisiones de alto impacto.**
-
-No realizar un cuestionario completo si el proyecto ya permite determinar parte de la infraestructura.
-
----
-
-# 3. AUDITORÍA PREVIA OBLIGATORIA
-
-Antes de hacer preguntas, inspeccionar:
-
-```text
-AGENTS.md
-README.md
-docs/
-package.json
-composer.json
-requirements.txt
-pyproject.toml
-pom.xml
-build.gradle
-go.mod
-Dockerfile
-docker-compose.yml
-compose.yml
-.env.example
-.env
-nginx.conf
-Caddyfile
-systemd/
-scripts/
-.github/
-```
-
-solo cuando existan.
-
-También inspeccionar otros archivos de configuración específicos del stack detectado.
-
----
-
-# 4. REGLA DE SEGURIDAD SOBRE SECRETOS
-
-La IA puede inspeccionar configuraciones para detectar:
-
-```text
-nombres de variables;
-dependencias;
-puertos;
-servicios;
-estructura de configuración.
-```
-
-Pero:
-
-> **Nunca debe copiar secretos reales hacia la documentación.**
-
-Nunca incluir:
-
-```text
-contraseñas;
-API keys;
-tokens;
-private keys;
-credenciales;
-secretos JWT;
-cookies;
-contenido sensible de .env.
-```
-
-En la documentación utilizar:
-
-```text
-<TU_API_KEY>
-<TU_DB_PASSWORD>
-<TU_SECRET>
-```
-
-y explicar dónde obtener el valor.
-
----
-
-# 5. INFORMACIÓN QUE DEBE DETERMINAR
-
-La auditoría debe detectar:
-
-## 5.1 Aplicación
-
-```text
-framework;
-versión;
-runtime;
-comando de build;
-comando de ejecución;
-comando de test;
-comando de producción.
-```
-
----
-
-## 5.2 Dependencias
-
-Detectar:
-
-```text
-dependencias del lenguaje;
-dependencias nativas;
-compiladores;
-librerías del sistema;
-herramientas de build;
-servicios auxiliares.
-```
-
-Ejemplos:
-
-```text
-Node.js
-PHP
-Python
-Java
-Go
-Rust
-GCC
-libpq
-OpenSSL
-ImageMagick
-```
-
----
-
-## 5.3 Persistencia
-
-Detectar:
-
-```text
-motor;
-herramienta de migración;
-seeders;
-estrategia de inicialización;
-volúmenes;
-backups cuando estén definidos.
-```
-
-Ejemplos:
-
-```text
-PostgreSQL
-MySQL
-SQLite
-MongoDB
-Redis
-```
-
----
-
-## 5.4 Arquitectura del proyecto
-
-Determinar:
-
-```text
-frontend;
-backend;
-base de datos;
-workers;
-colas;
-cache;
-proxy;
-storage;
-servicios externos.
-```
-
-Representar las relaciones.
-
-Ejemplo:
-
-```text
-Internet
-   ↓
-Nginx
-   ↓
-Backend
-   ├── PostgreSQL
-   ├── Redis
-   └── External API
-```
-
-No agregar componentes que no existan.
-
----
-
-# 6. DETECCIÓN DE MODO DE DESPLIEGUE
-
-Determinar si el proyecto utiliza o puede utilizar:
-
-```text
-Docker Compose
-Docker
-Native Server
-Systemd
-PM2
-Nginx
-Caddy
-Managed Platform
-PaaS
-VPS
-Cloud VM
-Container Service
-```
-
-La IA debe preferir la estrategia más coherente con el proyecto existente.
-
-No convertir automáticamente todos los proyectos a Docker.
-
----
-
-# 7. PREGUNTAS MÍNIMAS DE INFRAESTRUCTURA
-
-Si la información necesaria no está definida, la IA debe preguntar.
-
-Las preguntas deben agrupar decisiones relacionadas.
-
-### Pregunta 1 — Destino
-
-> ¿Dónde deseas desplegar el proyecto?
-
-Opciones de ejemplo:
-
-```text
-A) AWS
-B) Google Cloud
-C) Azure
-D) DigitalOcean
-E) Hetzner
-F) VPS propio
-G) Otro
-```
-
-Si el proyecto o el usuario ya lo definió:
-
-```text
-NO preguntar nuevamente.
-```
-
----
-
-### Pregunta 2 — Modalidad
-
-> ¿Cómo deseas ejecutar la aplicación?
-
-```text
-A) Docker / Docker Compose
-B) Instalación nativa en servidor
-C) Plataforma administrada / PaaS
-D) Otra
-```
-
-Si `Dockerfile` + `docker-compose.yml` ya existen y son claramente compatibles con producción, la IA puede proponerlos sin volver a preguntar, pero debe permitir al usuario cambiar la estrategia.
-
----
-
-### Pregunta 3 — Infraestructura adicional
-
-Solo preguntar si no puede determinarse:
-
-```text
-¿La base de datos estará:
-
-A) En el mismo servidor
-B) En un servicio administrado
-C) En otro servidor
-D) Ya existe una instancia externa
-```
-
-No formular esta pregunta si el proyecto ya lo determina claramente.
-
----
-
-# 8. REGLA DE OPTIMIZACIÓN DE PREGUNTAS
-
-No preguntar:
-
-```text
-¿Qué sistema operativo?
-¿Qué servidor web?
-¿Qué firewall?
-¿Qué versión de Docker?
-¿Qué puerto?
-¿Qué usuario Linux?
-```
-
-una por una si todas dependen de una misma elección de infraestructura.
-
-Primero resolver:
-
-```text
-Proveedor + tipo de despliegue
-```
-
-y después derivar técnicamente:
-
-```text
-SO;
-herramientas;
-puertos;
-paquetes;
-configuración.
-```
-
----
-
-# 9. DECISIONES DEL USUARIO VS DECISIONES DE LA IA
-
-## Usuario decide
-
-```text
-proveedor;
-restricciones presupuestarias;
-infraestructura obligatoria;
-estrategia de hosting cuando existan alternativas relevantes;
-ubicación/región cuando tenga impacto;
-políticas de datos críticas;
-dominio;
-requisitos operativos.
-```
-
-## IA decide
-
-```text
-comandos concretos;
-paquetes;
-estructura de archivos;
-scripts;
-orden operativo;
-configuración técnica de bajo impacto;
-comandos de verificación;
-formato documental.
-```
-
-siempre respetando las decisiones superiores.
-
----
-
-# 10. VERIFICACIÓN DE LA INFORMACIÓN DEL PROVEEDOR
-
-Cuando la documentación dependa de la consola web de un proveedor:
-
-> **La IA debe verificar la interfaz actual antes de redactar instrucciones visuales.**
-
-No inventar:
-
-```text
-nombres de botones;
-ubicaciones;
-menús;
-campos;
-etiquetas;
-opciones;
-procesos de creación.
-```
-
-Debe preferirse la documentación oficial del proveedor cuando sea necesario verificar la interfaz.
-
-La guía debe diferenciar entre:
-
-```text
-PASO CONFIRMADO
-```
-
-y:
-
-```text
-COMPORTAMIENTO QUE PUEDE VARIAR SEGÚN LA CONSOLA
-```
-
----
-
-# 11. GUÍA VISUAL DE CONSOLA
-
-Las instrucciones deben describir:
-
-```text
-sección;
-menú;
-botón;
-campo;
-valor;
-acción;
-resultado.
-```
-
-Ejemplo:
-
-```text
-1. Abre la consola del proveedor.
-2. Ingresa a la sección correspondiente a máquinas virtuales.
-3. Selecciona "Crear instancia".
-4. Selecciona la imagen de sistema previamente definida.
-5. Configura los recursos indicados.
-6. Configura las reglas de red.
-7. Crea el recurso.
-```
-
-Cuando sea posible, indicar además:
-
-```text
-ubicación visual aproximada;
-nombre visible del elemento;
-qué debe observarse después.
-```
-
-Nunca describir posiciones visuales inventadas.
-
----
-
-# 12. DOCUMENTACIÓN MODULAR
-
-La documentación Markdown debe utilizar esta estructura fija.
-
-```text
-00_RESUMEN_GENERAL.md
-01_CONFIGURAR_PROYECTO.md
-02_CREAR_INFRAESTRUCTURA_[CLOUD].md
-03_INSTALAR_HERRAMIENTAS.md
-04_DESPLEGAR_Y_VERIFICAR.md
-05_ACTUALIZAR_PRODUCCION.md
-06_APAGAR_Y_REACTIVAR.md
-```
-
-El contenido puede adaptarse al proyecto, pero la responsabilidad de cada archivo permanece.
-
----
-
-# 13. `00_RESUMEN_GENERAL.md`
-
-Debe contener:
-
-```text
-Título
-Proyecto
-Proveedor
-Entorno
-Arquitectura
-Componentes
-Prerequisitos
-Flujo completo
-Estructura de documentación
-Riesgos importantes
-Navegación
-```
-
-Debe contener un flujo visual:
-
-```text
-LOCAL
- ↓
-CONFIGURACIÓN
- ↓
-INFRAESTRUCTURA
- ↓
-HERRAMIENTAS
- ↓
-DESPLIEGUE
- ↓
-VERIFICACIÓN
- ↓
-ACTUALIZACIÓN
- ↓
-APAGADO / REACTIVACIÓN
-```
-
----
-
-# 14. `01_CONFIGURAR_PROYECTO.md`
-
-Debe documentar lo necesario antes del despliegue.
-
-Incluir, según corresponda:
-
-```text
-Dockerfile
-compose.yml
-docker-compose.yml
-.dockerignore
-nginx.conf
-Caddyfile
-entrypoint
-scripts
-variables de entorno
-configuración de producción
-```
-
-Cuando se proporcionen archivos completos:
-
-> Deben conservar la configuración necesaria y explicar qué partes son variables del proyecto.
-
-No incluir secretos.
-
----
-
-# 15. `02_CREAR_INFRAESTRUCTURA_[CLOUD].md`
-
-Debe documentar:
-
-```text
-cuenta;
-región;
-recurso;
-sistema operativo;
-tipo de máquina;
-almacenamiento;
-red;
-firewall;
-security groups;
-SSH;
-IP;
-dominio;
-DNS;
-HTTPS;
-otros recursos.
-```
-
-Solo incluir componentes que realmente sean necesarios.
-
----
-
-# 16. `03_INSTALAR_HERRAMIENTAS.md`
-
-Debe describir:
-
-```text
-conexión SSH;
-actualización del sistema;
-Git;
-Docker;
-Docker Compose;
-runtime;
-dependencias nativas;
-Nginx;
-Caddy;
-PM2;
-Systemd;
-otras herramientas.
-```
-
-solo cuando sean necesarias.
-
-Debe incluir una tabla:
-
-```text
-| Herramienta | Por qué se necesita | Instalación | Verificación |
-```
-
----
-
-# 17. `04_DESPLEGAR_Y_VERIFICAR.md`
-
-Debe cubrir el primer despliegue completo:
-
-```text
-clonar repositorio;
-entrar al proyecto;
-configurar variables;
-crear servicios;
-construir;
-levantar;
-migrar;
-seedear;
-crear usuarios;
-generar estáticos;
-abrir puertos;
-configurar proxy;
-configurar HTTPS;
-verificar.
-```
-
-Debe incluir comandos reales.
-
----
-
-# 18. VERIFICACIÓN
-
-Toda instalación importante debe tener una prueba de verificación.
-
-Ejemplo:
-
-```text
-docker --version
-git --version
-curl --version
-```
-
-Después:
-
-```text
-docker compose ps
-docker compose logs --tail=50
-curl -I http://localhost
-```
-
-La documentación debe especificar:
-
-```text
-COMANDO
-↓
-RESULTADO ESPERADO
-↓
-INTERPRETACIÓN
-```
-
----
-
-# 19. TROUBLESHOOTING
-
-`04_DESPLEGAR_Y_VERIFICAR.md` debe incluir problemas frecuentes detectables en el proyecto.
-
-No crear una lista genérica enorme.
-
-Priorizar:
-
-```text
-puerto ocupado;
-servicio no inicia;
-conexión DB;
-credenciales;
-permisos;
-volúmenes;
-build;
-RAM;
-DNS;
-HTTPS;
-proxy;
-logs;
-dependencias.
-```
-
-Formato:
-
-```text
-Problema:
-...
-
-Síntoma:
-...
-
-Diagnóstico:
-...
-
-Solución:
-...
-
-Verificación:
-...
-```
-
----
-
-# 20. `05_ACTUALIZAR_PRODUCCION.md`
-
-Debe documentar el procedimiento repetible después de nuevos cambios.
-
-Separar claramente:
-
-```text
-A. PC LOCAL
-B. SERVIDOR
-```
-
-### PC LOCAL
-
-```text
-git status
-git add
-git commit
-git push
-```
-
-### SERVIDOR
-
-```text
-SSH
-cd proyecto
-git pull
-build
-restart
-migrate
-verify
-```
-
-Solo utilizar los comandos apropiados al proyecto.
-
----
-
-# 21. REGLA DE ACTUALIZACIÓN SEGURA
-
-El documento debe advertir cuándo una actualización puede afectar:
-
-```text
-base de datos;
-volúmenes;
-migraciones;
-backups;
-compatibilidad;
-variables;
-servicios;
-downtime.
-```
-
-No utilizar comandos destructivos sin advertencia explícita.
-
----
-
-# 22. `06_APAGAR_Y_REACTIVAR.md`
-
-Debe explicar el comportamiento real del proveedor y del tipo de recurso.
-
-Incluir cuando corresponda:
-
-```text
-Stop / Pause
-Terminate / Delete
-Costos residuales
-Discos
-IP
-Snapshots
-Load Balancer
-Servicios administrados
-Reactivación
-```
-
-No afirmar costos exactos si no fueron verificados.
-
----
-
-# 23. CONTROL DE COSTOS
-
-Cuando el proveedor genere costos por recursos persistentes, documentar:
-
-```text
-qué recurso sigue cobrando;
-qué recurso puede detenerse;
-qué recurso debe eliminarse;
-qué información se pierde;
-cómo verificar que no quedan recursos activos.
-```
-
-No asumir que detener una máquina implica costo cero.
-
----
-
-# 24. REACTIVACIÓN
-
-Debe existir siempre que el tipo de infraestructura lo permita.
-
-Flujo:
-
-```text
-RECURSO APAGADO
-      ↓
-START / RESUME
-      ↓
-VERIFICAR IP / DNS
-      ↓
-LEVANTAR SERVICIOS
-      ↓
-VERIFICAR
-      ↓
-SISTEMA OPERATIVO
-```
-
-Debe indicarse cualquier consecuencia conocida del apagado, como:
-
-```text
-cambio de IP;
-servicios detenidos;
-contenedores no iniciados;
-DNS;
-certificados;
-montajes.
-```
-
----
-
-# 25. NAVEGACIÓN ENTRE DOCUMENTOS
-
-Cada archivo Markdown debe incluir al inicio o final:
-
-```markdown
----
-
-[← Paso anterior](./ARCHIVO_ANTERIOR.md)
-[↑ Índice](./00_RESUMEN_GENERAL.md)
-[Siguiente paso →](./ARCHIVO_SIGUIENTE.md)
-```
-
-El índice debe permitir recorrer toda la instalación.
-
----
-
-# 26. REGLA DE COMANDOS 100% FUNCIONALES
-
-No utilizar comandos con parámetros ambiguos como:
-
-```text
-docker run ...
-```
-
-sin explicar los valores.
-
-Todo valor dependiente del usuario debe escribirse explícitamente:
-
-```text
-<TU_IP_PUBLICA>
-<TU_DOMINIO>
-<TU_USUARIO>
-<TU_REPOSITORIO>
-<TU_PASSWORD>
-```
-
-y explicar:
-
-```text
-Dónde obtenerlo.
-Dónde introducirlo.
-Qué formato debe tener.
-```
-
-No utilizar placeholders ambiguos como:
-
-```text
-[IP]
-[server]
-[password]
-```
-
-sin definición.
-
----
-
-# 27. COMANDOS POR CONTEXTO
-
-Cada comando debe indicar dónde ejecutarse:
-
-```text
-[PC LOCAL]
-[SSH / SERVIDOR]
-[CONTENEDOR]
-[CONSOLA CLOUD]
-```
-
-Ejemplo:
-
-```text
-[SSH / SERVIDOR]
-
-git pull origin main
-```
-
-Esto evita ejecutar accidentalmente comandos en el contexto incorrecto.
-
----
-
-# 28. BLOQUES INFORMATIVOS
-
-Utilizar siempre que sea compatible con Markdown:
-
-```markdown
 > [!IMPORTANT]
-
-> [!WARNING]
-
-> [!CAUTION]
-
-> [!TIP]
-```
-
-Para:
-
-```text
-seguridad;
-pérdida de datos;
-costos;
-IP;
-credenciales;
-comandos destructivos;
-errores frecuentes.
-```
-
----
-
-# 29. CONTRATO DE CONTENIDO DEL HTML
-
-El archivo:
-
-```text
-07_FLUJO_VISUAL_DESPLIEGUE.html
-```
-
-es una **representación visual completa de la documentación Markdown**.
-
-Regla absoluta:
-
-> **El HTML debe contener TODO el contenido textual de los archivos Markdown generados.**
-
-No está permitido:
-
-```text
-resumir;
-omitir;
-parafrasear;
-eliminar instrucciones;
-reemplazar comandos por referencias;
-mostrar solamente una síntesis.
-```
-
-Debe contener:
-
-```text
-todos los títulos;
-todos los párrafos;
-todos los comandos;
-todas las tablas;
-todas las listas;
-todas las advertencias;
-todos los checklists;
-todo troubleshooting;
-toda navegación relevante;
-todo contenido textual generado.
-```
-
-El HTML puede cambiar la **presentación**, pero no el **contenido**.
-
----
-
-# 30. REGLA DE SINCRONIZACIÓN HTML ↔ MARKDOWN
-
-Después de generar todos los Markdown:
-
-```text
-Markdown
-    ↓
-extraer contenido completo
-    ↓
-renderizar visualmente
-    ↓
-HTML
-```
-
-Nunca generar primero un HTML resumido y luego intentar complementarlo.
-
-El HTML debe ser construido a partir de la versión final de los Markdown.
-
----
-
-# 31. ESPECIFICACIÓN VISUAL INMUTABLE DEL HTML
-
-## REGLA ABSOLUTA
-
-> **LA ESTRUCTURA VISUAL DEL HTML ESTÁ FIJADA POR ESTE DOCUMENTO.**
-
-La IA **NO PUEDE CAMBIAR**:
-
-```text
-layout general;
-orden de navegación;
-componentes principales;
-posición de sidebar;
-barra superior;
-estructura de contenido;
-sistema de navegación;
-estilo de bloques de código;
-estilo de alertas;
-estructura de tablas;
-footer;
-mecanismos de interacción.
-```
-
-El contenido puede cambiar.
-
-La UI estructural no.
-
----
-
-# 32. ARQUITECTURA VISUAL OBLIGATORIA
-
-El HTML debe tener exactamente estas regiones:
-
-```text
-┌──────────────────────────────────────────────────────────────┐
-│ TOPBAR                                                       │
-│ Proyecto · Proveedor · Entorno · Estado · Buscar             │
-├────────────────┬─────────────────────────────────────────────┤
-│                │                                             │
-│ SIDEBAR        │ MAIN CONTENT                                │
-│                │                                             │
-│ 00 Resumen     │ Breadcrumb                                  │
-│ 01 Configurar  │ Título                                      │
-│ 02 Infra       │ Introducción                                │
-│ 03 Herramientas│ Contenido completo                          │
-│ 04 Desplegar   │                                             │
-│ 05 Actualizar  │                                             │
-│ 06 Apagar      │                                             │
-│                │                                             │
-│                │                                             │
-├────────────────┴─────────────────────────────────────────────┤
-│ FOOTER · Anterior · Índice · Siguiente                      │
-└──────────────────────────────────────────────────────────────┘
-```
-
-No utilizar otra estructura principal.
-
----
-
-# 33. TOPBAR FIJA
-
-La barra superior debe contener siempre:
-
-```text
-Nombre del proyecto
-Proveedor
-Entorno
-Estado del despliegue
-Campo de búsqueda
-```
-
-Ejemplo:
-
-```text
-Proyecto: Mi Sistema
-AWS
-Producción
-READY
-Buscar...
-```
-
-El contenido cambia.
-
-La estructura no.
-
----
-
-# 34. SIDEBAR FIJA
-
-La navegación lateral debe mostrar siempre:
-
-```text
-00 RESUMEN
-01 CONFIGURAR PROYECTO
-02 CREAR INFRAESTRUCTURA
-03 INSTALAR HERRAMIENTAS
-04 DESPLEGAR Y VERIFICAR
-05 ACTUALIZAR PRODUCCIÓN
-06 APAGAR Y REACTIVAR
-```
-
-Cada elemento debe mostrar:
-
-```text
-número;
-nombre;
-estado.
-```
-
-Ejemplo:
-
-```text
-✓ 00 Resumen
-✓ 01 Configuración
-● 02 Infraestructura
-○ 03 Herramientas
-○ 04 Despliegue
-○ 05 Actualización
-○ 06 Apagado
-```
-
----
-
-# 35. CONTENIDO PRINCIPAL
-
-Cada documento se renderiza como una página/sección independiente.
-
-Debe conservar:
-
-```text
-jerarquía de títulos;
-texto;
-listas;
-tablas;
-código;
-alertas;
-checklists.
-```
-
-La representación puede mejorar la lectura.
-
-No modificar el contenido semántico.
-
----
-
-# 36. CÓDIGOS
-
-Todos los bloques de código del HTML deben tener:
-
-```text
-lenguaje;
-botón Copiar;
-área desplazable si es necesario.
-```
-
-Ejemplo:
-
-```text
-┌─────────────────────────────────────────┐
-│ bash                            Copiar  │
-├─────────────────────────────────────────┤
-│ docker compose up -d --build            │
-│                                         │
-└─────────────────────────────────────────┘
-```
-
-Al presionar:
-
-```text
-Copiar
-```
-
-debe copiarse únicamente el contenido del comando.
-
----
-
-# 37. ALERTAS VISUALES
-
-Los bloques Markdown:
-
-```text
-IMPORTANT
-WARNING
-CAUTION
-TIP
-```
-
-deben convertirse en tarjetas visuales consistentes.
-
-Ejemplo:
-
-```text
-┌────────────────────────────────────────┐
-│ ⚠ WARNING                              │
-│ No elimines el volumen de PostgreSQL.  │
-└────────────────────────────────────────┘
-```
-
-No cambiar el mensaje.
-
----
-
-# 38. TABLAS
-
-Todas las tablas Markdown deben convertirse en tablas HTML:
-
-```text
-responsive;
-legibles;
-con encabezado fijo cuando sea conveniente;
-con desplazamiento horizontal en pantallas pequeñas.
-```
-
-No convertir automáticamente una tabla en texto.
-
----
-
-# 39. CHECKLISTS
-
-Los elementos:
-
-```text
-- [ ] ...
-- [x] ...
-```
-
-deben representarse visualmente como checklist.
-
-Ejemplo:
-
-```text
-☐ Docker instalado
-☐ Git instalado
-☑ SSH configurado
-```
-
-El estado debe conservarse.
-
----
-
-# 40. DIAGRAMAS
-
-Los diagramas de arquitectura o flujo deben permanecer visibles.
-
-Cuando el documento Markdown tenga:
-
-```text
-Mermaid
-ASCII
-diagramas de flujo
-```
-
-el HTML debe renderizarlos visualmente.
-
-Si no es posible ejecutar Mermaid de forma confiable:
-
-> convertir el diagrama a una representación visual equivalente sin eliminar su contenido.
-
-No ocultar el diagrama.
-
----
-
-# 41. NAVEGACIÓN DEL HTML
-
-El HTML debe proporcionar siempre:
-
-```text
-Anterior
-Índice
-Siguiente
-```
-
-en el footer.
-
-También debe permitir:
-
-```text
-clic en sidebar → cambiar de sección;
-```
-
-sin abandonar la página cuando sea posible.
-
----
-
-# 42. BÚSQUEDA
-
-La barra superior debe permitir buscar contenido dentro de toda la documentación.
-
-Debe buscar:
-
-```text
-títulos;
-texto;
-comandos;
-herramientas;
-errores;
-variables.
-```
-
-Al encontrar coincidencias:
-
-```text
-resaltar;
-navegar al resultado;
-```
-
-No utilizar un servicio externo.
-
----
-
-# 43. RESPONSIVIDAD
-
-La UI debe funcionar en:
-
-```text
-desktop;
-tablet;
-móvil.
-```
-
-En pantallas pequeñas:
-
-```text
-sidebar
-↓
-navigation drawer / menú superior
-```
-
-pero manteniendo los mismos contenidos y componentes.
-
----
-
-# 44. AUTOCONTENIDO DEL HTML
-
-`07_FLUJO_VISUAL_DESPLIEGUE.html` debe ser:
-
-```text
-self-contained
-```
-
-Debe incluir dentro del propio archivo:
-
-```text
-HTML
-CSS
-JavaScript
-iconos necesarios
-contenido documental
-```
-
-No depender de:
-
-```text
-npm;
-frameworks externos;
-servidor;
-build step;
-internet;
-CDN;
-```
-
-para abrirse localmente.
-
-Debe poder ejecutarse:
-
-```text
-doble clic
-```
-
-y abrirse directamente en el navegador.
-
----
-
-# 45. DISEÑO VISUAL FIJO
-
-Utilizar siempre:
-
-```text
-Topbar oscura
-Sidebar oscura
-Contenido claro
-Tarjetas blancas
-Bordes suaves
-Código en panel independiente
-Alertas diferenciadas
-Tipografía sans-serif
-Espaciado consistente
-```
-
-No utilizar:
-
-```text
-gradientes excesivos;
-animaciones decorativas;
-fondos fotográficos;
-efectos 3D;
-neumorfismo;
-glassmorphism;
-interfaces experimentales.
-```
-
-La UI debe priorizar:
-
-```text
-lectura;
-navegación;
-copiado de comandos;
-comprensión del flujo.
-```
-
----
-
-# 46. SISTEMA DE COLOR FIJO
-
-Utilizar siempre esta semántica:
-
-```text
-Background:
-#0b1220
-
-Sidebar:
-#111827
-
-Primary:
-#4f46e5
-
-Success:
-#16a34a
-
-Warning:
-#f59e0b
-
-Danger:
-#dc2626
-
-Info:
-#0ea5e9
-
-Content:
-#f8fafc
-
-Card:
-#ffffff
-
-Text:
-#0f172a
-
-Muted:
-#64748b
-```
-
-Estos valores forman parte del contrato visual.
-
-No sustituirlos arbitrariamente en cada ejecución.
-
----
-
-# 47. COMPONENTES FIJOS DEL HTML
-
-El HTML debe disponer como mínimo de:
-
-```text
-1. Topbar
-2. Sidebar
-3. Breadcrumb
-4. Progress indicator
-5. Section header
-6. Content cards
-7. Code blocks
-8. Copy buttons
-9. Alert cards
-10. Tables
-11. Checklists
-12. Diagram container
-13. Search
-14. Previous / Index / Next
-15. Footer
-```
-
-No agregar elementos decorativos que distraigan de la documentación.
-
----
-
-# 48. INDICADOR DE PROGRESO
-
-El HTML debe mostrar el progreso del flujo:
-
-```text
-00 → 01 → 02 → 03 → 04 → 05 → 06
-```
-
-El estado representa documentación, no la ejecución real del servidor.
-
-Ejemplo:
-
-```text
-00 ✓
-01 ✓
-02 ●
-03 ○
-04 ○
-05 ○
-06 ○
-```
-
----
-
-# 49. ESTADOS VISUALES
-
-Utilizar:
-
-```text
-✓ Completed
-● Current
-○ Pending
-⚠ Blocked
-```
-
-El estado puede determinarse a partir de la navegación/documentación.
-
-No afirmar que un paso de despliegue fue ejecutado si solamente fue documentado.
-
----
-
-# 50. NAVEGACIÓN DOCUMENTAL VS EJECUCIÓN REAL
-
-Diferenciar claramente:
-
-```text
-DOCUMENTADO
-```
-
-de:
-
-```text
-EJECUTADO
-```
-
-El HTML no debe fingir que el servidor ya está desplegado.
-
----
-
-# 51. VALIDACIÓN DEL HTML
-
-Antes de finalizar, la IA debe comprobar:
-
-```text
-[ ] HTML válido
-[ ] CSS embebido
-[ ] JavaScript embebido
-[ ] No existen dependencias CDN
-[ ] Todos los enlaces internos funcionan
-[ ] Todos los botones Copiar funcionan
-[ ] La búsqueda funciona
-[ ] Sidebar navega
-[ ] Footer navega
-[ ] Tablas funcionan en móvil
-[ ] Código mantiene formato
-[ ] Todo el contenido Markdown aparece
-```
-
----
-
-# 52. PRUEBA DE COMPLETITUD HTML
-
-Debe realizarse una comprobación conceptual:
-
-```text
-Markdown 00
-    ↓
-HTML
-
-Markdown 01
-    ↓
-HTML
-
-Markdown 02
-    ↓
-HTML
-
-Markdown 03
-    ↓
-HTML
-
-Markdown 04
-    ↓
-HTML
-
-Markdown 05
-    ↓
-HTML
-
-Markdown 06
-    ↓
-HTML
-```
-
-Cada documento debe tener representación correspondiente.
-
-No debe faltar ningún contenido textual.
-
----
-
-# 53. HASH / CONTROL DE SINCRONIZACIÓN OPCIONAL
-
-Cuando sea práctico, puede incluirse internamente en HTML:
-
-```text
-Generated from:
-00_RESUMEN_GENERAL.md
-01_CONFIGURAR_PROYECTO.md
-...
-```
-
-y:
-
-```text
-Generated:
-[fecha]
-```
-
-Esto permite identificar qué versión documental alimentó el HTML.
-
-No sustituye la sincronización real.
-
----
-
-# 54. DETECCIÓN DE DIFERENCIAS
-
-Antes de finalizar:
-
-```text
-¿Existe alguna instrucción presente en Markdown
-que no aparezca en HTML?
-```
-
-Si sí:
-
-```text
-→ corregir HTML.
-```
-
-También:
-
-```text
-¿Existe algún contenido en HTML que no exista en Markdown?
-```
-
-Si es contenido textual nuevo:
-
-```text
-→ eliminarlo
-```
-
-salvo que sea parte de la propia UI, como:
-
-```text
-Copiar
-Buscar
-Anterior
-Siguiente
-```
-
----
-
-# 55. CALIDAD DE COMANDOS
-
-Los comandos deben ser:
-
-```text
-específicos;
-contextuales;
-ejecutables;
-seguros;
-verificables.
-```
-
-Cada comando crítico debe explicar:
-
-```text
-dónde ejecutarlo;
-qué hace;
-qué resultado esperar.
-```
-
----
-
-# 56. DETECCIÓN DE RECURSOS NO NECESARIOS
-
-La IA debe evitar desplegar componentes que el proyecto no necesita.
-
-Por ejemplo:
-
-```text
-NO agregar Redis
-```
-
-si el proyecto no lo utiliza.
-
-```text
-NO agregar Nginx
-```
-
-si la plataforma ya proporciona routing adecuado y el proyecto no requiere proxy propio.
-
-```text
-NO agregar PostgreSQL
-```
-
-si utiliza SQLite y esa decisión es válida para el escenario.
-
-````
-
-La arquitectura debe derivarse del proyecto y de la decisión de infraestructura.
-
----
-
-# 57. RESTRICCIONES DE RECURSOS
-
-Si la infraestructura seleccionada es pequeña:
-
-```text
-CPU limitada
-RAM limitada
-disco limitado
-````
-
-la IA debe revisar:
-
-```text
-build;
-compilación;
-cache;
-logs;
-imágenes Docker;
-volúmenes;
-swap;
-persistencia.
-```
-
-Si existe riesgo real de OOM:
-
-```text
-documentarlo;
-```
-
-y proporcionar una estrategia técnica apropiada.
-
----
-
-# 58. SEGURIDAD
-
-La guía debe revisar:
-
-```text
-SSH;
-firewall;
-credenciales;
-variables;
-puertos;
-HTTPS;
-permisos;
-secretos;
-exposición de DB;
-logs.
-```
-
-No abrir:
-
-```text
-PostgreSQL 5432
-MySQL 3306
-Redis 6379
-```
-
-públicamente salvo que exista una razón explícita y documentada.
-
----
-
-# 59. PUERTOS
-
-Crear una tabla:
-
-```text
-| Puerto | Protocolo | Origen | Servicio | Justificación |
-```
-
-Solo incluir puertos realmente utilizados.
-
-No abrir puertos innecesarios.
-
----
-
-# 60. DOMINIO Y HTTPS
-
-Si el proyecto es público y requiere dominio, documentar:
-
-```text
-DNS
-A / AAAA / CNAME
-proxy
-certificado
-HTTPS
-renovación
-```
-
-Si el usuario no tiene dominio:
-
-```text
-documentar acceso mediante IP o mecanismo temporal,
-según infraestructura.
-```
-
----
-
-# 61. RECURSOS DINÁMICOS
-
-Todo valor que cambie según el despliegue debe marcarse:
-
-```text
-<TU_IP_PUBLICA>
-<TU_DOMINIO>
-<TU_USUARIO>
-<TU_PROYECTO>
-<TU_REPOSITORIO>
-<TU_REGION>
-```
-
-La documentación debe explicar cómo obtener cada valor.
-
----
-
-# 62. NO EXPONER INFORMACIÓN LOCAL
-
-No incluir:
-
-```text
-C:\Users\NombreReal\...
-/home/usuario-personal/...
-```
-
-salvo que sea necesario como ejemplo.
-
-Utilizar:
-
-```text
-C:\ruta\a\tu\clave.pem
-/home/tu-usuario/proyecto
-```
-
----
-
-# 63. ENTREGA FINAL
-
-Después de generar todo:
-
-```text
-[CARPETA_DESPLIEGUE]/
-├── 00_RESUMEN_GENERAL.md
-├── 01_CONFIGURAR_PROYECTO.md
-├── 02_CREAR_INFRAESTRUCTURA_[CLOUD].md
-├── 03_INSTALAR_HERRAMIENTAS.md
-├── 04_DESPLEGAR_Y_VERIFICAR.md
-├── 05_ACTUALIZAR_PRODUCCION.md
-├── 06_APAGAR_Y_REACTIVAR.md
-└── 07_FLUJO_VISUAL_DESPLIEGUE.html
-```
-
-La IA debe informar:
-
-```text
-Proyecto detectado:
-...
-
-Proveedor:
-...
-
-Arquitectura:
-...
-
-Modo de despliegue:
-...
-
-Herramientas:
-...
-
-Documentación generada:
-...
-
-HTML visual:
-...
-
-Siguiente acción:
-Abrir 00_RESUMEN_GENERAL.md
-o
-Abrir 07_FLUJO_VISUAL_DESPLIEGUE.html
-```
-
----
-
-# 64. ESTADOS DEL DOCUMENTO
-
-La documentación puede utilizar:
-
-```text
-DRAFT
-NEEDS_CLARIFICATION
-READY
-GENERATED
-SUPERSEDED
-```
-
-### NEEDS_CLARIFICATION
-
-Faltan decisiones de infraestructura relevantes.
-
-### READY
-
-La información necesaria está disponible y la guía puede generarse.
-
-### GENERATED
-
-La documentación y el HTML fueron generados y verificados.
-
----
-
-# 65. REGLA DE BLOQUEO
-
-Si falta una decisión que puede cambiar sustancialmente la documentación:
-
-```text
-NO GENERAR GUÍA FINAL.
-```
-
-Ejemplos:
-
-```text
-proveedor desconocido;
-modalidad de despliegue desconocida;
-ubicación de base de datos desconocida;
-arquitectura incompatible;
-dependencia crítica desconocida.
-```
-
-Preguntar.
-
----
-
-# 66. NO BLOQUEAR POR DETALLES MENORES
-
-No detenerse para preguntar:
-
-```text
-nombre del archivo de log;
-nombre de una variable privada;
-formato de un comentario;
-orden de pequeños comandos;
-estilo de redacción.
-```
-
-La IA debe resolver esos detalles técnicamente.
-
----
-
-# 67. FLUJO COMPLETO DE `/doc-deploy`
+> **REGLA DE ORO INNEGOCIABLE:**
+> La IA tiene terminantemente prohibido inventar o asumir silenciosamente:
+> - Proveedores de nube (AWS, GCP, Azure, DigitalOcean, VPS, Render, etc.).
+> - Sistemas operativos o distribuciones Linux (Ubuntu, Debian, Alpine, etc.).
+> - Tipos de instancia, tamaños de máquina o cuotas de CPU/RAM.
+> - Comandos de consola, rutas del sistema de archivos o puertos de red.
+> - Dependencias de runtime, paquetes nativos o librerías de sistema.
+> - Precios, políticas de facturación, dominios o registros DNS.
 
 ```mermaid
 flowchart TD
+    A["🔍 INSPECCIONAR REPOSITORIO"] --> B["⚙️ DETECTAR STACK Y SERVICIOS"]
+    B --> C{"¿Falta una decisión clave?"}
+    C -->|Sí| D["❓ PREGUNTAR AL USUARIO (Grill-Me Mínimo)"]
+    D --> E["📥 RECIBIR RESPUESTA"]
+    E --> F["🔄 REAUDITAR PROYECTO"]
+    F --> C
+    C -->|No| G["✅ VERIFICAR COMPATIBILIDAD"]
+    G --> H["📑 GENERAR DOCUMENTACIÓN MODULAR + HTML"]
+```
 
-    A["/doc-deploy"]
-    B["Auditar proyecto"]
-    C["Detectar arquitectura"]
-    D["Detectar herramientas"]
-    E{"¿Faltan decisiones de infraestructura?"}
-    F["Preguntas mínimas"]
-    G["Esperar respuesta"]
-    H["Reauditar"]
-    I["Generar Markdown"]
-    J["Generar HTML"]
-    K["Comparar Markdown ↔ HTML"]
-    L["Validar enlaces y comandos"]
-    M["GENERATED"]
+> [!CAUTION]
+> **Nunca generar una guía aparentemente completa utilizando valores ficticios o placeholders ambiguos.** Si una decisión no puede inferirse con certeza, la IA debe detenerse y preguntar.
 
-    A --> B
-    B --> C
-    C --> D
-    D --> E
+---
 
-    E -->|Sí| F
-    F --> G
-    G --> H
-    H --> E
+# 1. OBJETIVO Y PIPELINE DEL CICLO OPERATIVO
 
-    E -->|No| I
-    I --> J
-    J --> K
-    K --> L
-    L --> M
+`/doc-deploy` debe producir una guía que permita a cualquier ingeniero o auditor llevar el proyecto desde su estado de desarrollo hasta producción sin ambigüedades:
+
+```mermaid
+flowchart LR
+    L["💻 Local"] --> P["⚙️ Preparación"]
+    P --> I["☁️ Infraestructura"]
+    I --> H["🔧 Herramientas"]
+    H --> D["🚀 Despliegue"]
+    D --> V["🧪 Verificación"]
+    V --> A["🔄 Actualización"]
+    A --> S["🛑 Apagado/Reactivación"]
+```
+
+El usuario final debe poder operar el sistema sin tener que adivinar:
+- Qué paquetes instalar y en qué orden exacto.
+- Dónde ejecutar cada instrucción (`[PC LOCAL]`, `[SSH / SERVIDOR]`, `[CONTENEDOR]`).
+- Qué archivo editar y qué variable configurar exactamente.
+- Cómo comprobar de forma observable que cada servicio quedó saludable.
+- Qué hacer paso a paso si ocurre un error en tiempo de ejecución.
+- Cómo desplegar nuevas versiones con mínimo o cero tiempo de inactividad (*Zero-Downtime*).
+
+---
+
+# 2. PRINCIPIO DE MÍNIMAS PREGUNTAS (GRILL-ME ESTRATÉGICO)
+
+> [!TIP]
+> **Prioridad:** Preguntar la **menor cantidad posible de decisiones de alto impacto**.
+
+1. Si el usuario no especificó proveedor ni modo de hosting, la IA debe realizar primero una **auditoría profunda del repositorio** para determinar qué puede inferirse de forma objetiva (ej. `Dockerfile`, `docker-compose.yml`, bases de datos, scripts).
+2. Si tras la auditoría el camino es evidente, confirmarlo brevemente.
+3. Solo si faltan decisiones estructurales irreductibles (ej. ¿VPS propio o PaaS administrado?), la IA formulará una o dos preguntas clave con opciones recomendadas.
+
+---
+
+# 3. AUDITORÍA PREVIA OBLIGATORIA DEL REPOSITORIO
+
+Antes de formular preguntas, la IA debe auditar exhaustivamente los artefactos del proyecto:
+
+| Categoría | Archivos a Inspeccionar | Propósito de la Detección |
+|:---|:---|:---|
+| **Gobernanza y Visión** | `AGENTS.md`, `README.md`, `docs/constitution.md` | Entender la misión, restricciones de hosting y lineamientos del equipo. |
+| **Especificaciones y Arquitectura** | `docs/specs/**/plan.md`, `docs/specs/**/spec.md` | Topología de datos, capas de servicios, puertos y dependencias externas. |
+| **Dependencias y Runtime** | `package.json`, `requirements.txt`, `pyproject.toml`, `composer.json`, `go.mod`, `pom.xml` | Versiones de lenguaje, scripts de build, comandos de start y migraciones. |
+| **Contenedores y Orquestación** | `Dockerfile`, `docker-compose.yml`, `compose.yml`, `.dockerignore` | Servicios multicontenedor, mapeo de puertos, volúmenes de datos y redes. |
+| **Variables y Secretos** | `.env.example`, `.env.template`, `config/`, `settings.py` | Catálogo de variables de entorno requeridas en producción sin revelar secretos. |
+| **Servidores Web y Proxies** | `nginx.conf`, `Caddyfile`, `systemd/`, `scripts/` | Enrutamiento inverso, certificados SSL/TLS y demonios de sistema. |
+| **Automatización y CI/CD** | `.github/workflows/`, `gitlab-ci.yml`, `Makefile` | Pipelines de testing y scripts de automatización ya existentes. |
+
+---
+
+# 4. REGLA SUPREMA DE SEGURIDAD SOBRE SECRETOS Y CREDENCIALES
+
+> [!WARNING]
+> **PROHIBICIÓN ABSOLUTA DE FILTRAR SECRETOS:**
+> La IA puede inspeccionar archivos `.env` locales para identificar los *nombres* de variables necesarias, pero **NUNCA DEBE TRASLADAR SECRETOS REALES A LA DOCUMENTACIÓN NI AL HTML**.
+
+Bajo ninguna circunstancia se incluirán valores reales de:
+- Contraseñas de bases de datos o cuentas de usuario.
+- Claves privadas SSH o certificados SSL privados (`.key`).
+- API Keys de servicios cloud, OpenAI, Stripe, pasarelas de pago, etc.
+- Secretos de firma criptográfica (`JWT_SECRET`, `SESSION_KEY`, etc.).
+
+### Estándar de Placeholders Seguros:
+En los archivos de documentación y ejemplos de comandos, se utilizará obligatoriamente la convención:
+- `<TU_IP_PUBLICA>`
+- `<TU_DOMINIO>`
+- `<TU_DB_PASSWORD_PRODUCCION>`
+- `<TU_JWT_SECRET_SEGURO>`
+- `<TU_API_KEY>`
+
+Cada placeholder debe acompañarse de una nota explicando: **Dónde generarlo**, **Dónde introducirlo** y **Qué nivel de entropía/seguridad requiere**.
+
+---
+
+# 5. MATRIZ DE DETECCIÓN Y DECISIONES TÉCNICAS
+
+```mermaid
+flowchart TD
+    subgraph Deteccion["🔍 Hallazgos de Auditoría"]
+        APP["Aplicación (Runtime, Build, Start)"]
+        DEP["Dependencias (Librerías, Herramientas del Sistema)"]
+        DB["Persistencia (Motor DB, Volúmenes, Migraciones)"]
+        NET["Red (Puertos, Reverse Proxy, HTTPS)"]
+    end
+
+    subgraph Decisiones["⚖️ Separación de Responsabilidades"]
+        USR["Decisión del Usuario: Proveedor, Presupuesto, Dominio, Región"]
+        IA["Decisión de la IA: Comandos exactos, Paquetes, Scripts, Verificación"]
+    end
+
+    Deteccion --> Decisiones
+```
+
+### Tabla de Responsabilidades:
+
+| Ámbito | Responsable | Elementos Gobernados |
+|:---|:---:|:---|
+| **Estrategia y Negocio** | 👤 **Usuario** | Proveedor Cloud, presupuesto máximo, ubicación geográfica/región de datos, adquisición de dominio, certificados existentes. |
+| **Ingeniería Operativa** | 🤖 **IA** | Secuencia cronológica de comandos, paquetes de sistema (`apt`/`apk`), configuración de systemd/docker, scripts de backup, comandos de verificación observable y estructura de los documentos. |
+
+---
+
+# 6. ESTÁNDAR VISUAL DE TARJETAS DE PASOS ESTRUCTURADOS (STEP CARDS)
+
+> [!IMPORTANT]
+> **FORMATO OBLIGATORIO PARA TODAS LAS GUÍAS OPERATIVAS (01 A 06):**
+> Cada paso debe presentarse como una **Tarjeta de Paso Estructurada** con iconografía identificativa, contexto de ejecución explícito, bloque de comando con sintaxis coloreada, salida esperada verificable y procedimiento de solución de problemas (*Troubleshooting*).
+
+### Estructura Canónica de Cada Paso:
+
+```markdown
+### 🚀 Paso X: [Verbo de Acción en Infinitivo + Componente Concreto]
+
+> [!NOTE]
+> **Propósito:** [Explicación concisa de qué hace este paso y por qué es necesario]
+> **Contexto de Ejecución:** `[PC LOCAL]` | `[SSH / SERVIDOR]` | `[CONTENEDOR]`
+> **Ruta de Trabajo:** `/ruta/absoluta/o/relativa/donde/ejecutar`
+
+```bash
+# Comando exacto, listo para ejecutar (sin placeholders ambiguos)
+docker compose up -d --build
+```
+
+> [!TIP]
+> **Verificación Observable & Salida Esperada:**
+> Ejecuta `docker compose ps` y valida que la salida confirme los servicios activos:
+> ```text
+> NAME                IMAGE               STATUS              PORTS
+> mi_app_backend      mi_app:latest       Up 15 seconds       0.0.0.0:8000->8000/tcp
+> mi_app_db           postgres:16-alpine  Up 15 seconds       5432/tcp
+> ```
+
+> [!WARNING]
+> **Solución de Fallos Frecuentes (Troubleshooting):**
+> - **Síntoma:** El contenedor sale con error `bind: address already in use`.
+> - **Causa:** Otro proceso está utilizando el puerto asignado.
+> - **Solución:** Identifica el proceso con `sudo lsof -i :8000` o reasigna el puerto en el archivo `.env`.
 ```
 
 ---
 
-# 68. PROTOCOLO OPERATIVO EXACTO
+# 7. ESTRUCTURA MODULAR DE LA SUITE DOCUMENTAL (MARKDOWN)
 
-Al ejecutar:
+La suite de despliegue generada en la carpeta de destino debe seguir de forma inmutable la siguiente arquitectura documental:
 
-```text
-/doc-deploy
-```
-
-la IA debe:
-
-```text
-1. Leer AGENTS.md.
-2. Revisar documentación existente.
-3. Auditar el proyecto.
-4. Detectar framework y runtime.
-5. Detectar dependencias.
-6. Detectar persistencia.
-7. Detectar arquitectura.
-8. Detectar Docker / Nginx / Systemd / PM2 / etc.
-9. Detectar variables de entorno sin revelar secretos.
-10. Detectar recursos necesarios.
-11. Detectar qué decisiones ya están definidas.
-12. Detectar qué decisiones de infraestructura faltan.
-13. Formular el mínimo de preguntas necesarias.
-14. DETENERSE.
-15. Recibir respuesta.
-16. Reauditar.
-17. Repetir preguntas si una respuesta genera nuevas ambigüedades relevantes.
-18. Determinar arquitectura final de despliegue.
-19. Generar los 7 documentos.
-20. Generar el HTML visual.
-21. Verificar que HTML contiene todo el texto Markdown.
-22. Verificar enlaces.
-23. Verificar comandos.
-24. Verificar navegación.
-25. Verificar funcionamiento del HTML.
-26. Establecer estado GENERATED.
-27. Informar los archivos generados.
+```mermaid
+flowchart TD
+    G0["00_RESUMEN_GENERAL.md\n(Mapa global, arquitectura y riesgos)"] --> G1["01_CONFIGURAR_PROYECTO.md\n(Dockerfiles, envs y configs de producción)"]
+    G1 --> G2["02_CREAR_INFRAESTRUCTURA_[CLOUD].md\n(Consola cloud, firewall, SSH y redes)"]
+    G2 --> G3["03_INSTALAR_HERRAMIENTAS.md\n(Runtimes, Docker, Git, dependencias de SO)"]
+    G3 --> G4["04_DESPLEGAR_Y_VERIFICAR.md\n(Clonación, build, migraciones y SSL)"]
+    G4 --> G5["05_ACTUALIZAR_PRODUCCION.md\n(Pipeline de actualización y Zero-Downtime)"]
+    G5 --> G6["06_APAGAR_Y_REACTIVAR.md\n(Control de costos, snapshots y reactivación)"]
+    G0 -.-> HTML["07_FLUJO_VISUAL_DESPLIEGUE.html\n(Dashboard interactivo Dark Mode)"]
 ```
 
 ---
 
-# 69. REGLA DE REAUDITORÍA
+## 7.1 Detalle de Responsabilidad por Documento
 
-Después de las respuestas del usuario:
+### `00_RESUMEN_GENERAL.md`
+- **Misión:** Mapa mental completo y tablero de control del despliegue.
+- **Componentes Obligatorios:**
+  - Ficha técnica del proyecto (Nombre, Stack, Proveedor seleccionado, Entorno).
+  - Diagrama Mermaid de Arquitectura de Producción (comunicación entre clientes, reverse proxy, contenedores y base de datos).
+  - Tabla de prerrequisitos (cuentas, claves, accesos).
+  - Matriz de puertos y seguridad de red.
+  - Tabla de estimación y control de costos mensuales.
+  - Barra de navegación rápida entre documentos.
 
-> **La IA debe volver a auditar todo el proyecto antes de generar la documentación definitiva.**
+### `01_CONFIGURAR_PROYECTO.md`
+- **Misión:** Preparación del código fuente y artefactos antes de tocar el servidor remoto.
+- **Componentes Obligatorios:**
+  - Configuración y validación de `Dockerfile` multicapa optimizado para producción.
+  - Orquestación en `docker-compose.prod.yml` o equivalente con políticas de reinicio (`restart: unless-stopped`) y límites de memoria.
+  - Archivo `.env.production.example` con la totalidad de variables necesarias explicadas una a una.
+  - Configuración de servidores web de borde (`nginx.conf` o `Caddyfile`) con compresión gzip/brotli y cabeceras de seguridad HTTP.
+  - Verificación local previa mediante build de prueba.
 
-La respuesta puede revelar nuevas necesidades.
+### `02_CREAR_INFRAESTRUCTURA_[CLOUD].md`
+- **Misión:** Provisión de máquinas virtuales, redes y seguridad en el proveedor cloud.
+- **Componentes Obligatorios:**
+  - Guía paso a paso de consola web o CLI del proveedor real (AWS Lightsail/EC2, DigitalOcean Droplet, GCP Compute, VPS, etc.).
+  - Configuración estricta de Firewall / Security Groups:
+    | Puerto | Protocolo | Origen | Servicio | Justificación |
+    |:---:|:---:|:---:|:---|:---|
+    | `22` | TCP | `0.0.0.0/0` (o IP fija) | SSH | Administración remota segura vía par de llaves. |
+    | `80` | TCP | `0.0.0.0/0` | HTTP | Desvío obligatorio y renovación de certificados ACME. |
+    | `443` | TCP | `0.0.0.0/0` | HTTPS | Tráfico web cifrado para usuarios finales. |
+  - Generación, almacenamiento seguro y permisos del par de claves SSH (`chmod 400 ~/.ssh/clave.pem`).
+  - Asignación de IP estática/elástica y configuración de registros DNS (`A`, `CNAME`).
 
-Ejemplo:
+### `03_INSTALAR_HERRAMIENTAS.md`
+- **Misión:** Aprovisionamiento del sistema operativo del servidor.
+- **Componentes Obligatorios:**
+  - Primera conexión SSH con comando exacto y flags recomendados.
+  - Creación de usuario administrador no root (`sudo useradd -m ...`).
+  - Actualización de repositorios y paquetes del sistema (`apt update && apt upgrade -y`).
+  - Instalación oficial de Docker Engine y Docker Compose plugin sin versiones desactualizadas.
+  - Configuración de permisos de usuario (`usermod -aG docker $USER`).
+  - Configuración de memoria Swap de seguridad (para prevenir caídas por Out-Of-Memory en servidores pequeños).
+  - Tabla de verificación con comando y salida esperada para cada herramienta instalada.
 
-```text
-Usuario:
-Quiero Docker Compose en AWS.
+### `04_DESPLEGAR_Y_VERIFICAR.md`
+- **Misión:** El primer despliegue real de punta a punta (*From Zero to Running*).
+- **Componentes Obligatorios:**
+  - Clonación segura del repositorio en el servidor (mediante Deploy Key de GitHub o HTTPS).
+  - Creación del archivo `.env.production` real en el servidor a partir de la plantilla.
+  - Construcción y arranque de contenedores con `docker compose -f docker-compose.prod.yml up -d --build`.
+  - Ejecución de migraciones de base de datos y seeds de inicialización.
+  - Emisión y renovación automática de certificados SSL/TLS (Let's Encrypt / Certbot / Caddy).
+  - Batería de pruebas de verificación física (HTTP status codes, logs en tiempo real, persistencia tras reinicio).
+  - Sección profunda de **Troubleshooting Contextual** para los 5 fallos más probables del stack.
 
-La IA detecta posteriormente:
-PostgreSQL persistente
-+
-volumen
-+
-backup
-+
-HTTPS
-```
+### `05_ACTUALIZAR_PRODUCCION.md`
+- **Misión:** Procedimiento rutinario y seguro de actualización de código sin pérdida de datos.
+- **Componentes Obligatorios:**
+  - Flujo dual claramente separado: `[A. PC LOCAL]` (commit, push, tags) y `[B. SERVIDOR REMOTO]` (pull, rebuild, migrate).
+  - Estrategia de **Zero-Downtime Deployment** o ventana de mantenimiento programada.
+  - Protocolo obligatorio de **Respaldo Rápido previo a actualización** (dump de base de datos).
+  - Procedimiento de **Rollback Inmediato** si la nueva versión presenta errores en producción.
 
-Si estas decisiones cambian la guía, deben resolverse antes de generar el documento definitivo.
-
----
-
-# 70. TEST DE IMPLEMENTACIÓN
-
-Antes de finalizar, la IA debe imaginar que entrega:
-
-```text
-00_RESUMEN_GENERAL.md
-+
-01...
-+
-...
-+
-07_FLUJO_VISUAL_DESPLIEGUE.html
-```
-
-a otra persona que nunca vio el proyecto.
-
-Debe poder completar:
-
-```text
-crear infraestructura
-→ instalar herramientas
-→ desplegar
-→ verificar
-→ actualizar
-→ apagar
-→ reactivar
-```
-
-sin inventar pasos esenciales.
-
----
-
-# 71. TEST DE DOCUMENTACIÓN COMPLETA
-
-Verificar:
-
-```text
-[ ] Infraestructura
-[ ] Instalación
-[ ] Configuración
-[ ] Despliegue
-[ ] Verificación
-[ ] Troubleshooting
-[ ] Actualización
-[ ] Apagado
-[ ] Reactivación
-[ ] Costos
-[ ] Seguridad
-[ ] Navegación
-[ ] HTML visual
-```
-
----
-
-# 72. TEST DE CONSISTENCIA
-
-Verificar:
-
-```text
-Proyecto
-  ↕
-Constitución / documentación existente
-
-Código
-  ↕
-Arquitectura
-
-Arquitectura
-  ↕
-Infraestructura
-
-Infraestructura
-  ↕
-Comandos
-
-Markdown
-  ↕
-HTML
-```
-
-No debe existir una contradicción entre estos niveles.
+### `06_APAGAR_Y_REACTIVAR.md`
+- **Misión:** Gobernanza de ciclo de vida, ahorro de costos y reactivación segura.
+- **Componentes Obligatorios:**
+  - Diferencia operativa y financiera entre **Detener (Stop/Pause)** y **Eliminar (Terminate/Destroy)**.
+  - Matriz de costos residuales (Discos EBS/Block Storage e IPs elásticas que siguen facturando aún con la máquina apagada).
+  - Procedimiento de creación de snapshot / copia de seguridad antes del apagado.
+  - Protocolo paso a paso de **Reactivación**:
+    ```mermaid
+    flowchart LR
+        A["Recurso Apagado"] --> B["Iniciar Instancia"]
+        B --> C["Verificar IP/DNS"]
+        C --> D["Arrancar Servicios"]
+        D --> E["Test Observable"]
+    ```
+  - Checklist de verificación tras encendido (verificar si la IP pública cambió, recertificar SSL si aplica, comprobar montajes).
 
 ---
 
-# 73. REGLA MAESTRA DEL HTML
+# 8. ESPECIFICACIÓN DEL ARTEFACTO VISUAL INTERACTIVO (`07_FLUJO_VISUAL_DESPLIEGUE.html`)
 
-> **La IA puede cambiar el contenido documental porque cada proyecto es diferente; no puede cambiar la estructura visual del HTML definida por este workflow.**
-
-El HTML siempre debe mantener:
-
-```text
-TOPBAR
-   ↓
-SIDEBAR
-   ↓
-MAIN CONTENT
-   ↓
-FOOTER NAVIGATION
-```
-
-con:
-
-```text
-search;
-copy buttons;
-alerts;
-tables;
-checklists;
-diagrams;
-progress;
-navigation.
-```
+> [!IMPORTANT]
+> **REQUERIMIENTOS DEL DASHBOARD INTERACTIVO:**
+> - **Concepto Central:** Debe presentarse como un **flujo interactivo tipo diagrama de componentes y nodos del pipeline de despliegue**.
+> - **Interacción por Nodos:** Cada componente o nodo del diagrama es interactivo; al seleccionarlo, muestra dinámicamente en un panel principal sus respectivos pasos estructurados, comandos, verificaciones y alertas.
+> - **Soporte Nativo de Modo Oscuro (Dark Mode):** Interruptor fluido (Light / Dark) en la barra superior con persistencia en `localStorage`. Paleta refinada de alto contraste y legibilidad técnica.
+> - **Botones de Copiado Instantáneo:** Cada comando cuenta con botón de copiar con feedback visual inmediato (`¡Copiado!`).
+> - **Checklist de Progreso Documental:** Permite al desarrollador ir marcando casillas de verificación interactivas para seguir visualmente el avance de su despliegue.
+> - **100% Autocontenido:** Cero dependencias externas (sin CDN de Tailwind, sin scripts externos que requieran internet). Debe abrirse instantáneamente con doble clic en local.
 
 ---
 
-# 74. REGLA MAESTRA DE `/doc-deploy`
+# 9. CONTRATO DE CALIDAD Y REGLAS DE CIERRE
 
-> **Primero comprender el proyecto. Luego determinar la infraestructura. Preguntar únicamente lo que no puede saberse con seguridad. Después generar instrucciones exactas y verificables. Finalmente representar toda esa documentación en un HTML visual fijo, sin perder una sola instrucción.**
+Antes de declarar el estado `GENERATED`, la IA debe verificar:
 
-El flujo debe permanecer:
-
-```text
-AUDITAR
-   ↓
-DETECTAR
-   ↓
-PREGUNTAR SOLO LO NECESARIO
-   ↓
-ESPERAR
-   ↓
-REAUDITAR
-   ↓
-DEFINIR INFRAESTRUCTURA
-   ↓
-DOCUMENTAR
-   ↓
-GENERAR HTML
-   ↓
-SINCRONIZAR
-   ↓
-VERIFICAR
-   ↓
-GENERATED
-```
-
-La documentación final debe permitir responder:
-
-```text
-¿Qué tengo?
-
-¿Qué necesito?
-
-¿Qué debo crear?
-
-¿Qué debo instalar?
-
-¿Dónde ejecuto cada comando?
-
-¿Qué debo configurar?
-
-¿Cómo sé que funciona?
-
-¿Qué hago cuando actualizo?
-
-¿Cómo lo apago?
-
-¿Cómo lo vuelvo a encender?
-
-¿Qué costos o recursos debo controlar?
-```
-
-Y el HTML debe permitir responder exactamente las mismas preguntas, pero mediante una **interfaz visual de navegación estable y consistente entre todos los proyectos**.
+- [ ] **Completitud:** Ningún comando contiene parámetros ficticios (`docker run ...` o `[puerto]`); todos usan la sintaxis `<TU_PARAMETRO>` debidamente explicada.
+- [ ] **Contexto:** Cada bloque de código declara explícitamente su ámbito: `[PC LOCAL]`, `[SSH / SERVIDOR]` o `[CONTENEDOR]`.
+- [ ] **Verificación Dual:** Cada comando de cambio de estado tiene asociado su correspondiente comando de verificación observable.
+- [ ] **Sincronización:** El archivo HTML `07_FLUJO_VISUAL_DESPLIEGUE.html` contiene exactamente el 100% de los pasos, comandos y alertas documentados en los archivos Markdown `00` a `06`.
+- [ ] **Navegabilidad:** Cada archivo Markdown incluye al inicio y al final enlaces cruzados relativos hacia el paso anterior, el índice (`00_RESUMEN_GENERAL.md`) y el paso siguiente.
