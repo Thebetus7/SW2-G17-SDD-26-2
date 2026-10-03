@@ -138,6 +138,35 @@ NO EXECUTION
 
 ---
 
+# 2.1 PARÁMETROS DE INVOCACIÓN Y MODOS DE EJECUCIÓN
+
+El comando `/sdd-execution` admite tres modalidades de ejecución según la entrada recibida:
+
+### 1. Invocación Sin Detalle / Vacía (Por Defecto)
+```text
+/sdd-execution
+```
+- **Modo Continuo Total (Full Run)**: Si el usuario no proporciona argumentos, números ni especificaciones adicionales (o simplemente presiona Enter), la IA ejecuta **automáticamente todas las tareas pendientes** en bucle continuo.
+- Procede secuencialmente tarea por tarea (Implementar → Testear → Verificar → Actualizar `Task Progress` a `COMPLETED` → Siguiente tarea) hasta:
+  - Completar el 100% de la feature, o
+  - Toparse con una inconsistencia o fallo que catalogue el estado como `BLOCKED`.
+
+### 2. Invocación por Lote Numérico
+```text
+/sdd-execution [N]
+```
+*(Ejemplo: `/sdd-execution 2`)*
+- **Modo Lote (Batch)**: Ejecuta únicamente la cantidad `N` de tareas ejecutables consecutivas. Al completar la última tarea del lote, persiste el progreso y emite el reporte de **Ejecución Parcial**, cediendo el control al usuario.
+
+### 3. Invocación Atómica por Identificador
+```text
+/sdd-execution [T_ID]
+```
+*(Ejemplo: `/sdd-execution T2.1`)*
+- **Modo Quirúrgico**: Valida que las dependencias directas de la tarea indicada estén satisfechas y ejecuta únicamente esa tarea específica, cerrando su ciclo con evidencia verificable.
+
+---
+
 # 3. VALIDACIÓN PREVIA
 
 Antes de modificar código, la IA debe comprobar:
@@ -241,20 +270,19 @@ No inventar una dependencia artificial para forzar una secuencia innecesaria.
 
 ---
 
-# 7. ESTADOS DE EJECUCIÓN
+# 7. ESTADOS DE EJECUCIÓN Y SIMBOLOGÍA VISUAL OBLIGATORIA
 
-Los estados válidos son:
+Execution debe actualizar tanto el estado textual como **las casillas interactivas y símbolos visuales** en `tasks.md`. Esto permite auditar visualmente el progreso real de forma instantánea.
 
-```text
-PENDING
-IN_PROGRESS
-BLOCKED
-TESTING
-REVIEW
-COMPLETED
-```
+### Tabla Maestra de Simbología de Estados:
 
-Execution debe actualizar estos estados durante el trabajo.
+| Símbolo | Estado Formal | Render / Significado | Acción en `/sdd-execution` |
+|:---:|---|---|---|
+| `[ ]` | **PENDING** | `[ ]` Casilla vacía | Tarea en espera. Aún no se ha iniciado su implementación. |
+| `[/]` *(o `[-]`)* | **IN_PROGRESS** | `[/]` Media carga / En curso | Tarea en trabajo activo: escribiendo código o configurando componentes. |
+| `[?]` | **TESTING / REVIEW** | `[?]` En validación | Tarea implementada; corriendo suites de test o linters antes del cierre. |
+| `[x]` | **COMPLETED** | `[x]` Casilla marcada con **x** | **Cierre físico definitivo**: tests aprobados al 100% y evidencia registrada. |
+| `[!]` | **BLOCKED** | `[!]` Alerta / Bloqueo | Tarea detenida por impedimento o ambigüedad, con causa y retorno reportados. |
 
 ---
 
@@ -307,13 +335,15 @@ Execution debe actualizar:
 tasks.md
 ```
 
+marcando `[/]` en checklist y encabezado.
+
 Cuando pase a:
 
 ```text
 TESTING
 ```
 
-debe actualizarse.
+debe actualizarse con `[?]`.
 
 Cuando pase a:
 
@@ -321,7 +351,7 @@ Cuando pase a:
 COMPLETED
 ```
 
-debe actualizarse.
+debe actualizarse físicamente marcando la casilla **`[x]`** (`- [x]` y `### [x]`).
 
 Cuando pase a:
 
@@ -329,7 +359,7 @@ Cuando pase a:
 BLOCKED
 ```
 
-también.
+debe marcarse con `[!]`.
 
 No esperar hasta el final de la feature para actualizar el estado.
 
@@ -337,38 +367,25 @@ No esperar hasta el final de la feature para actualizar el estado.
 
 # 10. CAMBIO DE ESTADO ATÓMICO
 
-Siempre que una tarea cambie de estado, actualizar conjuntamente:
+Siempre que una tarea cambie de estado, actualizar conjuntamente en una sola edición:
 
 ```text
-1. Estado individual.
-2. Resumen superior.
-3. Evidencia o motivo correspondiente.
+1. Casilla en el checklist rápido (- [ ] ➔ - [/] ➔ - [x]).
+2. Casilla en el encabezado de la tarea (### [ ] ➔ ### [/] ➔ ### [x]).
+3. Campo Status (Status: PENDING ➔ Status: IN_PROGRESS ➔ Status: COMPLETED).
+4. Resumen métrico superior (Task Progress).
+5. Registro de Evidencia demostrable (o motivo si fue BLOCKED).
 ```
 
-Ejemplo:
+Ejemplo al completar una tarea:
 
 ```text
-PENDING
-   ↓
-IN_PROGRESS
-```
-
-actualiza:
-
-```text
-Status: IN_PROGRESS
-```
-
-y:
-
-```text
-Tareas en progreso: +1
-```
-
-Pero todavía:
-
-```text
-Tareas realizadas: sin cambio
+Checklist: - [x] T2.1 [IMPL] Registrar una venta
+Encabezado: ### [x] T2.1 [IMPL] Registrar una venta
+Status: COMPLETED
+Tareas realizadas: +1
+Tareas por realizar: -1
+Evidencia: tests y comandos reales ejecutados
 ```
 
 ---
@@ -750,26 +767,34 @@ solo cuando su naturaleza no requiere una fase de testing adicional y existe evi
 
 ---
 
-# 27. REGLA PARA `COMPLETED`
+# 27. REGLA SUPREMA PARA `COMPLETED` Y MARCADO CON `[x]`
 
-No marcar:
+Está terminantemente prohibido marcar:
 
 ```text
 [x]
 COMPLETED
 ```
 
-hasta verificar:
+hasta verificar exhaustivamente:
 
 ```text
-[ ] Trabajo implementado.
-[ ] Criterio "Done when" satisfecho.
+[ ] Trabajo implementado conforme al Plan.
+[ ] Criterio "Done when" satisfecho al 100%.
 [ ] Dependencias respetadas.
-[ ] Pruebas necesarias ejecutadas.
-[ ] Resultado correcto.
-[ ] Evidencia registrada.
+[ ] Pruebas necesarias ejecutadas físicamente en terminal.
+[ ] Resultado exitoso confirmado (cero errores, cero cuelgues).
+[ ] Evidencia demostrable registrada en el bloque Evidence.
 [ ] No existe bloqueo conocido.
 ```
+
+> **Obligatoriedad del Marcado Físico con `[x]`:**
+> Una vez comprobados los puntos anteriores, la IA **DEBE estampar físicamente la `[x]`** en:
+> 1. El Checklist Rápido de Slices (`- [x] T...`).
+> 2. El encabezado de la tarea (`### [x] T...`).
+> 3. El campo `**Status:** COMPLETED`.
+> 
+> Una tarea sin la `[x]` visible se considera inconclusa para los lectores humanos y las herramientas de renderizado Markdown.
 
 ---
 
@@ -1524,7 +1549,7 @@ la IA debe seguir:
        marcar COMPLETED.
 15. Actualizar Task Progress.
 16. Seleccionar la siguiente tarea.
-17. Repetir hasta finalizar o quedar BLOCKED.
+17. Repetir el ciclo hasta completar todas las tareas o quedar BLOCKED (o hasta agotar el cupo N si se invocó en modo por lotes).
 18. Ejecutar verificación global final.
 19. Actualizar estado global.
 20. Informar evidencia y siguiente paso.

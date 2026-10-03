@@ -34,7 +34,8 @@ $Workflows = @(
     "sdd-spec-anchored.md",
     "sdd-spec-anchored-spec.md",
     "sdd-spec-anchored-plan.md",
-    "sdd-spec-anchored-task.md"
+    "sdd-spec-anchored-task.md",
+    "doc-deploy.md"
 )
 
 function Obtener-Plantilla {

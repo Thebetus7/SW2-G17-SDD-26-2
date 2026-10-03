@@ -63,6 +63,7 @@ Una vez instalado, el desarrollo bajo SDD organiza la documentación en carpetas
 7. **`/sdd-task`**: Descomposición en trabajo atómico y ejecutable en `docs/specs/XX/tasks.md` organizado en Vertical Slices, con tablero de progreso en tiempo real (`Task Progress`), dependencias topológicas y evidencia obligatoria.
 8. **`/sdd-execution`**: Motor de implementación y verificación física guiada. Ejecuta tareas, valida en consola con evidencia demostrable, actualiza atómicamente el estado y `Task Progress`, y retroalimenta al nivel documental correspondiente ante fallos.
 9. **`/sdd-spec-anchored`**: Iteración, corrección de bugs y refinamiento integral en cascada. Actualiza coordinadamente la tríada documental (`spec.md` + `plan.md` + `tasks.md`), encolando nuevas tareas sin borrar el historial previo.
+10. **`/doc-deploy`**: Generador de documentación de despliegue, instalación y flujo visual interactivo. Audita el proyecto real sin inventar infraestructura ficticia, determina servicios requeridos y genera una suite modular completa en Markdown (`00_RESUMEN_GENERAL.md` a `06_APAGAR_Y_REACTIVAR.md`) junto con el tablero visual interactivo en HTML (`07_FLUJO_VISUAL_DESPLIEGUE.html`).
 
 ---
 
@@ -240,8 +241,38 @@ Este comando actúa como el **motor de evolución controlada**, ejecutando un pr
 
 Tras finalizar, la IA te invitará a ejecutar `/sdd-execution` para resolver inmediatamente las nuevas tareas encoladas bajo validación dual.
 
+### 9. `/doc-deploy`: Documentación de Despliegue, Operaciones y Flujo Visual Interactivo
+
+> **Entrega y operaciones en producción:** Genera una suite documental técnica completa, rigurosa y modular para desplegar, instalar, verificar, actualizar, mantener, apagar y reactivar el proyecto en entornos de producción, acompañada de un dashboard interactivo en HTML.
+
+#### Modo de uso:
+
+```text
+/doc-deploy [opcional: proveedor de preferencia, ej. AWS, VPS, Docker, Railway, o vacío para autodetectar]
+```
+
+#### ¿Por qué es fundamental?
+Sin `/doc-deploy`, la puesta en producción suele ser un proceso manual, caótico y propenso a errores, con guías desactualizadas o comandos ficticios. Este comando analiza el código fuente real, las dependencias y la configuración del proyecto para estructurar una documentación operativa a prueba de fallos:
+
+- **Regla Suprema Anti-Invención de Infraestructura:** La IA tiene terminantemente prohibido asumir proveedores, sistemas operativos, IPs, puertos o comandos no verificados. Sigue el ciclo estricto: `INSPECCIONAR` ➔ `DETECTAR` ➔ `PREGUNTAR SI FALTA UNA DECISIÓN RELEVANTE` ➔ `RECIBIR RESPUESTA` ➔ `VERIFICAR` ➔ `GENERAR DOCUMENTACIÓN`.
+- **Estructura Modular Completa:** Genera un directorio organizado y navegable:
+  ```text
+  [CARPETA_DESPLIEGUE]/
+  ├── 00_RESUMEN_GENERAL.md
+  ├── 01_CONFIGURAR_PROYECTO.md
+  ├── 02_CREAR_INFRAESTRUCTURA_[CLOUD].md
+  ├── 03_INSTALAR_HERRAMIENTAS.md
+  ├── 04_DESPLEGAR_Y_VERIFICAR.md
+  ├── 05_ACTUALIZAR_PRODUCCION.md
+  ├── 06_APAGAR_Y_REACTIVAR.md
+  └── 07_FLUJO_VISUAL_DESPLIEGUE.html
+  ```
+- **Flujo Visual Interactivo (HTML):** Produce un archivo HTML autónomo (`07_FLUJO_VISUAL_DESPLIEGUE.html`) con diagramas de flujo interactivos, verificación de pasos y comandos listos para copiar con un solo clic.
+- **Ciclo de Vida Operativo Total:** Cubre no solo el despliegue inicial (*Happy Path*), sino también las tareas críticas del Día 2: actualización sin caída de servicio (*Zero-Downtime*), rollback, respaldos, monitoreo, costos y procedimientos de apagado seguro y reactivación.
+
 ---
 
 ## 🚀 Despliegue y Fork
 
 Consulta la guía detallada en [DEPLOY.md](DEPLOY.md) para aprender a subir tu propio fork a GitHub y configurar tus URLs canónicas.
+

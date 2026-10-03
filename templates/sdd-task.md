@@ -149,6 +149,24 @@ Formato obligatorio:
 | Progreso | X% |
 
 **Estado:** READY
+
+---
+
+## Checklist Rápido de Tareas por Vertical Slice
+
+### Slice 1: [Setup y Scaffolding Base]
+- [ ] `T1.1` [SETUP] Configurar dependencias, esquemas y tablas base.
+- [ ] `T1.2` [IMPL] Implementar contratos y validadores de entrada.
+
+### Slice 2: [Flujo Funcional de Dominio y UI]
+- [ ] `T2.1` [IMPL] Implementar persistencia y servicios de aplicación.
+- [ ] `T2.2` [IMPL] Conectar interfaz de usuario y controladores reactivos.
+
+### Slice 3: [Batería de Pruebas y Cierre]
+- [ ] `T3.1` [TEST] Test observable BDD (Happy Path & Casos de Borde).
+- [ ] `T4.1` [VERIFY] Ejecutar suites completas, linters y verificación de build.
+
+---
 ```
 
 Como mínimo deben existir:
@@ -419,42 +437,22 @@ trabajo que no puede realizarse actualmente.
 
 ---
 
-# 13. ESTADOS DE LAS TAREAS
+# 13. ESTADOS DE LAS TAREAS Y SIMBOLOGÍA VISUAL UNIVERSAL
 
-Las tareas deben manejar:
+Para garantizar legibilidad instantánea en Markdown, en el visor de GitHub, en editores de código y en la tabla de progreso, cada tarea debe reflejar **su casilla de verificación y su símbolo de estado visual** tanto en los checklists de resumen como en los encabezados de sección.
 
-```text
-PENDING
-IN_PROGRESS
-BLOCKED
-TESTING
-REVIEW
-COMPLETED
-```
+### Tabla Maestra de Simbología de Estados:
 
-### PENDING
+| Símbolo | Estado Formal | Render / Significado | Cuándo se aplica |
+|:---:|---|---|---|
+| `[ ]` | **PENDING** | `[ ]` Casilla vacía | Tarea pendiente de inicio. Estado inicial por defecto de toda tarea generada. |
+| `[/]` *(o `[-]`)* | **IN_PROGRESS** | `[/]` Media carga / En curso | Tarea en desarrollo o ejecución física activa por `/sdd-execution`. |
+| `[?]` | **TESTING / REVIEW** | `[?]` En validación | Código implementado; ejecutando tests o revisión de calidad previa a cierre. |
+| `[x]` | **COMPLETED** | `[x]` Casilla marcada con **x** | **Tarea 100% finalizada físicamente**, con pruebas superadas y evidencia verificable registrada. |
+| `[!]` | **BLOCKED** | `[!]` Alerta / Bloqueo | Tarea detenida por impedimento técnico, ambigüedad funcional o dependencia no satisfecha. |
 
-Todavía no iniciada.
-
-### IN_PROGRESS
-
-En ejecución.
-
-### BLOCKED
-
-No puede continuar por una dependencia o decisión pendiente.
-
-### TESTING
-
-La implementación existe y está siendo validada.
-
-### REVIEW
-
-La tarea está lista para revisión.
-
-### COMPLETED
-
-Existe evidencia suficiente de finalización.
+### Regla de Oro de la Casilla `[x]`:
+> **Toda tarea realizada DEBE reflejar obligatoriamente la casilla marcada con `[x]`** (`- [x]` en checklists y `### [x]` en encabezados). Esto permite a cualquier desarrollador o auditor humano verificar de un solo vistazo el progreso real sin depender exclusivamente de tablas métricas.
 
 ---
 
@@ -938,7 +936,7 @@ Evidencia
 Formato:
 
 ```markdown
-### T2.1 [IMPL] Registrar una venta
+### [ ] T2.1 [IMPL] Registrar una venta
 
 **Status:** PENDING
 
@@ -964,6 +962,38 @@ Implementar ...
 **Evidence**
 - ...
 ```
+
+---
+
+# 33.1 CICLO VISUAL DE LA TAREA Y MARCADO CON `[x]`
+
+Durante la vida de una tarea, tanto su **casilla en el encabezado** como su **línea en el checklist de resumen** deben sincronizarse estrictamente:
+
+1. **Al crearse (`PENDING`)**:
+   - Encabezado: `### [ ] T2.1 [IMPL] ...`
+   - Checklist: `- [ ] T2.1 [IMPL] ...`
+   - Estado: `**Status:** PENDING`
+
+2. **Al iniciar ejecución (`IN_PROGRESS`)**:
+   - Encabezado: `### [/] T2.1 [IMPL] ...` *(o `[-]`)*
+   - Checklist: `- [/] T2.1 [IMPL] ...`
+   - Estado: `**Status:** IN_PROGRESS`
+
+3. **En validación (`TESTING / REVIEW`)**:
+   - Encabezado: `### [?] T2.1 [IMPL] ...`
+   - Checklist: `- [?] T2.1 [IMPL] ...`
+   - Estado: `**Status:** TESTING`
+
+4. **Al finalizar exitosamente (`COMPLETED`)**:
+   - Encabezado: `### [x] T2.1 [IMPL] ...` *(¡Casilla marcada con x obligatoria!)*
+   - Checklist: `- [x] T2.1 [IMPL] ...`
+   - Estado: `**Status:** COMPLETED`
+   - Evidencia: Registro obligatorio de comandos y pruebas reales superadas.
+
+5. **Ante un bloqueo (`BLOCKED`)**:
+   - Encabezado: `### [!] T2.1 [IMPL] ...`
+   - Checklist: `- [!] T2.1 [IMPL] ...`
+   - Estado: `**Status:** BLOCKED`
 
 ---
 

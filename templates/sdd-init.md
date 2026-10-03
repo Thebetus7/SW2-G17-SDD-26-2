@@ -686,6 +686,7 @@ No debe realizar una auditoría indiscriminada de todo el repositorio cuando no 
 | **6** | `/sdd-execution`                   | `tasks.md`            | Código + evidencia      | Implementar              |
 | **7** | `/sdd-spec-anchored`               | Cambio/necesidad      | Artefactos actualizados | Evolución controlada     |
 | **8** | `/sdd-execution`                   | Nuevas tareas         | Código actualizado      | Reejecutar cambios       |
+| **9** | `/doc-deploy`                      | Código implementado   | Suite despliegue + HTML | Despliegue y operaciones |
 
 ---
 
@@ -784,6 +785,8 @@ Los workflows oficiales del sistema SDD son:
 /sdd-execution
 
 /sdd-spec-anchored
+
+/doc-deploy
 ```
 
 El asistente debe preferir estos workflows para mantener la trazabilidad documental en lugar de saltarse fases deliberadamente.
