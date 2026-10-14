@@ -30,6 +30,7 @@ echo -e "${NC}"
 # Lista completa de plantillas SDD del ciclo de vida formal
 WORKFLOWS=(
     "sdd-init.md"
+    "sdd-adopt.md"
     "sdd-constitution-trial.md"
     "sdd-spec-high.md"
     "sdd-spec-low.md"

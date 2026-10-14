@@ -54,24 +54,31 @@ Una vez instalado, el desarrollo bajo SDD organiza la documentación en carpetas
 
 ### Detalle de los Comandos Oficiales Incluidos:
 
-1. **`/sdd-init`**: Orquestador metodológico. Configura la precedencia por ámbito, separación de decisiones, estados de ciclo de vida (`DRAFT`, `APPROVED`, etc.), trazabilidad y genera/mantiene `AGENTS.md`.
-2. **`/sdd-constitution-trial`**: Entrevista estructurada de co-diseño bajo la regla suprema de nunca inventar ni omitir ambigüedades. Consolida `docs/constitution.md` (misión, flujos globales, modelo conceptual, restricciones y principios innegociables).
-3. **`/sdd-spec-high`**: Especificación funcional formal y observable en `docs/specs/XX/spec.md`. Modela el QUÉ (HU, EARS, Gherkin BDD, contratos de datos y casos vacíos) aislando la implementación técnica.
-4. **`/sdd-spec-low`**: Especificación ágil y concisa para tareas puntuales o de menor complejidad.
-5. **`/sdd-spec-clarify`**: QA Gate formal. Audita exhaustivamente el `spec.md` con tests de doble interpretación y de implementador externo para clasificar hallazgos (`BLOCKING`, `IMPORTANT`) antes de autorizar el diseño técnico.
-6. **`/sdd-planning`**: Plan técnico de arquitectura en `docs/specs/XX/plan.md`. Diseña la solución técnica, contratos tipados, diagramas de secuencia, garantías de runtime y define formalmente la estructura física de directorios y archivos de código/tests.
-7. **`/sdd-task`**: Descomposición en trabajo atómico y ejecutable en `docs/specs/XX/tasks.md` organizado en Vertical Slices, con tablero de progreso en tiempo real (`Task Progress`), dependencias topológicas y evidencia obligatoria.
-8. **`/sdd-execution`**: Motor de implementación y verificación física guiada. Ejecuta tareas, valida en consola con evidencia demostrable, actualiza atómicamente el estado y `Task Progress`, y retroalimenta al nivel documental correspondiente ante fallos.
-9. **`/sdd-spec-anchored`**: Iteración, corrección de bugs y refinamiento integral en cascada. Actualiza coordinadamente la tríada documental (`spec.md` + `plan.md` + `tasks.md`), encolando nuevas tareas sin borrar el historial previo.
-10. **`/doc-deploy`**: Generador de documentación de despliegue, instalación y flujo visual interactivo. Audita el proyecto real sin inventar infraestructura ficticia, determina servicios requeridos y genera una suite modular completa en Markdown (`00_RESUMEN_GENERAL.md` a `06_APAGAR_Y_REACTIVAR.md`) junto con el tablero visual interactivo en HTML (`07_FLUJO_VISUAL_DESPLIEGUE.html`).
+1. **`/sdd-init`**: Orquestador metodológico para proyectos nuevos (*Greenfield*). Configura la precedencia por ámbito, separación de decisiones, estados de ciclo de vida (`DRAFT`, `APPROVED`, etc.), trazabilidad y genera/mantiene `AGENTS.md`.
+2. **`/sdd-adopt`**: Motor de adopción e ingeniería inversa para proyectos existentes o avanzados (*Brownfield*). Inspecciona pasivamente el código real, consolida la Constitución De Facto (`docs/constitution.md`), calibra `AGENTS.md` con los comandos de verificación reales y crea el inventario de línea base (`docs/specs/00-baseline/inventory.md`) sin alterar ni destruir código.
+3. **`/sdd-constitution-trial`**: Entrevista estructurada de co-diseño bajo la regla suprema de nunca inventar ni omitir ambigüedades. Consolida `docs/constitution.md` (misión, flujos globales, modelo conceptual, restricciones y principios innegociables).
+4. **`/sdd-spec-high`**: Especificación funcional formal y observable en `docs/specs/XX/spec.md`. Modela el QUÉ (HU, EARS, Gherkin BDD, contratos de datos y casos vacíos) aislando la implementación técnica.
+5. **`/sdd-spec-low`**: Especificación ágil y concisa para tareas puntuales o de menor complejidad.
+6. **`/sdd-spec-clarify`**: QA Gate formal. Audita exhaustivamente el `spec.md` con tests de doble interpretación y de implementador externo para clasificar hallazgos (`BLOCKING`, `IMPORTANT`) antes de autorizar el diseño técnico.
+7. **`/sdd-planning`**: Plan técnico de arquitectura en `docs/specs/XX/plan.md`. Diseña la solución técnica, contratos tipados, diagramas de secuencia, garantías de runtime y define formalmente la estructura física de directorios y archivos de código/tests.
+8. **`/sdd-task`**: Descomposición en trabajo atómico y ejecutable en `docs/specs/XX/tasks.md` organizado en Vertical Slices, con tablero de progreso en tiempo real (`Task Progress`), dependencias topológicas y evidencia obligatoria.
+9. **`/sdd-execution`**: Motor de implementación y verificación física guiada. Ejecuta tareas, valida en consola con evidencia demostrable, actualiza atómicamente el estado y `Task Progress`, y retroalimenta al nivel documental correspondiente ante fallos.
+10. **`/sdd-spec-anchored`**: Iteración, corrección de bugs y refinamiento integral en cascada. Actualiza coordinadamente la tríada documental (`spec.md` + `plan.md` + `tasks.md`), encolando nuevas tareas sin borrar el historial previo.
+11. **`/doc-deploy`**: Generador de documentación de despliegue, instalación y flujo visual interactivo. Audita el proyecto real sin inventar infraestructura ficticia, determina servicios requeridos y genera una suite modular completa en Markdown (`00_RESUMEN_GENERAL.md` a `06_APAGAR_Y_REACTIVAR.md`) junto con el tablero visual interactivo en HTML (`07_FLUJO_VISUAL_DESPLIEGUE.html`).
 
 ---
 
 ## 🛠️ Guía Paso a Paso de Comandos SDD
 
-### 1. `/sdd-init`: Inicialización
+### ¿Por dónde empezar?
+* **Si tu proyecto es NUEVO (*Greenfield*):** Empieza con [**`1. /sdd-init`**](#1-sdd-init-inicialización-proyectos-nuevos) y luego [**`3. /sdd-constitution-trial`**](#3-sdd-constitution-trial-constitución-del-proyecto).
+* **Si tu proyecto YA TIENE CÓDIGO o está AVANZADO (*Brownfield*):** Empieza directamente con [**`2. /sdd-adopt`**](#2-sdd-adopt-adopción-en-proyectos-existentes) para auditar el código real y congelar la línea base sin romper nada.
 
-> **Punto de partida obligatorio:** Este es el **primer comando indispensable** que se debe ejecutar en cualquier proyecto para activar y calibrar la metodología SDD.
+---
+
+### 1. `/sdd-init`: Inicialización (Proyectos Nuevos)
+
+> **Punto de partida para proyectos nuevos:** Este es el **primer comando indispensable** que se debe ejecutar en proyectos creados desde cero para activar y calibrar la metodología SDD.
 
 #### Modo de uso:
 
@@ -87,7 +94,28 @@ Sin `/sdd-init`, el agente carece de contexto y principios rectores para compren
 - **Estados de artefactos y trazabilidad:** Introduce estados normativos (`DRAFT`, `APPROVED`, `NEEDS_CLARIFICATION`, etc.) y la cadena de trazabilidad desde la intención hasta la evidencia.
 - **Ámbito documental exclusivo:** Gobierna la documentación en `docs/` sin predeterminar rígidamente la estructura física de código, delegándola a la fase de planificación técnica.
 
-### 2. `/sdd-constitution-trial`: Constitución del Proyecto
+---
+
+### 2. `/sdd-adopt`: Adopción en Proyectos Existentes
+
+> **Punto de partida para proyectos existentes o avanzados:** Motor de ingeniería inversa y retrofitting que incorpora la metodología SDD en proyectos que ya cuentan con código fuente, sin reescribir ni destruir nada.
+
+#### Modo de uso:
+
+```text
+/sdd-adopt [sin parámetros o con breve indicación de módulos prioritarios]
+```
+
+#### ¿Por qué es fundamental?
+En proyectos con código ya escrito, ejecutar un inicio en blanco puede provocar que la IA intente reinventar la arquitectura o desconozca los modelos y endpoints existentes. Este comando ejecuta una **auditoría pasiva no destructiva** que:
+
+- **Extrae la realidad del código:** Inspecciona dependencias (`package.json`, `pom.xml`, `requirements.txt`), esquemas de BD (Prisma, TypeORM, JPA), Docker y variables de entorno para detectar el stack real sin asumir.
+- **Detecta los comandos reales de verificación:** Configura en `AGENTS.md` los runners exactos de test (`npm test`, `./mvnw test`, etc.), linter y build configurados en el proyecto.
+- **Redacta la Constitución De Facto:** Consolida `docs/constitution.md` con la misión del sistema, roles y decisiones arquitectónicas que ya operan en el código.
+- **Genera el Inventario de Línea Base:** Crea `docs/specs/00-baseline/inventory.md`, catalogando los módulos existentes en estados (`SEALED`, `STABLE`, `IN_PROGRESS`, `PENDING`) y mapeando los contratos públicos (APIs y schemas) para evitar regresiones.
+- **Trazabilidad de evolución:** A partir de este punto, el proyecto puede desarrollar nuevas features con `/sdd-spec-high` o refactorizar código legado con `/sdd-spec-anchored`.
+
+### 3. `/sdd-constitution-trial`: Constitución del Proyecto
 
 > **Fundación del proyecto:** Entrevista interactiva estructurada (_Grill-Me_) bajo la **regla suprema de nunca inventar, suponer ni omitir ambigüedades**, definiendo la misión, flujos globales, modelo conceptual y restricciones antes de programar.
 
@@ -118,7 +146,7 @@ Para que la entrevista sea lo más precisa y rápida posible, es ideal suministr
 > /sdd-constitution-trial Plataforma SaaS de reservas de citas médicas con panel web en Next.js y API REST en Node/Express con PostgreSQL. Debe incluir Docker Compose para entorno local y autenticación con roles. Fuera de alcance: pasarela de pagos para el MVP.
 > ```
 
-### 3. `/sdd-spec-high`: Especificación Funcional Formal (Alta Rigurosidad)
+### 4. `/sdd-spec-high`: Especificación Funcional Formal (Alta Rigurosidad)
 
 > **Diseño de requerimientos:** Captura y formalización del comportamiento observable de un módulo o feature bajo la **regla suprema de no inventar comportamiento**, aislando por completo la implementación técnica.
 
@@ -136,7 +164,7 @@ Sin `/sdd-spec-high`, el desarrollo cae en la trampa de programar sin un contrat
 - **Criterios de Aceptación Gherkin (SC):** Escenarios BDD formales (`Dado / Cuando / Entonces`) para *Happy Path*, errores observables, casos vacíos y límites (*Edge Cases*).
 - **Principio de Caja Negra Pura:** Modela estrictamente el **QUÉ** y los contratos de datos funcionales (entradas, precondiciones, postcondiciones y salidas), sin contaminarse con clases, ORMs ni código prematuro.
 
-### 4. `/sdd-spec-clarify`: QA Gate de Especificación Funcional
+### 5. `/sdd-spec-clarify`: QA Gate de Especificación Funcional
 
 > **Filtro de calidad funcional:** Gate formal que audita exhaustivamente el `spec.md` mediante el **test de doble interpretación** y el **test de implementador externo**, impidiendo avanzar a planificación si existen ambigüedades de negocio.
 
@@ -154,7 +182,7 @@ Sin `/sdd-spec-clarify`, los huecos conceptuales, suposiciones no validadas y ca
 - **Trazabilidad estricta:** Comprueba la coherencia jerárquica de identificadores (`HU-XX` ➔ `RF-XX.Y` ➔ `SC-XX.Y.Z`).
 - **No Trasladar Ambigüedades a Planning:** Protege la frontera entre negocio y arquitectura, impidiendo que el arquitecto técnico tenga que inventar comportamiento funcional.
 
-### 5. `/sdd-planning`: Plan Técnico y Diseño de Arquitectura
+### 6. `/sdd-planning`: Plan Técnico y Diseño de Arquitectura
 
 > **Diseño del CÓMO técnico:** Transforma los requerimientos funcionales en una solución de ingeniería robusta, modelando capas, diagramas, contratos tipados, garantías de runtime y **definiendo formalmente la estructura física de directorios y archivos de código**.
 
@@ -172,7 +200,7 @@ Sin `/sdd-planning`, el equipo pasa directo de la idea al código sin definir ar
 - **Arquitectura y contratos tipados:** Modela capas (presentación, dominio, infraestructura), diagramas de secuencia Mermaid, DTOs y validadores en runtime sin tipos ambiguos.
 - **Garantías de persistencia e integridad:** Especifica relaciones, políticas de claves foráneas antihuérfanos (`ON DELETE SET NULL`, `CASCADE`), evolución de esquema y ciclo de vida de I/O.
 
-### 6. `/sdd-task`: Descomposición Atómica y Ejecutable
+### 7. `/sdd-task`: Descomposición Atómica y Ejecutable
 
 > **Secuenciación de tareas:** Descompone el plan técnico en un checklist atómico, trazable y ejecutable, organizado en _Vertical Slices_ y con un tablero de progreso en tiempo real (**Task Progress**).
 
@@ -189,7 +217,7 @@ Sin `/sdd-task`, los desarrolladores y la IA abordan el desarrollo de forma mono
 - **Feature-First / Vertical Slices:** Agrupa el trabajo en flujos funcionales completos de punta a punta (persistencia + lógica + interfaz + validación), evitando capas desarticuladas.
 - **Trazabilidad y Criterio de Done:** Cada tarea declara sus dependencias topológicas (`DEPENDS_ON`), enlaces a requisitos (`RF-XX.Y`, `SC-XX.Y.Z`) y criterios objetivos de finalización con evidencia requerida.
 
-### 7. `/sdd-execution`: Implementación, Verificación y Cierre Físico
+### 8. `/sdd-execution`: Implementación, Verificación y Cierre Físico
 
 > **Implementación física guiada:** Motor de desarrollo que toma las tareas ejecutables de `tasks.md`, escribe el código siguiendo el plan, ejecuta las pruebas reales en consola y aporta evidencia demostrable.
 
@@ -208,7 +236,7 @@ Sin `/sdd-execution`, la IA suele escribir código sin ejecutar pruebas, asumir 
 - **Diagnóstico y Retroalimentación de Fallos:** Si una prueba falla o se descubre un cabo suelto, no maquilla el código: diagnostica si la causa es un bug, una falla de plan o una ambigüedad de negocio y devuelve el flujo al nivel correspondiente.
 - **Cierre físico verificable:** Ejecuta los comandos en la terminal y solo tras validar el resultado en verde marca físicamente la tarea (`[x]`) en `tasks.md`.
 
-### 8. `/sdd-spec-anchored`: Iteración, Refinamiento y Evolución en Cascada (Spec + Plan + Tasks)
+### 9. `/sdd-spec-anchored`: Iteración, Refinamiento y Evolución en Cascada (Spec + Plan + Tasks)
 
 > **Evolución y resolución de bugs guiada:** Orquesta en una sola pasada la actualización coordinada de la tríada documental (`spec.md` + `plan.md` + `tasks.md`) ante flujos no previstos, desajustes de experiencia o bugs en runtime, encolando nuevas tareas sin perder el historial.
 
@@ -241,7 +269,7 @@ Este comando actúa como el **motor de evolución controlada**, ejecutando un pr
 
 Tras finalizar, la IA te invitará a ejecutar `/sdd-execution` para resolver inmediatamente las nuevas tareas encoladas bajo validación dual.
 
-### 9. `/doc-deploy`: Documentación de Despliegue, Operaciones y Flujo Visual Interactivo
+### 10. `/doc-deploy`: Documentación de Despliegue, Operaciones y Flujo Visual Interactivo
 
 > **Entrega y operaciones en producción:** Genera una suite documental técnica completa, rigurosa y modular para desplegar, instalar, verificar, actualizar, mantener, apagar y reactivar el proyecto en entornos de producción, acompañada de un dashboard interactivo en HTML.
 

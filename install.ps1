@@ -24,6 +24,7 @@ Write-Host ""
 
 $Workflows = @(
     "sdd-init.md",
+    "sdd-adopt.md",
     "sdd-constitution-trial.md",
     "sdd-spec-high.md",
     "sdd-spec-low.md",
