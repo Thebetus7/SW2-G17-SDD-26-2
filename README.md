@@ -48,23 +48,24 @@ Una vez instalado, el desarrollo bajo SDD organiza la documentación en carpetas
             └── 📄 tasks.md
 ```
 
-> 📌 **Separación de Responsabilidades:** SDD gobierna formalmente la documentación en `docs/` y el archivo maestro `AGENTS.md`. La estructura física de archivos del código de producción y las suites de pruebas no se predetermina de forma rígida en la inicialización, sino que es responsabilidad exclusiva de la fase de planificación ([`/sdd-planning`](templates/sdd-planning.md)), la cual diseña el árbol físico de archivos según el tech stack y la arquitectura elegida.
+> 📌 **Separación de Responsabilidades:** SDD gobierna formalmente la documentación en `docs/` y el archivo maestro `AGENTS.md`. La estructura física de archivos del código de producción y las suites de pruebas no se predetermina de forma rígida en la inicialización, sino que es responsabilidad exclusiva de la fase de planificación ([`/sdd-plan-tecnico`](templates/sdd-plan-tecnico.md)), la cual diseña el árbol físico de archivos según el tech stack y la arquitectura elegida.
 
 ---
 
 ### Detalle de los Comandos Oficiales Incluidos:
 
 1. **`/sdd-init`**: Orquestador metodológico para proyectos nuevos (*Greenfield*). Configura la precedencia por ámbito, separación de decisiones, estados de ciclo de vida (`DRAFT`, `APPROVED`, etc.), trazabilidad y genera/mantiene `AGENTS.md`.
-2. **`/sdd-adopt`**: Motor de adopción e ingeniería inversa para proyectos existentes o avanzados (*Brownfield*). Inspecciona pasivamente el código real, consolida la Constitución De Facto (`docs/constitution.md`), calibra `AGENTS.md` con los comandos de verificación reales y crea el inventario de línea base (`docs/specs/00-baseline/inventory.md`) sin alterar ni destruir código.
+2. **`/sdd-adopt`**: Motor de adopción e ingeniería inversa para proyectos existentes o avanzados (*Brownfield*). Inspecciona pasivamente el código real, consolida la Constitución De Facto (`docs/constitution.md`), calibra `AGENTS.md` con los comandos de verificación reales y crea la suite modular de línea base (`docs/specs/00-baseline/`) sin alterar ni destruir código.
 3. **`/sdd-constitution-trial`**: Entrevista estructurada de co-diseño bajo la regla suprema de nunca inventar ni omitir ambigüedades. Consolida `docs/constitution.md` (misión, flujos globales, modelo conceptual, restricciones y principios innegociables).
-4. **`/sdd-spec-high`**: Especificación funcional formal y observable en `docs/specs/XX/spec.md`. Modela el QUÉ (HU, EARS, Gherkin BDD, contratos de datos y casos vacíos) aislando la implementación técnica.
-5. **`/sdd-spec-low`**: Especificación ágil y concisa para tareas puntuales o de menor complejidad.
-6. **`/sdd-spec-clarify`**: QA Gate formal. Audita exhaustivamente el `spec.md` con tests de doble interpretación y de implementador externo para clasificar hallazgos (`BLOCKING`, `IMPORTANT`) antes de autorizar el diseño técnico.
-7. **`/sdd-planning`**: Plan técnico de arquitectura en `docs/specs/XX/plan.md`. Diseña la solución técnica, contratos tipados, diagramas de secuencia, garantías de runtime y define formalmente la estructura física de directorios y archivos de código/tests.
-8. **`/sdd-task`**: Descomposición en trabajo atómico y ejecutable en `docs/specs/XX/tasks.md` organizado en Vertical Slices, con tablero de progreso en tiempo real (`Task Progress`), dependencias topológicas y evidencia obligatoria.
-9. **`/sdd-execution`**: Motor de implementación y verificación física guiada. Ejecuta tareas, valida en consola con evidencia demostrable, actualiza atómicamente el estado y `Task Progress`, y retroalimenta al nivel documental correspondiente ante fallos.
-10. **`/sdd-spec-anchored`**: Iteración, corrección de bugs y refinamiento integral en cascada. Actualiza coordinadamente la tríada documental (`spec.md` + `plan.md` + `tasks.md`), encolando nuevas tareas sin borrar el historial previo.
-11. **`/doc-deploy`**: Generador de documentación de despliegue, instalación y flujo visual interactivo. Audita el proyecto real sin inventar infraestructura ficticia, determina servicios requeridos y genera una suite modular completa en Markdown (`00_RESUMEN_GENERAL.md` a `06_APAGAR_Y_REACTIVAR.md`) junto con el tablero visual interactivo en HTML (`07_FLUJO_VISUAL_DESPLIEGUE.html`).
+4. **`/sdd-spec-assisted`**: Especificación funcional con Inteligencia Contextual y Co-Diseño. La IA actúa como Arquitecto de Producto Senior proponiendo deducciones en 6 dimensiones críticas (casos borde, estados vacíos, resiliencia, persistencia y navegación) antes de redactar `spec.md`.
+5. **`/sdd-spec-high`**: Especificación funcional formal y observable en `docs/specs/XX/spec.md`. Modela el QUÉ (HU, EARS, Gherkin BDD, contratos de datos y casos vacíos) aislando la implementación técnica.
+6. **`/sdd-spec-low`**: Especificación ágil y concisa para tareas puntuales o de menor complejidad.
+7. **`/sdd-spec-clarify`**: QA Gate formal e independiente. Audita exhaustivamente el `spec.md` con tests de doble interpretación, implementador externo y caja negra antes de autorizar el diseño técnico.
+8. **`/sdd-plan-tecnico`** *(alias `/sdd-planning`)*: Plan técnico de arquitectura en `docs/specs/XX/plan.md`. Diseña la solución técnica, contratos fuertemente tipados, diagramas de secuencia, patrón de selección tridimensional, garantías de persistencia y define formalmente la estructura física de directorios y archivos de código/tests.
+9. **`/sdd-task`**: Descomposición en trabajo atómico y ejecutable en `docs/specs/XX/tasks.md` organizado en Vertical Slices, con tablero de progreso en tiempo real (`Task Progress`), dependencias topológicas y evidencia obligatoria sin listas redundantes.
+10. **`/sdd-execution`**: Motor de implementación y verificación física guiada con desbloqueo acotado de disco. Ejecuta tareas, valida en consola con evidencia demostrable, actualiza atómicamente el estado y `Task Progress`, y retroalimenta al nivel documental correspondiente ante fallos.
+11. **`/sdd-spec-anchored`**: Iteración, corrección de bugs y refinamiento integral en cascada. Actualiza coordinadamente la tríada documental (`spec.md` + `plan.md` + `tasks.md`), encolando nuevas tareas sin borrar el historial previo.
+12. **`/doc-deploy`**: Generador de documentación de despliegue, instalación y flujo visual interactivo. Audita el proyecto real sin inventar infraestructura ficticia, determina servicios requeridos y genera una suite modular completa en Markdown (`00_RESUMEN_GENERAL.md` a `06_APAGAR_Y_REACTIVAR.md`) junto con el tablero visual interactivo en HTML (`07_FLUJO_VISUAL_DESPLIEGUE.html`).
 
 ---
 
@@ -107,12 +108,18 @@ Sin `/sdd-init`, el agente carece de contexto y principios rectores para compren
 ```
 
 #### ¿Por qué es fundamental?
-En proyectos con código ya escrito, ejecutar un inicio en blanco puede provocar que la IA intente reinventar la arquitectura o desconozca los modelos y endpoints existentes. Este comando ejecuta una **auditoría pasiva no destructiva** que:
+En proyectos con código ya escrito, ejecutar un inicio en blanco puede provocar que la IA intente reinventar la arquitectura o desconozca los modelos y endpoints existentes. Este comando ejecuta una **auditoría pasiva profunda no destructiva** que:
 
-- **Extrae la realidad del código:** Inspecciona dependencias (`package.json`, `pom.xml`, `requirements.txt`), esquemas de BD (Prisma, TypeORM, JPA), Docker y variables de entorno para detectar el stack real sin asumir.
-- **Detecta los comandos reales de verificación:** Configura en `AGENTS.md` los runners exactos de test (`npm test`, `./mvnw test`, etc.), linter y build configurados en el proyecto.
-- **Redacta la Constitución De Facto:** Consolida `docs/constitution.md` con la misión del sistema, roles y decisiones arquitectónicas que ya operan en el código.
-- **Genera el Inventario de Línea Base:** Crea `docs/specs/00-baseline/inventory.md`, catalogando los módulos existentes en estados (`SEALED`, `STABLE`, `IN_PROGRESS`, `PENDING`) y mapeando los contratos públicos (APIs y schemas) para evitar regresiones.
+- **Fuerza un análisis exhaustivo en 6 ejes obligatorios:** Prohíbe el escaneo superficial e inspecciona físicamente: (1) Configuración/Infraestructura, (2) Persistencia/ORM/BD, (3) Backend/Rutas/Controladores, (4) Eventos/WebSockets/APIs Terceros, (5) Frontend/Vistas/Rutas y (6) Suites de Testing.
+- **Detecta los comandos reales de verificación:** Configura en `AGENTS.md` los runners exactos de test (`npm test`, `./mvnw test`, etc.), linter y build configurados en el proyecto, blindando la regla de "No Regresión".
+- **Redacta la Constitución De Facto:** Consolida `docs/constitution.md` con la misión del sistema, roles, reglas innegociables y decisiones arquitectónicas que ya operan en el código.
+- **Genera la Suite Modular de Línea Base (`docs/specs/00-baseline/`):** Construye un historial explícito y navegable:
+  - `00_INDICE_BASELINE.md`: Mapa de navegación y matriz de estado de módulos (`SEALED`, `STABLE`, `IN_PROGRESS`, `PENDING`).
+  - `01_ARQUITECTURA_Y_STACK.md`: Topología de carpetas, dependencias, puertos y servicios.
+  - `02_MODELO_DATOS_Y_PERSISTENCIA.md`: Esquema relacional en texto, tablas, campos y relaciones.
+  - `03_CONTRATOS_API_Y_SERVICIOS.md`: Catálogo de endpoints con método HTTP, ruta, función y WebSockets.
+  - `04_FLUJOS_Y_CASOS_USO_ACTUALES.md`: Flujos E2E de usuario ya funcionales de punta a punta.
+  - `05_DEUDA_TECNICA_Y_RIESGOS.md`: Matriz de riesgos clasificada por severidad (Alta, Media, Baja).
 - **Trazabilidad de evolución:** A partir de este punto, el proyecto puede desarrollar nuevas features con `/sdd-spec-high` o refactorizar código legado con `/sdd-spec-anchored`.
 
 ### 3. `/sdd-constitution-trial`: Constitución del Proyecto
@@ -146,18 +153,16 @@ Para que la entrevista sea lo más precisa y rápida posible, es ideal suministr
 > /sdd-constitution-trial Plataforma SaaS de reservas de citas médicas con panel web en Next.js y API REST en Node/Express con PostgreSQL. Debe incluir Docker Compose para entorno local y autenticación con roles. Fuera de alcance: pasarela de pagos para el MVP.
 > ```
 
-### 4. `/sdd-spec-high`: Especificación Funcional Formal (Alta Rigurosidad)
+### 4. Especificación Funcional: `/sdd-spec-assisted` y `/sdd-spec-high`
 
-> **Diseño de requerimientos:** Captura y formalización del comportamiento observable de un módulo o feature bajo la **regla suprema de no inventar comportamiento**, aislando por completo la implementación técnica.
+> **Diseño de requerimientos:** Captura y formalización del comportamiento observable de un módulo o feature bajo la **regla suprema de no inventar comportamiento no acordado**, aislando por completo la implementación técnica.
 
-#### Modo de uso:
-
-```text
-/sdd-spec-high [descripción, idea o requerimiento del módulo a construir]
-```
+#### Opciones de invocación:
+* **`/sdd-spec-assisted [idea inicial o necesidad]`**: **(Recomendado con Co-Diseño)** La IA actúa como **Product Architect Senior** deduciendo proactivamente en 6 dimensiones críticas lo que al usuario se le olvidó contemplar (casos borde, estados vacíos, fallas de red, persistencia temporal y navegaciones bloqueadas) antes de redactar el documento final.
+* **`/sdd-spec-high [idea o requerimiento explícito]`**: Especificación formal directa y exhaustiva para requerimientos ya muy definidos.
 
 #### ¿Por qué es fundamental?
-Sin `/sdd-spec-high`, el desarrollo cae en la trampa de programar sin un contrato funcional claro, derivando en retrabajo, supuestos erróneos y falta de criterios de aceptación medibles. Este comando genera el documento **`docs/specs/XX-nombre/spec.md`**, el cual establece:
+Sin una especificación rigurosa, el desarrollo cae en la trampa de programar sin un contrato funcional claro, derivando en retrabajo, supuestos erróneos y falta de criterios de aceptación medibles. Estos comandos generan el documento **`docs/specs/XX-nombre/spec.md`**, el cual establece:
 
 - **Historias de Usuario (HU):** Modela el valor de negocio y los roles de usuario involucrados (`HU-01`, etc.).
 - **Requerimientos EARS (RF):** Redacta requisitos funcionales inequívocos bajo la sintaxis formal EARS (Event-Driven, State-Driven, Ubiquitous, Unwanted Behavior, etc.).
@@ -166,7 +171,7 @@ Sin `/sdd-spec-high`, el desarrollo cae en la trampa de programar sin un contrat
 
 ### 5. `/sdd-spec-clarify`: QA Gate de Especificación Funcional
 
-> **Filtro de calidad funcional:** Gate formal que audita exhaustivamente el `spec.md` mediante el **test de doble interpretación** y el **test de implementador externo**, impidiendo avanzar a planificación si existen ambigüedades de negocio.
+> **Filtro de calidad funcional:** Gate formal e independiente que audita exhaustivamente el `spec.md` mediante el **test de doble interpretación**, **test de implementador externo** y **test de caja negra**, impidiendo avanzar a planificación si existen ambigüedades de negocio.
 
 #### Modo de uso:
 
@@ -177,27 +182,28 @@ Sin `/sdd-spec-high`, el desarrollo cae en la trampa de programar sin un contrat
 #### ¿Por qué es fundamental?
 Sin `/sdd-spec-clarify`, los huecos conceptuales, suposiciones no validadas y casos de borde olvidados pasan directamente al código, multiplicando el costo de corregirlos después. Este comando audita y actualiza **`docs/specs/XX-nombre/spec.md`**, garantizando:
 
-- **Clasificación de Hallazgos:** Distingue entre observaciones bloqueantes (`BLOCKING`) que exigen detenerse y preguntar al usuario, y mejoras menores (`IMPROVEMENT`).
+- **Clasificación de Hallazgos:** Distingue entre observaciones bloqueantes (`BLOCKING`) que activan el Candado de Disco en Tiempo 1 y exigen preguntar al usuario, y mejoras menores (`IMPROVEMENT`).
 - **Test de Doble Interpretación:** Verifica que dos desarrolladores independientes no puedan derivar dos comportamientos funcionales distintos a partir del mismo documento.
 - **Trazabilidad estricta:** Comprueba la coherencia jerárquica de identificadores (`HU-XX` ➔ `RF-XX.Y` ➔ `SC-XX.Y.Z`).
-- **No Trasladar Ambigüedades a Planning:** Protege la frontera entre negocio y arquitectura, impidiendo que el arquitecto técnico tenga que inventar comportamiento funcional.
+- **No Trasladar Ambigüedades a Planning:** Protege la frontera inquebrantable entre negocio y arquitectura, impidiendo que el arquitecto técnico tenga que inventar comportamiento funcional.
 
-### 6. `/sdd-planning`: Plan Técnico y Diseño de Arquitectura
+### 6. `/sdd-plan-tecnico` *(alias `/sdd-planning`)*: Plan Técnico y Diseño de Arquitectura
 
-> **Diseño del CÓMO técnico:** Transforma los requerimientos funcionales en una solución de ingeniería robusta, modelando capas, diagramas, contratos tipados, garantías de runtime y **definiendo formalmente la estructura física de directorios y archivos de código**.
+> **Diseño del CÓMO técnico:** Transforma los requerimientos funcionales aprobados en una solución de ingeniería robusta, modelando capas, diagramas, contratos fuertemente tipados, garantías de runtime y **definiendo formalmente la estructura física de directorios y archivos de código**.
 
 #### Modo de uso:
 
 ```text
-/sdd-planning [opcional: pedir /grill-me para refinar el plan]
+/sdd-plan-tecnico [o /sdd-planning] [opcional: pedir /grill-me para refinar el plan]
 ```
 
 #### ¿Por qué es fundamental?
-Sin `/sdd-planning`, el equipo pasa directo de la idea al código sin definir arquitectura ni contratos de datos, provocando deuda técnica, tipos inseguros (`any`) y acoplamiento descontrolado. Este comando genera el documento **`docs/specs/XX-nombre/plan.md`**, el cual establece:
+Sin `/sdd-plan-tecnico`, el equipo pasa directo de la idea al código sin definir arquitectura ni contratos de datos, provocando deuda técnica, tipos inseguros (`any`) y acoplamiento descontrolado. Este comando genera el documento **`docs/specs/XX-nombre/plan.md`**, el cual establece:
 
 - **Definición de la Estructura Física de Archivos:** Es el único responsable de proyectar y definir el árbol concreto de directorios y archivos donde residirá el código de producción y los tests.
-- **Lectura Acotada a SDD:** Para modelar la solución, consume como insumo de verdad exclusivamente la carpeta `docs/` (`constitution.md` y `spec.md`).
+- **Lectura Acotada a SDD (con Inspección Brownfield Segura):** Consume como insumo funcional exclusivo la carpeta `docs/` (`constitution.md` y `spec.md`), permitiendo inspección de solo lectura de dependencias existentes para compatibilidad real.
 - **Arquitectura y contratos tipados:** Modela capas (presentación, dominio, infraestructura), diagramas de secuencia Mermaid, DTOs y validadores en runtime sin tipos ambiguos.
+- **Patrón de Selección Tridimensional (3-Way Selector Pattern):** Resuelve relaciones de persistencia complejas desacoplando dependencias en catálogos dependientes.
 - **Garantías de persistencia e integridad:** Especifica relaciones, políticas de claves foráneas antihuérfanos (`ON DELETE SET NULL`, `CASCADE`), evolución de esquema y ciclo de vida de I/O.
 
 ### 7. `/sdd-task`: Descomposición Atómica y Ejecutable

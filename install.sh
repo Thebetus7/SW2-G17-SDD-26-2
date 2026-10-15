@@ -32,10 +32,11 @@ WORKFLOWS=(
     "sdd-init.md"
     "sdd-adopt.md"
     "sdd-constitution-trial.md"
+    "sdd-spec-assisted.md"
     "sdd-spec-high.md"
     "sdd-spec-low.md"
     "sdd-spec-clarify.md"
-    "sdd-planning.md"
+    "sdd-plan-tecnico.md"
     "sdd-task.md"
     "sdd-execution.md"
     "sdd-spec-anchored.md"
@@ -78,6 +79,11 @@ $contenido
 EOF
         echo -e "  ✔ .agents/skills/$nombre_base/SKILL.md"
     done
+
+    # Alias sdd-planning -> sdd-plan-tecnico para retrocompatibilidad
+    cp ".agents/workflows/sdd-plan-tecnico.md" ".agents/workflows/sdd-planning.md" 2>/dev/null || true
+    mkdir -p ".agents/skills/sdd-planning"
+    cp ".agents/skills/sdd-plan-tecnico/SKILL.md" ".agents/skills/sdd-planning/SKILL.md" 2>/dev/null || true
 }
 
 instalar_cursor() {
@@ -112,6 +118,10 @@ EOF
         cursorrules_content+="## Workflow: $nombre_base\n$contenido\n\n---\n\n"
     done
 
+    # Alias sdd-planning -> sdd-plan-tecnico para retrocompatibilidad
+    cp ".cursor/commands/sdd-plan-tecnico.md" ".cursor/commands/sdd-planning.md" 2>/dev/null || true
+    cp ".cursor/rules/sdd-plan-tecnico.mdc" ".cursor/rules/sdd-planning.mdc" 2>/dev/null || true
+
     # Escribir .cursorrules en la raíz
     echo -e "$cursorrules_content" > .cursorrules
     echo -e "  ✔ .cursorrules (raíz)"
@@ -141,6 +151,10 @@ EOF
         echo "$contenido" > ".continue/rules/${nombre_base}.md"
         echo -e "  ✔ .continue/rules/${nombre_base}.md"
     done
+
+    # Alias sdd-planning -> sdd-plan-tecnico para retrocompatibilidad
+    cp ".continue/prompts/sdd-plan-tecnico.prompt" ".continue/prompts/sdd-planning.prompt" 2>/dev/null || true
+    cp ".continue/rules/sdd-plan-tecnico.md" ".continue/rules/sdd-planning.md" 2>/dev/null || true
 }
 
 instalar_vscode() {
@@ -182,6 +196,10 @@ EOF
         # 4. Acumular en las instrucciones maestras de Copilot
         instructions_content+="## Flujo SDD: $nombre_base\n$contenido\n\n---\n\n"
     done
+
+    # Alias sdd-planning -> sdd-plan-tecnico para retrocompatibilidad
+    cp ".github/prompts/sdd-plan-tecnico.prompt.md" ".github/prompts/sdd-planning.prompt.md" 2>/dev/null || true
+    cp ".github/prompts/sdd-plan-tecnico.md" ".github/prompts/sdd-planning.md" 2>/dev/null || true
 
     # Generar .github/copilot-instructions.md (reconocido nativamente por GitHub Copilot en VS Code)
     echo -e "$instructions_content" > .github/copilot-instructions.md

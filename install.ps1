@@ -1,4 +1,4 @@
-# ==============================================================================
+﻿# ==============================================================================
 # SDD Tooling Universal Installer para PowerShell (Windows Nativo)
 # Ejecución: irm https://raw.githubusercontent.com/.../install.ps1 | iex
 # ==============================================================================
@@ -26,10 +26,11 @@ $Workflows = @(
     "sdd-init.md",
     "sdd-adopt.md",
     "sdd-constitution-trial.md",
+    "sdd-spec-assisted.md",
     "sdd-spec-high.md",
     "sdd-spec-low.md",
     "sdd-spec-clarify.md",
-    "sdd-planning.md",
+    "sdd-plan-tecnico.md",
     "sdd-task.md",
     "sdd-execution.md",
     "sdd-spec-anchored.md",
@@ -76,6 +77,15 @@ function Instalar-Antigravity {
         [System.IO.File]::WriteAllText($RutaSkill, ($SkillHeader + $Contenido), [System.Text.Encoding]::UTF8)
         Write-Host "  [OK] .agents/skills/$NombreBase/SKILL.md" -ForegroundColor Gray
     }
+
+    # Alias sdd-planning -> sdd-plan-tecnico para retrocompatibilidad
+    $RutaPlanWf = Join-Path $DestinoWorkflows "sdd-plan-tecnico.md"
+    $RutaPlanningWf = Join-Path $DestinoWorkflows "sdd-planning.md"
+    if (Test-Path $RutaPlanWf) { Copy-Item $RutaPlanWf $RutaPlanningWf -Force }
+    $SkillPlanningDir = Join-Path (Get-Location) ".agents\skills\sdd-planning"
+    if (-not (Test-Path $SkillPlanningDir)) { New-Item -ItemType Directory -Path $SkillPlanningDir -Force | Out-Null }
+    $RutaSkillPlan = Join-Path (Get-Location) ".agents\skills\sdd-plan-tecnico\SKILL.md"
+    if (Test-Path $RutaSkillPlan) { Copy-Item $RutaSkillPlan (Join-Path $SkillPlanningDir "SKILL.md") -Force }
 }
 
 function Instalar-Cursor {
@@ -106,6 +116,12 @@ function Instalar-Cursor {
         $CursorRulesContent += "## Workflow: $NombreBase`n$Contenido`n`n---`n`n"
     }
 
+    # Alias sdd-planning -> sdd-plan-tecnico para retrocompatibilidad
+    $CmdPlan = Join-Path $DestinoCommands "sdd-plan-tecnico.md"
+    if (Test-Path $CmdPlan) { Copy-Item $CmdPlan (Join-Path $DestinoCommands "sdd-planning.md") -Force }
+    $RulePlan = Join-Path $DestinoRules "sdd-plan-tecnico.mdc"
+    if (Test-Path $RulePlan) { Copy-Item $RulePlan (Join-Path $DestinoRules "sdd-planning.mdc") -Force }
+
     $RutaCursorrules = Join-Path (Get-Location) ".cursorrules"
     [System.IO.File]::WriteAllText($RutaCursorrules, $CursorRulesContent, [System.Text.Encoding]::UTF8)
     Write-Host "  [OK] .cursorrules (raíz)" -ForegroundColor Gray
@@ -133,6 +149,12 @@ function Instalar-OpenCode {
         [System.IO.File]::WriteAllText($DestinoRule, $Contenido, [System.Text.Encoding]::UTF8)
         Write-Host "  [OK] .continue/rules/$NombreBase.md" -ForegroundColor Gray
     }
+
+    # Alias sdd-planning -> sdd-plan-tecnico para retrocompatibilidad
+    $PromptPlan = Join-Path $DestinoPrompts "sdd-plan-tecnico.prompt"
+    if (Test-Path $PromptPlan) { Copy-Item $PromptPlan (Join-Path $DestinoPrompts "sdd-planning.prompt") -Force }
+    $RuleContPlan = Join-Path $DestinoRules "sdd-plan-tecnico.md"
+    if (Test-Path $RuleContPlan) { Copy-Item $RuleContPlan (Join-Path $DestinoRules "sdd-planning.md") -Force }
 }
 
 function Instalar-VSCode {
@@ -148,7 +170,7 @@ function Instalar-VSCode {
         $NombreBase = [System.IO.Path]::GetFileNameWithoutExtension($wf)
         $Contenido = Obtener-Plantilla -Archivo $wf
 
-        # 1. Estructura Oficial de VS Code Agent Skills (.github\skills\<nombre>\SKILL.md)
+        # 1. Estructura Oficial de VS Code Agent Skills (.github\skills\<nombre>/SKILL.md)
         $SkillFolder = Join-Path $DestinoSkills $NombreBase
         if (-not (Test-Path $SkillFolder)) { New-Item -ItemType Directory -Path $SkillFolder -Force | Out-Null }
         $SkillPath = Join-Path $SkillFolder "SKILL.md"
@@ -168,6 +190,12 @@ function Instalar-VSCode {
 
         $InstructionsContent += "## Flujo SDD: $NombreBase`n$Contenido`n`n---`n`n"
     }
+
+    # Alias sdd-planning -> sdd-plan-tecnico para retrocompatibilidad
+    $PromptVscodePlan = Join-Path $DestinoDir "sdd-plan-tecnico.prompt.md"
+    if (Test-Path $PromptVscodePlan) { Copy-Item $PromptVscodePlan (Join-Path $DestinoDir "sdd-planning.prompt.md") -Force }
+    $MdVscodePlan = Join-Path $DestinoDir "sdd-plan-tecnico.md"
+    if (Test-Path $MdVscodePlan) { Copy-Item $MdVscodePlan (Join-Path $DestinoDir "sdd-planning.md") -Force }
 
     $RutaInstructions = Join-Path (Get-Location) ".github\copilot-instructions.md"
     [System.IO.File]::WriteAllText($RutaInstructions, $InstructionsContent, [System.Text.Encoding]::UTF8)
