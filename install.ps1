@@ -1,4 +1,4 @@
-﻿# ==============================================================================
+# ==============================================================================
 # SDD Tooling Universal Installer para PowerShell (Windows Nativo)
 # Ejecución: irm https://raw.githubusercontent.com/.../install.ps1 | iex
 # ==============================================================================
@@ -37,7 +37,8 @@ $Workflows = @(
     "sdd-spec-anchored-spec.md",
     "sdd-spec-anchored-plan.md",
     "sdd-spec-anchored-task.md",
-    "doc-deploy.md"
+    "doc-deploy.md",
+    "extended.md"
 )
 
 function Obtener-Plantilla {

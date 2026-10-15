@@ -44,6 +44,7 @@ WORKFLOWS=(
     "sdd-spec-anchored-plan.md"
     "sdd-spec-anchored-task.md"
     "doc-deploy.md"
+    "extended.md"
 )
 
 # Función para obtener contenido de la plantilla (vía web o local si existe)
