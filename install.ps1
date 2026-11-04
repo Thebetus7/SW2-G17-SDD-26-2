@@ -28,15 +28,11 @@ $Workflows = @(
     "sdd-constitution-trial.md",
     "sdd-spec-assisted.md",
     "sdd-spec-high.md",
-    "sdd-spec-low.md",
     "sdd-spec-clarify.md",
     "sdd-plan-tecnico.md",
     "sdd-task.md",
     "sdd-execution.md",
     "sdd-spec-anchored.md",
-    "sdd-spec-anchored-spec.md",
-    "sdd-spec-anchored-plan.md",
-    "sdd-spec-anchored-task.md",
     "doc-deploy.md",
     "extended.md"
 )
