@@ -6,37 +6,57 @@ inferencia proactiva, revisión funcional, dirección visual y un verificador de
 progreso. Las instrucciones guían al agente; las pruebas y controles del entorno
 aportan comprobaciones reales.
 
+## IDEs Disponibles
+
+- **Antigravity**
+- **Cursor**
+- **VS Code / Copilot**
+- **OpenCode / Continue**
+- **Codex**
+- **Claude Code**
+
 ## Instalación
 
 Requiere **Python 3.9+**, Git Bash/Bash con curl o PowerShell. No usa paquetes Python
-externos. Ejecutar desde la raíz del proyecto que recibirá SDD.
+externos. Ejecutar desde la raíz del proyecto donde quieras habilitar la metodología SDD.
 
-Linux, macOS o Windows Git Bash:
+### Linux / macOS / Windows Git Bash:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Thebetus7/SW2-G17-SDD-26-2/main/install.sh | bash
+```
+
+### Windows (PowerShell):
+
+```powershell
+irm https://raw.githubusercontent.com/Thebetus7/SW2-G17-SDD-26-2/main/install.ps1 | iex
+```
+
+Al ejecutar, aparece un **menú interactivo** para seleccionar el IDE destino:
+`antigravity`, `cursor`, `opencode`, `continue`, `vscode` (o `copilot`),
+`codex`, `claude` o `all` (instala para todos). OpenCode y Continue tienen
+adaptadores separados. La instalación genera archivos; la compatibilidad del
+cliente debe comprobarse con la versión que uses.
+
+Para especificar el IDE directamente sin menú interactivo:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Thebetus7/SW2-G17-SDD-26-2/main/install.sh | bash -s -- cursor
 ```
 
-Windows PowerShell:
-
 ```powershell
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/Thebetus7/SW2-G17-SDD-26-2/main/install.ps1))) -Target cursor
 ```
-
-Cambiar `cursor` por `antigravity`, `opencode`, `continue`, `vscode` (o `copilot`),
-`codex`, `claude` o `all`. Sin argumento aparece un menú numerado. OpenCode y
-Continue tienen adaptadores separados. La instalación genera archivos; la
-compatibilidad del cliente debe comprobarse con la versión que uses.
 
 Para instalar desde una copia local, incluso sin red:
 
 ```bash
 # Ejecutar desde la raíz del proyecto destino:
-bash /ruta/al/repositorio/SDD/install.sh cursor
+bash /ruta/al/repositorio/SDD/install.sh
 ```
 
 ```powershell
-& 'C:\ruta\al\repositorio\SDD\install.ps1' -Target cursor
+& 'C:\ruta\al\repositorio\SDD\install.ps1'
 ```
 
 Los dos instaladores llaman al mismo motor Python. Descargan el paquete antes de
