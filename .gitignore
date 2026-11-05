@@ -1,5 +1,11 @@
-# Git ignore para herramientas generadas localmente
+# Herramientas generadas localmente
 .agents/
 .cursor/
 .continue/
+.opencode/
+.claude/
+.sdd/
+__pycache__/
+*.pyc
 *.log
+*.zip

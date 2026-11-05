@@ -1,94 +1,57 @@
-# Guía de Despliegue y Publicación: Herramienta SDD Multi-IDE
+# Publicación y distribución del framework
 
-Esta guía explica paso a paso cómo subir este proyecto a **GitHub** para que cualquier desarrollador pueda instalar tus flujos SDD en cualquier proyecto con una sola línea de comandos (`curl` o PowerShell).
+Este repositorio distribuye Markdown y herramientas Python desde GitHub; no
+necesita un servidor de aplicaciones. Python 3.9+ es requisito del proyecto destino.
 
----
+## Publicar un fork
 
-## 1. ¿Cómo funciona la distribución sin servidores?
+1. Crear un fork o repositorio público con estos archivos.
+2. Cambiar los valores predeterminados del repositorio en `install.sh`, `install.ps1`
+   y `tools/sdd_install.py`, y las URLs de instalación del README.
+3. Ejecutar las pruebas y revisar el diff antes de publicar una rama o release.
+4. Preferir una etiqueta o SHA de commit para instalaciones reproducibles. `main`
+   ofrece la versión actual y puede cambiar entre descargas.
 
-No necesitas pagar ni configurar un servidor web, VPS ni Docker.
-Cuando subes un repositorio público a **GitHub**, GitHub sirve automáticamente cada archivo de forma plana y directa a través de su CDN en:
+## Seleccionar repositorio y versión sin editar archivos
 
-```text
-https://raw.githubusercontent.com/<TU-USUARIO-GITHUB>/<TU-REPOSITORIO>/main/<RUTA-DEL-ARCHIVO>
-```
-
-Cualquier terminal del mundo con conexión a internet puede consumir esa URL directamente mediante `curl` o `irm` (Invoke-RestMethod).
-
----
-
-## 2. Paso a Paso para Subir a GitHub
-
-### Paso A: Inicializar el repositorio Git local
-Abre tu terminal en la carpeta de este proyecto (`SW2-G17-SDD-26-2`) y ejecuta:
+Las variables GITHUB_USER, GITHUB_REPO y GITHUB_BRANCH son leídas por ambos
+bootstraps y por el motor Python. Asignarlas en el entorno del proceso instalador:
 
 ```bash
-git init
-git add .
-git commit -m "feat: instalador universal sdd y plantillas canónicas"
-git branch -M main
+curl -fsSL https://raw.githubusercontent.com/USUARIO/REPO/VERSION/install.sh -o /tmp/sdd-install.sh
+GITHUB_USER=USUARIO GITHUB_REPO=REPO GITHUB_BRANCH=VERSION bash /tmp/sdd-install.sh cursor
 ```
 
-### Paso B: Crear el repositorio en GitHub
-1. Ingresa a [https://github.com/new](https://github.com/new).
-2. Asigna un nombre al repositorio (por ejemplo: `SW2-G17-SDD-26-2` o `sdd-workflows`).
-3. **IMPORTANTE**: Asegúrate de marcarlo como **Public** (Público). Si es privado, `curl` pedirá autenticación o tokens personales.
-4. No inicialices con README ni `.gitignore` (ya los tenemos creados). Haz clic en **Create repository**.
+USUARIO, REPO y VERSION son valores que deben sustituirse por el fork y el tag/SHA
+publicado. La URL del bootstrap y GITHUB_BRANCH deben indicar la misma versión.
+No pegar una credencial en estas variables ni en la URL.
 
-### Paso C: Vincular y subir tu código
-Copia y ejecuta los comandos que te proporciona GitHub:
-
-```bash
-git remote add origin https://github.com/<TU-USUARIO>/<TU-REPOSITORIO>.git
-git push -u origin main
-```
-
----
-
-## 3. Actualizar las URLs de tu Instalador
-
-En los archivos `install.sh` e `install.ps1`, localiza la variable de usuario de GitHub y actualízala con tu nombre de usuario real:
-
-- En `install.sh`:
-  ```bash
-  GITHUB_USER="tu-nombre-de-usuario"
-  GITHUB_REPO="nombre-de-tu-repo"
-  ```
-- En `install.ps1`:
-  ```powershell
-  $GithubUser = "tu-nombre-de-usuario"
-  $GithubRepo = "nombre-de-tu-repo"
-  ```
-
-Haz un commit rápido con el cambio:
-```bash
-git add install.sh install.ps1
-git commit -m "chore: configurar urls canónicas de github"
-git push
-```
-
----
-
-## 4. ¿Cómo lo usan tus compañeros o tú en otros proyectos?
-
-Una vez publicado, para instalar los workflows SDD en **cualquier proyecto nuevo**, solo abren la terminal en la raíz de su proyecto y ejecutan:
-
-### En Linux, macOS o Windows Git Bash:
-```bash
-curl -fsSL https://raw.githubusercontent.com/<TU-USUARIO>/<TU-REPOSITORIO>/main/install.sh | bash
-```
-
-### En Windows PowerShell nativo:
 ```powershell
-irm https://raw.githubusercontent.com/<TU-USUARIO>/<TU-REPOSITORIO>/main/install.ps1 | iex
+$env:GITHUB_USER = 'USUARIO'
+$env:GITHUB_REPO = 'REPO'
+$env:GITHUB_BRANCH = 'VERSION'
+& ([scriptblock]::Create((irm "https://raw.githubusercontent.com/$env:GITHUB_USER/$env:GITHUB_REPO/$env:GITHUB_BRANCH/install.ps1"))) -Target cursor
 ```
 
-### Modo no interactivo (automatizado en scripts o CI/CD):
-Si se desea instalar directamente para Cursor sin mostrar el menú interactivo:
+El endpoint raw público no proporciona autenticación para un repositorio privado.
+Para repositorios privados o una instalación sin red, clonar por una vía ya
+autorizada y ejecutar el bootstrap local. SDD_SOURCE_DIR permite indicar la fuente
+local explícitamente, sin cambiar el directorio del proyecto destino.
+
+## Comprobar y actualizar
+
 ```bash
-curl -fsSL https://raw.githubusercontent.com/<TU-USUARIO>/<TU-REPOSITORIO>/main/install.sh | bash -s cursor
+python3 -m unittest discover -s tests -v
+bash -n install.sh
 ```
-o en PowerShell:
-```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/<TU-USUARIO>/<TU-REPOSITORIO>/main/install.ps1))) -Target cursor
-```
+
+Reejecutar el instalador desde la raíz del proyecto destino. El paquete se carga
+antes de escribir; los archivos modificados y los comandos retirados reconocidos
+se conservan en `.sdd/backups/`. No se sobrescriben documentos de negocio ya creados.
+Revisar [migración](docs/MIGRATION.md) para convertir tareas existentes al contrato
+verificable. El instalador actualiza solo los clientes seleccionados.
+
+Se pueden versionar los workflows/herramientas instalados; excluir backups del
+control de versiones. Para restaurar una actualización, recuperar los archivos
+anteriores desde Git o las copias y revisar el diff. No hay rollback automático
+transaccional de todos los archivos.
