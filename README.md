@@ -12,7 +12,7 @@ aportan comprobaciones reales.
 - **Cursor**
 - **VS Code / Copilot**
 - **OpenCode / Continue**
-- **Codex**
+- **Codex CLI (OpenAI)**
 - **Claude Code**
 
 ## Instalación
@@ -34,7 +34,7 @@ irm https://raw.githubusercontent.com/Thebetus7/SW2-G17-SDD-26-2/main/install.ps
 
 Al ejecutar, aparece un **menú interactivo** para seleccionar el IDE destino:
 `antigravity`, `cursor`, `opencode`, `continue`, `vscode` (o `copilot`),
-`codex`, `claude` o `all` (instala para todos). OpenCode y Continue tienen
+`codex` (o `codex-cli`), `claude` o `all` (instala para todos). OpenCode y Continue tienen
 adaptadores separados. La instalación genera archivos; la compatibilidad del
 cliente debe comprobarse con la versión que uses.
 

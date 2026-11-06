@@ -135,6 +135,11 @@ class Installer:
                 front = f'---\nname: {name}\ndescription: {json.dumps(description, ensure_ascii=False)}\n---\n\n'
                 if client in ('antigravity', 'codex'):
                     self.write(f'.agents/skills/{name}/SKILL.md', front + body)
+                    if client == 'codex':
+                        self.write(f'.codex/skills/{name}/SKILL.md', front + body)
+                        self.write(f'.codex/prompts/{name}.md',
+                                   f'---\ndescription: {json.dumps(description, ensure_ascii=False)}\n---\n\n'
+                                   + body + '\nArgumentos del usuario: $ARGUMENTS\n')
                     if client == 'antigravity':
                         self.write(f'.agents/workflows/{name}.md', '# ' + name + '\n\n' + body)
                 elif client == 'cursor':
@@ -159,6 +164,8 @@ class Installer:
                 self.instructions('.github/copilot-instructions.md', core_block)
             elif client == 'claude':
                 self.instructions('CLAUDE.md', core_block)
+            elif client == 'codex':
+                self.instructions('CODEX.md', core_block)
             if client in ('continue', 'opencode'):
                 for item in self.catalog + [dict(name='sdd-planning')]:
                     name = item['name']
@@ -174,7 +181,7 @@ class Installer:
             for name in DEPRECATED:
                 paths = {
                     'antigravity': [f'.agents/workflows/{name}.md', f'.agents/skills/{name}/SKILL.md'],
-                    'codex': [f'.agents/skills/{name}/SKILL.md'],
+                    'codex': [f'.agents/skills/{name}/SKILL.md', f'.codex/skills/{name}/SKILL.md', f'.codex/prompts/{name}.md'],
                     'cursor': [f'.cursor/commands/{name}.md', f'.cursor/rules/{name}.mdc'],
                     'continue': [f'.continue/prompts/{name}.prompt', f'.continue/rules/{name}.md'],
                     'opencode': [f'.opencode/commands/{name}.md', f'.continue/prompts/{name}.prompt', f'.continue/rules/{name}.md'],
@@ -198,11 +205,12 @@ class Installer:
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--target', choices=TARGETS + ('all', 'copilot'))
+    aliases = {'copilot': 'vscode', 'codex-cli': 'codex', 'codex_cli': 'codex'}
+    parser.add_argument('--target', choices=TARGETS + ('all',) + tuple(aliases.keys()))
     parser.add_argument('--source', type=Path, help='Repositorio local; sin red')
     parser.add_argument('--destination', type=Path, default=Path.cwd())
     args = parser.parse_args(argv)
-    target = 'vscode' if args.target == 'copilot' else args.target
+    target = aliases.get(args.target, args.target)
     if not target:
         try:
             # Works when this installer is piped into the interpreter.

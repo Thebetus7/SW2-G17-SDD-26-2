@@ -45,7 +45,8 @@ class InstallTests(unittest.TestCase):
         paths = ('.agents/skills/sdd-spec-assisted/SKILL.md', '.agents/workflows/sdd-spec-assisted.md',
                  '.cursor/commands/sdd-spec-assisted.md', '.cursor/rules/sdd-spec-assisted.mdc',
                  '.opencode/commands/sdd-spec-assisted.md', '.continue/rules/sdd-spec-assisted.md',
-                 '.github/prompts/sdd-spec-assisted.prompt.md', '.claude/skills/sdd-spec-assisted/SKILL.md')
+                 '.github/prompts/sdd-spec-assisted.prompt.md', '.claude/skills/sdd-spec-assisted/SKILL.md',
+                 '.codex/skills/sdd-spec-assisted/SKILL.md', '.codex/prompts/sdd-spec-assisted.md')
         for relative in paths:
             text = (self.root / relative).read_text(encoding='utf-8')
             self.assertIn('.sdd/workflows/sdd-spec-assisted.md', text)
@@ -56,9 +57,10 @@ class InstallTests(unittest.TestCase):
         self.assertNotIn('globs:', (self.root / '.cursor/rules/sdd-spec-assisted.mdc').read_text())
         self.assertIn('invokable: true', (self.root / '.continue/rules/sdd-spec-assisted.md').read_text())
         self.assertLess(len((self.root / '.cursorrules').read_text()), 700)
+        self.assertIn('$ARGUMENTS', (self.root / '.codex/prompts/sdd-spec-assisted.md').read_text())
 
     def test_preserve_instructions_and_idempotent_reinstall(self):
-        for name in ('AGENTS.md', '.cursorrules', 'CLAUDE.md', '.github/copilot-instructions.md'):
+        for name in ('AGENTS.md', '.cursorrules', 'CLAUDE.md', 'CODEX.md', '.github/copilot-instructions.md'):
             path = self.root / name
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text('# Equipo\nMantener política propia.\n', encoding='utf-8')
@@ -67,7 +69,7 @@ class InstallTests(unittest.TestCase):
         self.install('all')
         after = {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob('*') if p.is_file()}
         self.assertEqual(before, after)
-        for name in ('AGENTS.md', '.cursorrules', 'CLAUDE.md', '.github/copilot-instructions.md'):
+        for name in ('AGENTS.md', '.cursorrules', 'CLAUDE.md', 'CODEX.md', '.github/copilot-instructions.md'):
             text = (self.root / name).read_text(encoding='utf-8')
             self.assertIn('Mantener política propia.', text)
             self.assertEqual(text.count(installer.START), 1)

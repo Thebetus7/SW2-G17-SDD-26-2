@@ -4,6 +4,7 @@
 .continue/
 .opencode/
 .claude/
+.codex/
 .sdd/
 __pycache__/
 *.pyc
